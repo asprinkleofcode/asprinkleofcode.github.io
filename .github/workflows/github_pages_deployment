@@ -35,8 +35,6 @@ jobs:
         with:
           node-version: lts/*
           cache: 'npm'
-      - name: Change Directory
-        run: cd asprinkleofcode
       - name: Install dependencies
         run: npm ci
       - name: Build
