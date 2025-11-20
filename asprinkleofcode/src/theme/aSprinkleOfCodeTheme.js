@@ -51,6 +51,41 @@ export const aSprinkleOfCodeTheme = {
       title: "sr-only",
     },
   },
+  footer: {
+    root: {
+      base: "w-full rounded-none bg-[#1E1E2F] shadow-inner md:flex md:items-center md:justify-between",
+      container: "w-full p-6 mx-auto",
+      bgDark: "bg-[#1E1E2F]",
+    },
+    brand: {
+      base: "mb-4 flex items-center sm:mb-0",
+      img: "mr-3 h-8 drop-shadow-[0_0_6px_#E48FB1]",
+      span: "self-center whitespace-nowrap text-2xl font-semibold text-[#F7EEF5] tracking-wide",
+    },
+    groupLink: {
+      base: "flex flex-wrap text-sm text-gray-300",
+      link: {
+        base: "me-4 last:mr-0 md:mr-6 transition duration-200",
+        href: "hover:text-[#E48FB1] hover:drop-shadow-[0_0_6px_#E48FB1] hover:underline",
+      },
+      col: "flex-col space-y-4 text-gray-300",
+    },
+    icon: {
+      base: "text-gray-400 transition duration-200 hover:text-[#E48FB1] hover:drop-shadow-[0_0_6px_#E48FB1]",
+      size: "h-5 w-5",
+    },
+    title: {
+      base: "mb-6 text-sm font-semibold uppercase text-gray-400 tracking-widest",
+    },
+    divider: {
+      base: "my-6 w-full border-gray-700 sm:mx-auto lg:my-8",
+    },
+    copyright: {
+      base: "text-sm text-gray-400",
+      href: "ml-1 hover:text-[#E48FB1] hover:underline",
+      span: "ml-1 text-[#E48FB1]",
+    },
+  },
   button: {
     base: "font-semibold rounded-lg shadow transition-all duration-200 focus:outline-none focus:ring-4",
     color: {

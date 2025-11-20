@@ -12,7 +12,7 @@ import { Link } from "react-router";
 interface HeaderProps {}
 
 const Header: FC<HeaderProps> = () => (
-  <Navbar fluid rounded>
+  <Navbar fluid>
     <NavbarBrand as={Link} href="https://flowbite-react.com">
       <img src="/cupcake.png" className="navbar-logo" alt="Cupcake Logo" />
       <span className="navbar-brand-text">Alisha Korba</span>
