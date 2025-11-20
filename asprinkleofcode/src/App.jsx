@@ -1,39 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Button } from "flowbite-react";
-import { Datepicker } from "flowbite-react";
-import { Progress } from "flowbite-react";
+import { useState } from "react";
+import "./App.css";
+import { Button, ThemeProvider } from "flowbite-react";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarCollapse,
+  NavbarLink,
+  NavbarToggle,
+} from "flowbite-react";
+import { Link } from "react-router";
+import { aSprinkleOfCodeTheme } from "./theme/aSprinkleOfCodeTheme";
+import Header from "./components/Header/Header";
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
-      <div class="bg-berry">
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
+      <ThemeProvider theme={aSprinkleOfCodeTheme}>
+        <Header />
+        <a
+          href="https://www.flaticon.com/free-icons/dessert"
+          title="dessert icons"
+        >
+          Dessert icons created by Freepik - Flaticon
         </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1 class="text-3xl font-bold underline">Vite + React</h1>
- <h1 class="text-red-500">Hello, Tailwind!</h1>
-      <div className="card"> 
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
- 
+      </ThemeProvider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
