@@ -15,7 +15,7 @@ const Footer: FC<FooterProps> = () => (
         <FooterCopyright href="#" by="Alisha Korba" year={2025} />
         <div className="mt-4 flex space-x-6 sm:mt-0 sm:justify-center">
           <FooterIcon
-            href="www.linkedin.com/in/alishasprinklekorba"
+            href="https://www.linkedin.com/in/alishasprinklekorba"
             icon={BsLinkedin}
           />
           <FooterIcon
