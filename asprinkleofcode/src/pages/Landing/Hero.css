@@ -1,0 +1,99 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  padding: 4rem 1.5rem;
+  background: var(--color-dark-600);
+  color: var(--color-dark-50);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  max-width: 800px;
+  text-align: center;
+  z-index: 10;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 0 15px var(--color-dark-800);
+}
+
+.hero p {
+  font-size: 0.75rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  color: var(--color-primary-100);
+}
+
+.hero .highlight {
+  color: var(--color-primary-300);
+  font-weight: 600;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+@keyframes pulseSoft {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+.sparkle {
+  position: absolute;
+  pointer-events: none;
+  animation: pulseSoft infinite ease-in-out;
+}
+
+.sparkle1 {
+  top: 10%;
+  left: 12%;
+  font-size: 2rem;
+  animation-duration: 4s;
+}
+
+.sparkle2 {
+  top: 28%;
+  right: 14%;
+  font-size: 3rem;
+  animation-duration: 6s;
+}
+
+.sparkle3 {
+  bottom: 25%;
+  left: 20%;
+  font-size: 2.5rem;
+  animation-duration: 5s;
+}
+
+.sparkle4 {
+  bottom: 15%;
+  right: 10%;
+  font-size: 1.7rem;
+  animation-duration: 7s;
+}
+
+@media (min-width: 768px) {
+  .hero h1 {
+    font-size: 4rem;
+  }
+
+  .hero p {
+    font-size: 1.35rem;
+  }
+}
