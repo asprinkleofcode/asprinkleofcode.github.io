@@ -1,9 +1,11 @@
 import { useState } from "react";
 import "./App.css";
-import { Button, ThemeProvider } from "flowbite-react";
+import { ThemeProvider } from "flowbite-react";
 import { aSprinkleOfCodeTheme } from "./theme/aSprinkleOfCodeTheme";
+import "./theme/colors.css";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
+import LandingPage from "./pages/Landing/LandingPage";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -12,8 +14,12 @@ function App() {
     <>
       <ThemeProvider theme={aSprinkleOfCodeTheme}>
         <Header />
-        <main>{/* your landing page content */}</main>
-        <Footer />
+        <div className="flex flex-col min-h-screen">
+          <main className="flex-1">
+            <LandingPage />
+          </main>
+          <Footer />
+        </div>
       </ThemeProvider>
     </>
   );

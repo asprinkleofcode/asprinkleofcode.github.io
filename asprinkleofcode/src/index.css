@@ -11,6 +11,3 @@ html, body, #root {
   flex-direction: column;
 }
 
-main {
-  flex: 1;
-}

@@ -1,32 +1,29 @@
 .navbar-logo {
-  height: 2rem; 
+  height: 2rem;
   width: 2rem;
-  filter: invert(1) drop-shadow(0 0 6px #E48FB1);
+  filter: invert(1) drop-shadow(0 0 6px var(--color-primary-400));
   transition: filter 0.3s ease-in-out;
 }
 
 .navbar-logo:hover {
-  filter: invert(1) drop-shadow(0 0 10px #E48FB1);
+  filter: invert(1) drop-shadow(0 0 10px var(--color-primary-400));
 }
 
-/* Brand text styles */
 .navbar-brand-text {
   position: relative;
   display: inline-block;
   white-space: nowrap;
-  font-size: 1.25rem; 
-  font-weight: 600; 
-  color: #EDEDF2; 
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-primary-100);
   transition: all 0.3s ease-in-out;
 }
 
-/* Pink glow on hover */
 .navbar-brand-text:hover {
-  color: #F1A8C8;
-  filter: drop-shadow(0 0 6px #E48FB1);
+  color: var(--color-primary-400);
+  filter: drop-shadow(0 0 6px var(--color-primary-400));
 }
 
-/* Sparkle effect */
 .navbar-brand-text::after {
   content: "✨";
   position: absolute;
@@ -36,7 +33,6 @@
   transition: all 0.3s ease-in-out;
 }
 
-/* Show sparkle on hover */
 .navbar-brand-text:hover::after {
   opacity: 1;
   right: -1.75rem;

@@ -1,8 +1,8 @@
-// src/theme/aSprinkleOfCodeTheme.js
+
 export const aSprinkleOfCodeTheme = {
   navbar: {
     root: {
-      base: "bg-[#1E1E2F] px-2 py-2.5 sm:px-4 border-b border-[#3A3A4D]",
+      base: "bg-[var(--color-dark-800)] px-2 py-2.5 sm:px-4 border-b border-[var(--color-dark-600)]",
       rounded: {
         on: "rounded",
         off: "",
@@ -21,7 +21,7 @@ export const aSprinkleOfCodeTheme = {
     },
 
     brand: {
-      base: "flex items-center space-x-3 text-[#E48FB1] font-bold",
+      base: "flex items-center space-x-3 text-[var(--color-primary-400)] font-bold",
     },
 
     collapse: {
@@ -36,42 +36,42 @@ export const aSprinkleOfCodeTheme = {
     link: {
       base: "block py-2 pl-3 pr-4 md:p-0",
       active: {
-        on: "bg-[#E48FB1] text-[#1E1E2F] md:bg-transparent md:text-[#E48FB1]",
-        off: "border-b border-[#3A3A4D] text-[#F4F4F8] hover:bg-[#2A2A3D] md:border-0 md:hover:bg-transparent md:hover:text-[#E48FB1]",
+        on: "bg-[var(--color-primary-400)] text-[var(--color-dark-800)] md:bg-transparent md:text-[var(--color-primary-400)]",
+        off: "border-b border-[var(--color-dark-600)] text-[var(--color-dark-50)] hover:bg-[var(--color-dark-700)] md:border-0 md:hover:bg-transparent md:hover:text-[var(--color-primary-400)]",
       },
       disabled: {
-        on: "text-[#9C9CBA] hover:cursor-not-allowed",
+        on: "text-[var(--color-dark-300)] hover:cursor-not-allowed",
         off: "",
       },
     },
 
     toggle: {
-      base: "inline-flex items-center rounded-lg p-2 text-sm text-[#B3B3C6] hover:bg-[#2A2A3D] focus:outline-none focus:ring-2 focus:ring-[#E48FB1]/30 md:hidden",
+      base: "inline-flex items-center rounded-lg p-2 text-sm text-[var(--color-dark-300)] hover:bg-[var(--color-dark-700)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-400)]/30 md:hidden",
       icon: "h-6 w-6 shrink-0",
       title: "sr-only",
     },
   },
   footer: {
     root: {
-      base: "w-full rounded-none bg-[#1E1E2F] shadow-inner md:flex md:items-center md:justify-between",
+      base: "w-full rounded-none bg-[var(--color-dark-800)] shadow-inner md:flex md:items-center md:justify-between",
       container: "w-full p-6 mx-auto",
-      bgDark: "bg-[#1E1E2F]",
+      bgDark: "bg-[var(--color-dark-800)]",
     },
     brand: {
       base: "mb-4 flex items-center sm:mb-0",
-      img: "mr-3 h-8 drop-shadow-[0_0_6px_#E48FB1]",
-      span: "self-center whitespace-nowrap text-2xl font-semibold text-[#F7EEF5] tracking-wide",
+      img: "mr-3 h-8 drop-shadow-[0_0_6px_[var(--color-primary-400)]]",
+      span: "self-center whitespace-nowrap text-2xl font-semibold text-[var(--color-dark-50)] tracking-wide",
     },
     groupLink: {
       base: "flex flex-wrap text-sm text-gray-300",
       link: {
         base: "me-4 last:mr-0 md:mr-6 transition duration-200",
-        href: "hover:text-[#E48FB1] hover:drop-shadow-[0_0_6px_#E48FB1] hover:underline",
+        href: "hover:text-[var(--color-primary-400)] hover:drop-shadow-[0_0_6px_[var(--color-primary-400)]] hover:underline",
       },
       col: "flex-col space-y-4 text-gray-300",
     },
     icon: {
-      base: "text-gray-400 transition duration-200 hover:text-[#E48FB1] hover:drop-shadow-[0_0_6px_#E48FB1]",
+      base: "text-gray-400 transition duration-200 hover:text-[var(--color-primary-400)] hover:drop-shadow-[0_0_6px_[var(--color-primary-400)]]",
       size: "h-5 w-5",
     },
     title: {
@@ -82,16 +82,17 @@ export const aSprinkleOfCodeTheme = {
     },
     copyright: {
       base: "text-sm text-gray-400",
-      href: "ml-1 hover:text-[#E48FB1] hover:underline",
-      span: "ml-1 text-[#E48FB1]",
+      href: "ml-1 hover:text-[var(--color-primary-400)] hover:underline",
+      span: "ml-1 text-[var(--color-primary-400)]",
     },
   },
   button: {
     base: "font-semibold rounded-lg shadow transition-all duration-200 focus:outline-none focus:ring-4",
     color: {
-      primary: "bg-[#E48FB1] hover:bg-[#D979A4] text-white focus:ring-pink-300",
+      primary:
+        "bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] text-white focus:ring-[var(--color-primary-200)]",
       secondary:
-        "bg-[#2A2A3D] hover:bg-[#3A3A4D] text-[#F4F4F8] border border-[#3A3A4D]",
+        "bg-[var(--color-dark-700)] hover:bg-[var(--color-dark-500)] text-[var(--color-dark-50)] border border-[var(--color-dark-600)]",
     },
     size: {
       sm: "px-3 py-1 text-sm",
