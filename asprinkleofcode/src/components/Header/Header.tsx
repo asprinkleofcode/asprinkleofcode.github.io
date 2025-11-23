@@ -19,15 +19,12 @@ const Header: FC<HeaderProps> = () => (
     </NavbarBrand>
     <NavbarToggle />
     <NavbarCollapse>
-      <NavbarLink href="#" active>
+      <NavbarLink href="/" active>
         Home
       </NavbarLink>
-      <NavbarLink as={Link} href="#">
+      <NavbarLink href="/about-me">
         About
       </NavbarLink>
-      <NavbarLink href="#">Services</NavbarLink>
-      <NavbarLink href="#">Contact</NavbarLink>
-      <NavbarLink href="#">Credits</NavbarLink>
     </NavbarCollapse>
   </Navbar>
 );
