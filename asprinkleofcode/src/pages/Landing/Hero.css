@@ -2,8 +2,6 @@
   position: relative;
   min-height: 100vh;
   padding: 4rem 1.5rem;
-  background: var(--color-dark-600);
-  color: var(--color-dark-50);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,25 +13,6 @@
   max-width: 800px;
   text-align: center;
   z-index: 10;
-}
-
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  font-weight: 700;
-  text-shadow: 0 0 15px var(--color-dark-800);
-}
-
-.hero p {
-  font-size: 0.75rem;
-  margin-bottom: 2rem;
-  line-height: 1.6;
-  color: var(--color-primary-100);
-}
-
-.hero .highlight {
-  color: var(--color-primary-300);
-  font-weight: 600;
 }
 
 .hero-buttons {
@@ -88,12 +67,4 @@
   animation-duration: 7s;
 }
 
-@media (min-width: 768px) {
-  .hero h1 {
-    font-size: 4rem;
-  }
 
-  .hero p {
-    font-size: 1.35rem;
-  }
-}

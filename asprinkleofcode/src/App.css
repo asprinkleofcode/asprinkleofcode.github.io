@@ -1,3 +1,54 @@
 @import "tailwindcss";
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
+
+body {
+  background: var(--color-dark-600);
+  color: var(--color-dark-50);
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 0 15px var(--color-dark-800);
+}
+
+p {
+  font-size: 0.75rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  color: var(--color-primary-100);
+}
+
+.highlight {
+  color: var(--color-primary-300);
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 4rem;
+  }
+
+  p {
+    font-size: 1.35rem;
+  }
+}
+
+@keyframes pinkPulse {
+  0% {
+    box-shadow: 0 0 15px var(--color-primary-300);
+  }
+  50% {
+    box-shadow: 0 0 28px var(--color-primary-400);
+  }
+  100% {
+    box-shadow: 0 0 15px var(--color-primary-500);
+  }
+}
+
+.avatar-pulse {
+  animation: pinkPulse 2.2s ease-in-out infinite;
+  border-radius: 9999px;
+}
