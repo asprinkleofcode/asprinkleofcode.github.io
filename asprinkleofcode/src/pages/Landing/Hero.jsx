@@ -18,7 +18,7 @@ export default function Hero() {
         </p>
 
         <div className="flex justify-center gap-4">
-          <Button color="primary" href="/about-me" size="lg">
+          <Button color="primary" href="#/about-me" size="lg">
             Learn About Me
           </Button>
           <Button color="secondary" href="https://github.com/users/asprinkleofcode/projects/1/views/1" size="lg">
