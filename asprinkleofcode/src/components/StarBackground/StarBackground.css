@@ -1,0 +1,44 @@
+.star-sparkle-bg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin-top: 6rem;
+  margin-bottom: 6rem;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.star-sparkle {
+  position: absolute;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 8px currentColor);
+  animation: starFloat 8s ease-in-out infinite,
+    starPulse 4s ease-in-out infinite;
+}
+
+@keyframes starFloat {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) rotate(15deg) scale(1.2);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes starPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 15px currentColor);
+  }
+}

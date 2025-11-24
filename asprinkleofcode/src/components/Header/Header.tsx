@@ -5,9 +5,9 @@ import {
   NavbarBrand,
   NavbarToggle,
   NavbarCollapse,
-  NavbarLink,
 } from "flowbite-react";
 import { Link } from "react-router";
+import { RouterNavbarLink } from "./RouterNavlink";
 
 interface HeaderProps {}
 
@@ -19,15 +19,8 @@ const Header: FC<HeaderProps> = () => (
     </NavbarBrand>
     <NavbarToggle />
     <NavbarCollapse>
-      <NavbarLink href="#" active>
-        Home
-      </NavbarLink>
-      <NavbarLink as={Link} href="#">
-        About
-      </NavbarLink>
-      <NavbarLink href="#">Services</NavbarLink>
-      <NavbarLink href="#">Contact</NavbarLink>
-      <NavbarLink href="#">Credits</NavbarLink>
+      <RouterNavbarLink to="/">Home</RouterNavbarLink>
+      <RouterNavbarLink to="/about-me">About Me</RouterNavbarLink>
     </NavbarCollapse>
   </Navbar>
 );
