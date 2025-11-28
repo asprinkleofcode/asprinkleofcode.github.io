@@ -1,4 +1,4 @@
-import { Avatar, Badge } from "flowbite-react";
+import { Avatar } from "flowbite-react";
 import "./Primary.css";
 import profilePic from "../../assets/profile-picture.jpg";
 import { FaCode } from "react-icons/fa";
