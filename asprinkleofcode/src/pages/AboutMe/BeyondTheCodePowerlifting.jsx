@@ -1,4 +1,5 @@
 import { Carousel } from "flowbite-react";
+import "./BeyondTheCodePowerlifting.css";
 import GradientWaves from "../../components/GradientWaves/GradientWaves";
 import photo1 from "../../assets/pl-1.jpg";
 import photo2 from "../../assets/pl-2.jpg";
@@ -7,14 +8,28 @@ export default function BeyondTheCodePowerlifting() {
   return (
     <section className="relative w-full py-20 flex flex-col items-center">
       <GradientWaves />
-      <h1>
-        Beyond the Code — Powerlifting
-      </h1>
+      <h1>Beyond the Code — Powerlifting</h1>
 
-      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-        <div className="flex flex-col gap-10">
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
+        <div className="flex flex-col gap-10 h-full">
           <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
-            <Carousel slideInterval={5000}>
+            <Carousel pauseOnHover slideInterval={5000}>
+              <iframe
+                src="https://drive.google.com/file/d/1RHJBvlPYgu3c-SJBxHhD64AuE3YkBiWn/preview"
+                className="relative w-full h-full"
+              ></iframe>
+              <iframe
+                src="https://drive.google.com/file/d/1rWYIpN7_0LOP_l2RA6aktJlBGPZ3tmTL/preview"
+                className="relative w-full h-full"
+              ></iframe>
+              <iframe
+                src="https://drive.google.com/file/d/1y7e3A8FlzH_Ftg7tZzv0Qjuhi1Bui_BZ/preview"
+                className="relative w-full h-full"
+              ></iframe>
+              <iframe
+                src="https://drive.google.com/file/d/1Xhryg4sPQyJah_U_Fye3ZD9pbV-gWDtV/preview"
+                className="relative w-full h-full"
+              ></iframe>
               <img className="relative" src={photo1} />
               <img className="relative" src={photo2} />
             </Carousel>
@@ -32,7 +47,7 @@ export default function BeyondTheCodePowerlifting() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 h-fit mt-4">
+        <div className="flex flex-col justify-between h-full gap-5">
           <p className="text-lg text-center">
             Powerlifting keeps me grounded. It teaches me how to be patient with
             myself, how to show up consistently, and how to break tough things
@@ -41,38 +56,23 @@ export default function BeyondTheCodePowerlifting() {
             the form, build a foundation, and improve one detail at a time.
             That’s exactly how I approach technical challenges: break it down,
             make it clean, and focus on getting a little better each iteration.
-            Powerlifting has made me a more disciplined, thoughtful engineer
-            and engineering has made me a more analytical lifter.
-            I love that the two feed each other.
+            Powerlifting has made me a more disciplined, thoughtful engineer and
+            engineering has made me a more analytical lifter. I love that the
+            two feed each other.
           </p>
-
-          <div className="grid grid-cols-2 gap-6">
-            <div className="p-6 rounded-xl shadow-md bg-white/10 backdrop-blur-sm border border-white/20">
-              <p className="text-lg font-medium text-center">Bench PR</p>
-              <p className="text-2xl font-bold text-center text-primary-400">
-                100 lbs
-              </p>
+          <h2>Current Personal Records</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full">
+            <div className="pr-tile">
+              <h3 className="pr-weight">155lb</h3>
+              <p className="pr-label">Squat</p>
             </div>
-
-            <div className="p-6 rounded-xl shadow-md bg-white/10 backdrop-blur-sm border border-white/20">
-              <p className="text-lg font-medium text-center">Squat PR</p>
-              <p className="text-2xl font-bold text-center text-primary-400">
-                187 lbs
-              </p>
+            <div className="pr-tile">
+              <h3 className="pr-weight">100lb</h3>
+              <p className="pr-label">Bench</p>
             </div>
-
-            <div className="p-6 rounded-xl shadow-md bg-white/10 backdrop-blur-sm border border-white/20">
-              <p className="text-lg font-medium text-center">Deadlift PR</p>
-              <p className="text-2xl font-bold text-center text-primary-400">
-                292 lbs
-              </p>
-            </div>
-
-            <div className="p-6 rounded-xl shadow-md bg-white/10 backdrop-blur-sm border border-white/20">
-              <p className="text-lg font-medium text-center">Training Since</p>
-              <p className="text-2xl font-bold text-center text-primary-400">
-                2023
-              </p>
+            <div className="pr-tile">
+              <h3 className="pr-weight">290lb</h3>
+              <p className="pr-label">Deadlift</p>
             </div>
           </div>
         </div>

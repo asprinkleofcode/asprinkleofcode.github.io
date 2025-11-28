@@ -1,6 +1,7 @@
 import { Avatar } from "flowbite-react";
 import "./Primary.css";
 import profilePic from "../../assets/profile-picture.jpg";
+import StarBackground from "../../components/StarBackground/StarBackground";
 import { FaCode } from "react-icons/fa";
 import { TbAwardFilled } from "react-icons/tb";
 import { FaCat } from "react-icons/fa6";
@@ -8,6 +9,7 @@ import { FaCat } from "react-icons/fa6";
 export default function Primary() {
   return (
     <section className="primary">
+      <StarBackground count={30} />
       <div className="primary-content">
         <Avatar
           img={profilePic}
