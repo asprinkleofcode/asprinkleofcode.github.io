@@ -1,0 +1,30 @@
+.gradient-waves-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  background: linear-gradient(
+    120deg,
+    var(--color-dark-700),
+    var(--color-dark-600),
+    var(--color-primary-400)
+  );
+
+  background-size: 200% 200%;
+  animation: gradientShift 12s ease-in-out infinite;
+
+  opacity: 0.35;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

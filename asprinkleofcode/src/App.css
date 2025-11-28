@@ -14,6 +14,13 @@ h1 {
   text-shadow: 0 0 15px var(--color-dark-800);
 }
 
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 0 15px var(--color-dark-800);
+}
+
 p {
   font-size: 0.75rem;
   margin-bottom: 2rem;
