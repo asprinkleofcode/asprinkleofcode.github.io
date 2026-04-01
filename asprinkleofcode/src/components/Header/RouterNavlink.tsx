@@ -2,7 +2,7 @@ import { NavbarLink } from "flowbite-react";
 import { useLocation } from "react-router";
 
 interface RouterNavbarLinkProps {
-  to: string; // e.g., "/", "/about-me"
+  to: string; // e.g., "/", "/about"
   children: React.ReactNode;
 }
 

@@ -1,6 +1,6 @@
 import { Avatar } from "flowbite-react";
 import "./Primary.css";
-import profilePic from "../../assets/profile-picture.jpg";
+import profilePic from "../../assets/alisha-sprinkle-korba-profile-pic.jpg";
 import StarBackground from "../../components/StarBackground/StarBackground";
 import { FaCode } from "react-icons/fa";
 import { TbAwardFilled } from "react-icons/tb";
@@ -16,13 +16,12 @@ export default function Primary() {
           rounded
           bordered
           size="xl"
-          alt="Profile picture of Alisha Sprinkle Korba"
+          alt="Alisha Sprinkle Korba, Sr. Software Engineer at Inmar Intelligence"
         />
-        <h1> Hi, I’m Alisha Sprinkle Korba.</h1>
+        <h1>Alisha Sprinkle Korba</h1>
         <p>
-          I’m a Sr. Software Engineer passionate about clean design, thoughtful
-          engineering, and sprinkling a little bit of creativity into everything
-          I build.
+          I’m a Sr. Software Engineer at Inmar Intelligence located in Winston-Salem, NC. I'm passionate about clean design, thoughtful
+          engineering, and sprinkling a little bit of creativity into everything I build.
         </p>
 
         <div className="primary-badges">
