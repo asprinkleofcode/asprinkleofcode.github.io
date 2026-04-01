@@ -1,6 +1,6 @@
 import { Avatar } from "flowbite-react";
 import "./Primary.css";
-import profilePic from "../../assets/alisha-sprinkle-korba-profile-pic.jpg";
+import profilePic from "../../assets/alisha-sprinkle-korba-headshot.jpg";
 import StarBackground from "../../components/StarBackground/StarBackground";
 import { FaCode } from "react-icons/fa";
 import { TbAwardFilled } from "react-icons/tb";
