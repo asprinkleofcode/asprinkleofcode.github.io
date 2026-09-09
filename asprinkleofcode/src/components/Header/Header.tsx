@@ -20,7 +20,7 @@ const Header: FC<HeaderProps> = () => (
     <NavbarToggle />
     <NavbarCollapse>
       <RouterNavbarLink to="/">Home</RouterNavbarLink>
-      <RouterNavbarLink to="/about-me">About Me</RouterNavbarLink>
+      <RouterNavbarLink to="/about">About Me</RouterNavbarLink>
     </NavbarCollapse>
   </Navbar>
 );
