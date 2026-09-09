@@ -63,11 +63,11 @@ export default function BeyondTheCodePowerlifting() {
           <h2>Current Personal Records</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full">
             <div className="pr-tile">
-              <h3 className="pr-weight">187lb</h3>
+              <h3 className="pr-weight">190lb</h3>
               <p className="pr-label">Squat</p>
             </div>
             <div className="pr-tile">
-              <h3 className="pr-weight">100lb</h3>
+              <h3 className="pr-weight">105lb</h3>
               <p className="pr-label">Bench</p>
             </div>
             <div className="pr-tile">
