@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secondary accent options — ASK portfolio</title>
+<style>
+  /* ---------------------------------------------------------------
+     LOCKED (from repo: src/theme/colors.css + aSprinkleOfCodeTheme.js)
+     bg-primary    #1E1E2F   dark-800
+     bg-secondary  #2B2B3B   dark-700
+     bg-recessed   #0F0F15   dark-900
+     text-primary  #F8F8FA   dark-50
+     text-secondary#9C9CBA   dark-300
+     border        #3A3A4D   dark-600
+     brand         #E48FB1   primary-400   (identity / links / focus)
+     brand-fill    #C45F87   primary-500   (button bg, fill only)
+     --------------------------------------------------------------- */
+  :root{
+    --bg:#1E1E2F; --bg-2:#2B2B3B; --bg-0:#0F0F15;
+    --tx:#F8F8FA; --tx-2:#9C9CBA; --bd:#3A3A4D;
+    --brand:#E48FB1; --brand-fill:#C45F87;
+    /* tuned status (constant across options) */
+    --ok:#4FCF7F;      /* success  8.2:1 on --bg */
+    --err:#F87171;     /* error    5.9:1 on --bg */
+    --warn:#F5B343;    /* warning  8.9:1 on --bg */
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg-0); color:var(--tx);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    line-height:1.5; padding:32px;
+  }
+  h1{font-size:22px;font-weight:700;letter-spacing:.02em;margin:0 0 4px}
+  .sub{color:var(--tx-2);font-size:14px;margin:0 0 28px;max-width:70ch}
+  h2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--tx-2);margin:36px 0 12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+  .card{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:20px}
+  .card h3{margin:0 0 2px;font-size:16px;font-weight:600}
+  .reg{color:var(--tx-2);font-size:12.5px;margin:0 0 16px}
+  .rule{font-size:12.5px;color:var(--tx-2);border-left:2px solid var(--bd);padding-left:10px;margin:14px 0 0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .chip{font-size:11px;padding:4px 9px;border-radius:999px;border:1px solid var(--bd);white-space:nowrap}
+  .swatch-row{display:flex;gap:6px;margin:12px 0}
+  .sw{flex:1;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:10px;color:#0F0F15;font-weight:600}
+  .snippet{background:var(--bg-2);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-top:14px}
+  .kicker{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--tx-2);margin:0 0 6px}
+  .snippet p{margin:0 0 10px;font-size:13px}
+  .btn{display:inline-block;font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:8px;text-decoration:none;cursor:pointer;border:0}
+  .btn-primary{background:var(--brand-fill);color:#fff}
+  .btn-secondary{background:transparent;border:1px solid currentColor}
+  .cap{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px}
+  .link{font-weight:600;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:1px}
+  .meta{color:var(--tx-2);font-size:11.5px}
+  .status-line{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
+  .status-item{display:inline-flex;align-items:center;gap:6px;font-size:12px}
+  .dot{width:9px;height:9px;border-radius:999px;display:inline-block}
+  .ratio{font-variant-numeric:tabular-nums}
+  footer{margin-top:40px;color:var(--tx-2);font-size:12px;border-top:1px solid var(--bd);padding-top:16px}
+
+  /* ---- Option A: Aqua ---- */
+  .A{--sec:#5FD0C5;--sec-fill:#3FB8AD}
+  /* 8.8:1 on --bg — cool complement to the rose; reads "engineer / system" */
+  /* ---- Option B: Gold ---- */
+  .B{--sec:#EDB94E;--sec-fill:#D99F2E}
+  /* 9.1:1 on --bg — warm, outgoing; analogous-warm with the rose. Collides with --warn. */
+  /* ---- Option C: Periwinkle ---- */
+  .C{--sec:#93A4F6;--sec-fill:#6F82EE}
+  /* 6.9:1 on --bg — picks up the indigo tint already in the dark ramp; calmest */
+
+  .A .cap{background:rgba(95,208,197,.14);color:var(--sec)}
+  .B .cap{background:rgba(237,185,78,.14);color:var(--sec)}
+  .C .cap{background:rgba(147,164,246,.14);color:var(--sec)}
+  .A .link,.B .link,.C .link{color:var(--sec)}
+  .A .btn-secondary,.B .btn-secondary,.C .btn-secondary{color:var(--sec)}
+</style>
+</head>
+<body>
+
+<div style="border:2px solid #F5B343;border-radius:8px;padding:14px 18px;margin:0 0 24px;background:#2B2B3B;color:#E6E6F0;font-size:14px;line-height:1.55">
+  <strong style="color:#F5B343">Historical record — not current guidance.</strong>
+  This page records the secondary-accent comparison as it stood when the decision was made
+  (Periwinkle chosen, 2026-09-09). Its solid fills predate the §18a AA remediation and include
+  values DESIGN.md now marks <em>never emit</em> (<code>#C45F87</code>, <code>#6F82EE</code>).
+  <strong>DESIGN.md §7 is authoritative for current token values</strong>
+  (<code>brand.primaryFill #A73E6C</code>, <code>accent.secondaryFill #4F63D8</code>).
+  Kept unedited so the artifact still shows the comparison the choice was actually made from.
+</div>
+<h1>Secondary accent — 3 options on the locked palette</h1>
+<p class="sub">
+  Neutrals, rose brand, and status colors are fixed (from the repo theme + tuned defaults).
+  Only the <strong>secondary accent</strong> changes below. Proposed role: the rose stays the
+  <em>identity / brand</em> colour (name, primary CTA, focus); the secondary carries
+  <em>functional</em> emphasis — capability signals, secondary CTAs, in-page highlights,
+  "explore" affordances — so it never competes with professional evidence.
+</p>
+
+<h2>Fixed reference</h2>
+<div class="card">
+  <div class="swatch-row">
+    <div class="sw" style="background:#1E1E2F;color:#F8F8FA;border-color:#3A3A4D">bg #1E1E2F</div>
+    <div class="sw" style="background:#2B2B3B;color:#F8F8FA;border-color:#3A3A4D">bg-2 #2B2B3B</div>
+    <div class="sw" style="background:#0F0F15;color:#F8F8FA;border-color:#3A3A4D">bg-0 #0F0F15</div>
+    <div class="sw" style="background:#E48FB1">brand #E48FB1</div>
+    <div class="sw" style="background:#C45F87;color:#fff">fill #C45F87</div>
+  </div>
+  <div class="status-line">
+    <span class="status-item"><span class="dot" style="background:#4FCF7F"></span> Success #4FCF7F <span class="meta ratio">8.2:1</span></span>
+    <span class="status-item"><span class="dot" style="background:#F87171"></span> Error #F87171 <span class="meta ratio">5.9:1</span></span>
+    <span class="status-item"><span class="dot" style="background:#F5B343"></span> Warning #F5B343 <span class="meta ratio">8.9:1</span></span>
+    <span class="meta">— always paired with an icon or text label (non-colour-only)</span>
+  </div>
+</div>
+
+<h2>Option A — Aqua</h2>
+<div class="grid">
+  <div class="card A">
+    <h3>Aqua &nbsp;<span class="meta">#5FD0C5</span></h3>
+    <p class="reg">cool, precise, technical — a clear counterpoint to the warm rose</p>
+    <div class="swatch-row">
+      <div class="sw" style="background:var(--sec)">#5FD0C5</div>
+      <div class="sw" style="background:var(--sec-fill);color:#fff">#3FB8AD</div>
+      <div class="sw" style="background:var(--bg);color:var(--sec);border-color:var(--sec)">on bg</div>
+      <div class="sw" style="background:var(--bg-2);color:var(--sec);border-color:var(--sec)">on bg-2</div>
+    </div>
+    <div class="chips">
+      <span class="chip" style="color:var(--brand);border-color:var(--brand)">brand: rose</span>
+      <span class="chip" style="color:var(--sec);border-color:var(--sec)">secondary: aqua</span>
+      <span class="chip">contrast on bg 8.8:1</span>
+    </div>
+    <div class="snippet">
+      <p class="kicker">Evidence summary</p>
+      <p>Led the payments migration from ambiguity through delivery.</p>
+      <span class="cap">● Ownership</span> &nbsp;
+      <a class="link" href="#">Read the decision log</a>
+      <p style="margin-top:12px">
+        <a class="btn btn-primary" href="#">See the work</a>
+        <a class="btn btn-secondary" href="#">Explore by capability</a>
+      </p>
+      <p class="meta" style="margin-top:10px">Powerlifting &amp; birdhouses live here too — same person, one experience.</p>
+    </div>
+    <p class="rule">Rule: rose = who she is; aqua = how to explore the evidence. No hue for "personal vs professional" — that would split the persona.</p>
+  </div>
+</div>
+
+<h2>Option B — Gold</h2>
+<div class="grid">
+  <div class="card B">
+    <h3>Gold &nbsp;<span class="meta">#EDB94E</span></h3>
+    <p class="reg">warm, outgoing, confident — energy in the same family as the rose</p>
+    <div class="swatch-row">
+      <div class="sw" style="background:var(--sec)">#EDB94E</div>
+      <div class="sw" style="background:var(--sec-fill);color:#fff">#D99F2E</div>
+      <div class="sw" style="background:var(--bg);color:var(--sec);border-color:var(--sec)">on bg</div>
+      <div class="sw" style="background:var(--bg-2);color:var(--sec);border-color:var(--sec)">on bg-2</div>
+    </div>
+    <div class="chips">
+      <span class="chip" style="color:var(--brand);border-color:var(--brand)">brand: rose</span>
+      <span class="chip" style="color:var(--sec);border-color:var(--sec)">secondary: gold</span>
+      <span class="chip">contrast on bg 9.1:1</span>
+      <span class="chip" style="color:var(--warn);border-color:var(--warn)">⚠ collides with warning</span>
+    </div>
+    <div class="snippet">
+      <p class="kicker">Evidence summary</p>
+      <p>Led the payments migration from ambiguity through delivery.</p>
+      <span class="cap">● Ownership</span> &nbsp;
+      <a class="link" href="#">Read the decision log</a>
+      <p style="margin-top:12px">
+        <a class="btn btn-primary" href="#">See the work</a>
+        <a class="btn btn-secondary" href="#">Explore by capability</a>
+      </p>
+      <p class="meta" style="margin-top:10px">Powerlifting &amp; birdhouses live here too — same person, one experience.</p>
+    </div>
+    <p class="rule">Rule: same as A. Note the warm‑on‑warm reading can tip "festive"; and gold sits close to the warning colour, so warning would need to shift.</p>
+  </div>
+</div>
+
+<h2>Option C — Periwinkle</h2>
+<div class="grid">
+  <div class="card C">
+    <h3>Periwinkle &nbsp;<span class="meta">#93A4F6</span></h3>
+    <p class="reg">calm, modern, grounded — native to the indigo tint already in the dark ramp</p>
+    <div class="swatch-row">
+      <div class="sw" style="background:var(--sec)">#93A4F6</div>
+      <div class="sw" style="background:var(--sec-fill);color:#fff">#6F82EE</div>
+      <div class="sw" style="background:var(--bg);color:var(--sec);border-color:var(--sec)">on bg</div>
+      <div class="sw" style="background:var(--bg-2);color:var(--sec);border-color:var(--sec)">on bg-2</div>
+    </div>
+    <div class="chips">
+      <span class="chip" style="color:var(--brand);border-color:var(--brand)">brand: rose</span>
+      <span class="chip" style="color:var(--sec);border-color:var(--sec)">secondary: periwinkle</span>
+      <span class="chip">contrast on bg 6.9:1</span>
+    </div>
+    <div class="snippet">
+      <p class="kicker">Evidence summary</p>
+      <p>Led the payments migration from ambiguity through delivery.</p>
+      <span class="cap">● Ownership</span> &nbsp;
+      <a class="link" href="#">Read the decision log</a>
+      <p style="margin-top:12px">
+        <a class="btn btn-primary" href="#">See the work</a>
+        <a class="btn btn-secondary" href="#">Explore by capability</a>
+      </p>
+      <p class="meta" style="margin-top:10px">Powerlifting &amp; birdhouses live here too — same person, one experience.</p>
+    </div>
+    <p class="rule">Rule: same as A. Lowest contrast of the three (still AA); most "blends in", least added personality.</p>
+  </div>
+</div>
+
+<footer>
+  Rejected: lime / chartreuse (#B8D94A) — high energy but clashes with the rose and reads juvenile against "not gimmicky".<br>
+  Accent and status ratios above are the <em>text-on-dark</em> figures against bg #1E1E2F, computed with the WCAG 2.x relative-luminance formula; all pass AA.<br>
+  Fill colours (#3FB8AD / #D99F2E / #6F82EE) are for solid buttons, not for text on dark — and <strong>none of the three passes AA with white label text</strong> (2.4:1 / 2.4:1 / 3.4:1). The chosen periwinkle fill was subsequently remediated to <strong>#4F63D8</strong> (white 5.1:1); see DESIGN.md §18a (A4). This page records the accent comparison as it stood and is not the current token source — DESIGN.md §7 is.
+</footer>
+
+</body>
+</html>
