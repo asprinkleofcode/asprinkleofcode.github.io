@@ -3,7 +3,8 @@ import { createTheme } from "flowbite-react";
 // Role-token utilities only (AD-10 / DESIGN §7): no primitive ramps, raw hex,
 // or raw Tailwind palette colours. Focus is a solid 2px ring with a 2px offset
 // (§18a A1). Brand-fill hover is the brand glow — a darker hover value is OPEN.
-const focusRing =
+// Also used for text links outside flowbite components (e.g. "Go to the homepage").
+export const focusRing =
   "focus:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background-primary";
 
 export const aSprinkleOfCodeTheme = createTheme({

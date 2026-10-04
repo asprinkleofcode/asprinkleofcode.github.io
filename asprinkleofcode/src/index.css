@@ -12,3 +12,29 @@ html, body, #root {
   display: flex;
   flex-direction: column;
 }
+
+/*
+ * Shell-level header height (AD-19): the rendered navbar height from the
+ * flowbite theme (py-2.5 + 1px bottom border around a 40px toggle row on
+ * mobile, a 32px brand row from md up). Story 1.4 updates it with the header.
+ * Only `scroll-padding-top` consumes it; adding `scroll-margin-top` as well
+ * would double the offset.
+ */
+:root {
+  --header-height: 3.8125rem;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --header-height: 3.3125rem;
+  }
+}
+
+html {
+  scroll-padding-top: var(--header-height);
+}
+
+/* The shell focuses the page <h1> after navigation; no ring for that programmatic focus. */
+h1[tabindex="-1"]:focus {
+  outline: none;
+}

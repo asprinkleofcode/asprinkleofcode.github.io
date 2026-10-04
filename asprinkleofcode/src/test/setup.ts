@@ -24,3 +24,12 @@ if (typeof window !== "undefined" && typeof window.matchMedia !== "function") {
     }),
   });
 }
+
+// jsdom lacks scrollIntoView and reports window.scrollTo as "not implemented";
+// the shell's navigation scroll handler calls both.
+if (typeof window !== "undefined") {
+  if (typeof Element.prototype.scrollIntoView !== "function") {
+    Element.prototype.scrollIntoView = () => {};
+  }
+  window.scrollTo = (() => {}) as typeof window.scrollTo;
+}
