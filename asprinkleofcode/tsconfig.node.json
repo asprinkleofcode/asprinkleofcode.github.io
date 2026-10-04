@@ -15,5 +15,6 @@
     "allowJs": false,
     "checkJs": false
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "plugins"],
+  "exclude": ["plugins/__fixtures__"]
 }

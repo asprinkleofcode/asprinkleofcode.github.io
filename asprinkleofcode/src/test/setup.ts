@@ -7,7 +7,8 @@ afterEach(() => {
 });
 
 // jsdom does not implement matchMedia; flowbite-react reads it for theme mode.
-if (typeof window.matchMedia !== "function") {
+// Node-environment tests (e.g. the plugin integration test) have no window.
+if (typeof window !== "undefined" && typeof window.matchMedia !== "function") {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
     configurable: true,
