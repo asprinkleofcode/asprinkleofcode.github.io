@@ -17,8 +17,8 @@ const WorkStory = lazy(() => import("./pages/WorkStory/WorkStory"));
 const Personal = lazy(() => import("./pages/Personal/Personal"));
 const NotFound = lazy(() => import("./pages/NotFound/NotFound"));
 // LEGACY, temporary: `/about` sits outside AD-5's route set and is kept only so
-// the header "About Me" link and Landing "Learn About Me" button keep working.
-// Remove it with the AboutMe page in Story 1.4 or Epic 4.
+// the Landing "Learn About Me" button keeps working; the header no longer links
+// to it (Story 1.4). Remove it with the AboutMe page in Story 1.6 or Epic 4.
 const AboutMe = lazy(() => import("./pages/AboutMe/AboutMe.jsx"));
 
 /**
@@ -43,7 +43,7 @@ function App() {
   return (
     <ThemeProvider theme={aSprinkleOfCodeTheme}>
       <Header />
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-1 flex-col">
         <main ref={mainRef} className="flex-1">
           <ErrorBoundary resetKey={location.key}>
             <Suspense

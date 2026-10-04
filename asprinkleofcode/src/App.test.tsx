@@ -186,18 +186,63 @@ describe("App smoke test", () => {
 
   it("links the header brand to the home route", async () => {
     renderAt("/about");
-    expect(screen.getByRole("link", { name: /Cupcake Logo/ }).getAttribute("href")).toBe("/");
+    expect(screen.getByRole("link", { name: "Alisha Korba" }).getAttribute("href")).toBe("/");
     await h1("Alisha Sprinkle Korba");
   });
 
-  it("navigates through header links with the router (PUSH)", async () => {
+  it("navigates through header path links with the router (PUSH)", async () => {
     renderAt("/");
     await h1("Welcome!");
-    const about = screen.getByRole("link", { name: "About Me" });
-    expect(about.getAttribute("href")).toBe("/about");
-    fireEvent.click(about);
-    const heading = await h1("Alisha Sprinkle Korba");
+    const leadership = screen.getByRole("link", { name: "Leadership & Enablement" });
+    expect(leadership.getAttribute("href")).toBe("/leadership");
+    fireEvent.click(leadership);
+    const heading = await h1("Leadership & Enablement");
     await waitFor(() => expect(document.activeElement).toBe(heading));
+    expect(leadership.getAttribute("aria-current")).toBe("page");
+    expect(screen.getByRole("link", { name: "Home" }).getAttribute("aria-current")).toBeNull();
+  });
+
+  describe("header and footer on every route", () => {
+    const headerLinks = () => screen.getByRole("navigation", { name: "Main" }).querySelectorAll("a");
+    const currentLinks = () =>
+      [...headerLinks()].filter((a) => a.getAttribute("aria-current") === "page").map((a) => a.textContent);
+    const socialNames = () =>
+      [...screen.getByRole("navigation", { name: "Social profiles" }).querySelectorAll("a")].map((a) =>
+        a.getAttribute("aria-label")
+      );
+
+    it.each([
+      { route: "/", heading: "Welcome!", current: ["Home"] },
+      { route: "/engineering", heading: "Engineering", current: ["Engineering"] },
+      { route: "/engineering/foo", heading: "Foo Story", current: ["Engineering"] },
+      { route: "/beyond/garden", heading: "Garden", current: ["Beyond the Code"] },
+      { route: "/leadership/foo", heading: "Page not found", current: ["Leadership & Enablement"] },
+      { route: "/about", heading: "Alisha Sprinkle Korba", current: [] },
+      { route: "/nope", heading: "Page not found", current: [] },
+      { route: "/engineering/throws", heading: "Something went wrong", current: ["Engineering"] },
+    ])("renders the same header and footer on $route", async ({ route, heading, current }) => {
+      if (route.endsWith("/throws")) consoleError.mockImplementation(() => {});
+      renderAt(route);
+      await h1(heading);
+      expect([...headerLinks()].map((a) => a.textContent)).toEqual([
+        "Alisha Korba",
+        "Home",
+        "Engineering",
+        "Leadership & Enablement",
+        "Beyond the Code",
+      ]);
+      expect(currentLinks()).toEqual(current);
+      expect(socialNames()).toEqual([
+        "LinkedIn (opens in a new tab)",
+        "Instagram @asprinkleofcode (opens in a new tab)",
+        "Instagram @orangecatwoodcraft (opens in a new tab)",
+        "GitHub (opens in a new tab)",
+      ]);
+      // Header and footer sit outside <main>, so the error boundary never swallows them.
+      const main = screen.getByRole("main");
+      expect(main.contains(headerLinks()[0])).toBe(false);
+      expect(main.contains(screen.getByRole("contentinfo"))).toBe(false);
+    });
   });
 
   it("navigates from the Landing Learn About Me button with the router (PUSH)", async () => {

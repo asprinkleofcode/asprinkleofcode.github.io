@@ -1,10 +1,11 @@
-import { forwardRef, type ComponentPropsWithoutRef } from "react";
+import { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { NavbarLink } from "flowbite-react";
 import { Link, useLocation } from "react-router";
+import { isNavActive } from "../../lib/isNavActive";
 
 interface RouterNavbarLinkProps {
-  to: string; // e.g., "/", "/about"
-  children: React.ReactNode;
+  to: string; // e.g. "/", "/engineering"
+  children: ReactNode;
 }
 
 // NavbarLink's `as` prop is not polymorphically typed, so it can't take `to`.
@@ -16,11 +17,13 @@ const RouterAnchor = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<"a">
 ));
 RouterAnchor.displayName = "RouterAnchor";
 
+// flowbite-react 0.12.5's NavbarLink already calls the navbar context's
+// `setIsOpen(false)` on click, so picking a link closes the mobile menu.
 export const RouterNavbarLink = ({ to, children }: RouterNavbarLinkProps) => {
-  const location = useLocation();
-  const isActive = location.pathname === to;
+  const { pathname } = useLocation();
+  const isActive = isNavActive(pathname, to);
   return (
-    <NavbarLink as={RouterAnchor} href={to} active={isActive}>
+    <NavbarLink as={RouterAnchor} href={to} active={isActive} aria-current={isActive ? "page" : undefined}>
       {children}
     </NavbarLink>
   );

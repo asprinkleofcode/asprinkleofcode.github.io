@@ -1,1 +1,5 @@
-.Footer {}
+/*
+ * Footer layout and colour come from the flowbite theme (role tokens) and the
+ * Tailwind utilities in Footer.tsx; nothing here overrides them. The footer is
+ * the one surface that keeps `shadow-inner` (DESIGN §15).
+ */

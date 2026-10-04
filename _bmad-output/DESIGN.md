@@ -16,7 +16,7 @@ colors:
   accent: { secondary: "#93A4F6", secondaryFill: "#4F63D8" }
   focus: { ring: "#E48FB1", style: "solid", width: "2px", offset: "2px", glowAlpha: 0.3 }
   status: { success: "#4FCF7F", error: "#F87171", warning: "#F5B343" }
-  # Decorative hover/focus glow for the @orangecatwoodcraft footer icon only (UX-028). Never text or fill.
+  # Apricot for the @orangecatwoodcraft footer icon only (UX-028): its hover/focus icon colour (solid) and glow (at alpha). Never body text, fill, or border.
   glow: { woodcraft: "#F5A962", woodcraftAlpha: 0.6 }
   # Pre-contract values these three replaced, kept for reference only (see §18a). Never emit.
   inherited: { brandPrimaryFill: "#C45F87", accentSecondaryFill: "#6F82EE", focusRingAlpha: 0.3 }
@@ -290,7 +290,7 @@ copy if a value changes.
 | `status.success` | `#4FCF7F` | new (tuned) | 8.2:1 on `background.primary`; always paired with icon or text |
 | `status.error` | `#F87171` | new (tuned) | 5.9:1 on `background.primary`; always paired with icon or text |
 | `status.warning` | `#F5B343` | new (tuned) | 8.9:1 on `background.primary`; always paired with icon or text |
-| `glow.woodcraft` | `#F5A962` (apricot), applied at 60% alpha | new (UX-028) | decorative only: the hover/focus glow on the @orangecatwoodcraft footer icon (§15). Never text, fill, border, or the sole cue for a state |
+| `glow.woodcraft` | `#F5A962` (apricot): solid as the icon colour, 60% alpha as the glow | new (UX-028) | decorative only, @orangecatwoodcraft footer icon only (§15): on hover and keyboard focus the icon turns apricot and glows apricot. Never body text, fill, border, or the sole cue for a state |
 
 Reference: [`mockups/color-secondary-accent.html`](mockups/color-secondary-accent.html)
 shows the palette and the rejected accent options on the dark surfaces. It is a record of
@@ -502,11 +502,14 @@ One signature effect is retained: a soft `brand.primary` glow
 decorative, never the sole carrier of a state, and — if it animates — is suppressed
 under `prefers-reduced-motion` (a static glow may remain).
 
-One named variant (UX-028): the **@orangecatwoodcraft** footer icon glows in
-**`glow.woodcraft`** (apricot `#F5A962`) instead of `brand.primary`, using the same
-`drop-shadow(0 0 6px …)` at 60% alpha, on hover and keyboard focus only and never at rest.
-It marks the woodcraft account as its own small brand. `focus.ring` is unchanged and stays
-the real focus cue. No other element uses this color.
+One named variant (UX-028): on hover and keyboard focus, the **@orangecatwoodcraft**
+footer icon uses **`glow.woodcraft`** (apricot `#F5A962`) instead of `brand.primary`
+for both its icon colour and its glow. The icon turns solid apricot and gets the same
+`drop-shadow(0 0 6px …)` at 60% alpha; neither shows at rest. The other footer icons keep
+the `brand.primary` hover. It marks the woodcraft account as its own small brand.
+`focus.ring` is unchanged and stays the real focus cue. No other element uses this color.
+*Amended 2026-10-04:* the icon colour was added after implementation, because a pink icon
+hid the faint apricot glow.
 
 ---
 
