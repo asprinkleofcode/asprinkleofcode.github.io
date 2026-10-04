@@ -1,0 +1,13 @@
+# BMAD run scratch and working memory — not part of the published record.
+#
+# Committed: the finalized docs (PRD.md, DESIGN.md, EXPERIENCE.md, specs/,
+# architecture/) and promoted mockups/. These are the deliverable, and for a
+# portfolio whose thesis is "demonstrate, don't claim," they are themselves
+# evidence of how the work is done.
+#
+# Not committed: this working dir, and the .memlog.md deliberation trails.
+# The memlogs are raw working memory — rejected options, content-risk notes,
+# corrections still in flight. Owner decision, 2026-09-11: the finished docs
+# go public; the trail behind them stays local.
+.working/
+.memlog.md
