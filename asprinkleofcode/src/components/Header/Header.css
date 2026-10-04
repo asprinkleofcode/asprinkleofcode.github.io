@@ -1,39 +1,60 @@
+/* Role tokens only (AD-10); colour and type come from the theme and `type-*`. */
+
+/*
+ * Brand mark: the black line-art cupcake is invisible on background.primary,
+ * so the PNG is used as a mask and filled with brand.primary (DESIGN §6).
+ * The favicon keeps the original artwork.
+ */
 .navbar-logo {
-  height: 2rem;
+  display: block;
+  flex-shrink: 0;
   width: 2rem;
-  filter: invert(1) drop-shadow(0 0 6px var(--color-primary-400));
-  transition: filter 0.3s ease-in-out;
+  height: 2rem;
+  background-color: var(--brand-primary);
+  -webkit-mask: url("/cupcake.png") center / contain no-repeat;
+  mask: url("/cupcake.png") center / contain no-repeat;
 }
 
-.navbar-logo:hover {
-  filter: invert(1) drop-shadow(0 0 10px var(--color-primary-400));
+/* Forced colours would repaint the mask fill as a system background and hide the mark. */
+@media (forced-colors: active) {
+  .navbar-logo {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
 }
 
 .navbar-brand-text {
   position: relative;
   display: inline-block;
   white-space: nowrap;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-primary-100);
-  transition: all 0.3s ease-in-out;
+  font-weight: 700;
 }
 
-.navbar-brand-text:hover {
-  color: var(--color-primary-400);
-  filter: drop-shadow(0 0 6px var(--color-primary-400));
+/* Static brand glow on hover; it stays (without movement) under reduced motion. */
+.navbar-brand:hover .navbar-logo,
+.navbar-brand:hover .navbar-brand-text {
+  filter: drop-shadow(0 0 6px var(--brand-primary));
 }
 
-.navbar-brand-text::after {
-  content: "✨";
-  position: absolute;
-  top: 0;
-  right: -1.25rem;
-  opacity: 0;
-  transition: all 0.3s ease-in-out;
-}
+/* Sparkle and transitions only when the visitor allows motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .navbar-logo,
+  .navbar-brand-text {
+    transition: filter 0.3s ease-in-out;
+  }
 
-.navbar-brand-text:hover::after {
-  opacity: 1;
-  right: -1.75rem;
+  .navbar-brand-text::after {
+    content: "✨";
+    content: "✨" / ""; /* decorative: no accessible text */
+    position: absolute;
+    top: 0;
+    right: -1.25rem;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, right 0.3s ease-in-out;
+  }
+
+  .navbar-brand:hover .navbar-brand-text::after {
+    opacity: 1;
+    right: -1.75rem;
+  }
 }

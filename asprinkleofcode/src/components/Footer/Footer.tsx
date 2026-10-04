@@ -1,35 +1,56 @@
 import type { FC } from "react";
-import "./Footer.css";
+import type { IconType } from "react-icons";
+import { BsGithub, BsInstagram, BsLinkedin } from "react-icons/bs";
 import {
   FooterCopyright,
   FooterIcon,
   Footer as FlowbiteFooter,
 } from "flowbite-react";
-import { BsLinkedin, BsGithub, BsInstagram, Bs1Circle } from "react-icons/bs";
+import ExternalLink from "../ExternalLink/ExternalLink";
+import {
+  FLATICON_CREDIT_URL,
+  FOOTER_LINKS,
+  footerLinkName,
+  type FooterLink,
+  type FooterPlatform,
+} from "../../lib/links";
+import "./Footer.css";
+
+const PLATFORM_ICONS: Record<FooterPlatform, IconType> = {
+  LinkedIn: BsLinkedin,
+  Instagram: BsInstagram,
+  GitHub: BsGithub,
+};
+
+// The brand glow on hover for every icon, except @orangecatwoodcraft, which
+// glows in glow.woodcraft on hover and keyboard focus only (UX-028).
+const glowClasses = (variant: FooterLink["variant"]) =>
+  variant === "woodcraft"
+    ? "hover:drop-shadow-glow-woodcraft focus-visible:drop-shadow-glow-woodcraft"
+    : "hover:drop-shadow-glow";
 
 const Footer: FC = () => (
   <FlowbiteFooter container>
-    <div className="w-full">
-      <div className="w-full sm:flex sm:items-center sm:justify-between">
-        <FooterCopyright href="#" by="Alisha Korba" year={2025} />
-        <div className="mt-4 flex space-x-6 sm:mt-0 sm:justify-center">
-          <FooterIcon
-            href="https://www.linkedin.com/in/alishasprinklekorba"
-            icon={BsLinkedin}
-          />
-          <FooterIcon
-            href="https://www.instagram.com/asprinkleofcode/"
-            icon={BsInstagram}
-          />
-          <FooterIcon
-            href="https://github.com/asprinkleofcode"
-            icon={BsGithub}
-          />
-          <FooterIcon
-            href="https://www.flaticon.com/free-icons/dessert"
-            icon={Bs1Circle}
-          />
-        </div>
+    <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:justify-between">
+      <FooterCopyright by="Alisha Korba" year={new Date().getFullYear()} />
+      <nav aria-label="Social profiles">
+        <ul className="flex items-center gap-4">
+          {FOOTER_LINKS.map((link) => (
+            <li key={link.href}>
+              <FooterIcon
+                href={link.href}
+                icon={PLATFORM_ICONS[link.label]}
+                ariaLabel={footerLinkName(link)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={glowClasses(link.variant)}
+              />
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div className="type-meta">
+        <ExternalLink href={FLATICON_CREDIT_URL}>Cupcake icon by Flaticon</ExternalLink>
       </div>
     </div>
   </FlowbiteFooter>

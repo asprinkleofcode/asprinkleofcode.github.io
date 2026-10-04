@@ -4,19 +4,23 @@
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
 
-html, body, #root {
-  height: 100%;
-}
-
+/*
+ * `#root` is the sticky header's containing block, so it must grow with the
+ * page: a fixed `height: 100%` would let the header scroll away after one
+ * viewport.
+ */
 #root {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /*
  * Shell-level header height (AD-19): the rendered navbar height from the
  * flowbite theme (py-2.5 + 1px bottom border around a 40px toggle row on
- * mobile, a 32px brand row from md up). Story 1.4 updates it with the header.
+ * mobile, a 32px brand row from md up). Re-measured in a browser for the
+ * Story 1.4 sticky header: 61px at 375px wide, 53px at 1280px wide.
  * Only `scroll-padding-top` consumes it; adding `scroll-margin-top` as well
  * would double the offset.
  */

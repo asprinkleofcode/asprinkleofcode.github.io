@@ -30,6 +30,8 @@
 
   /* Signature brand glow (DESIGN §15) — also the interim brand-fill hover. */
   --drop-shadow-glow: 0 0 6px var(--brand-primary);
+  /* UX-028: the @orangecatwoodcraft footer icon only, on hover and keyboard focus. */
+  --drop-shadow-glow-woodcraft: 0 0 6px var(--glow-woodcraft);
 }
 
 @theme {
