@@ -3,7 +3,7 @@
 **Name:** Alisha Sprinkle Korba Portfolio  
 **Description:** Experience contract defining the information architecture, journeys, interaction patterns, and accessibility behavior for the portfolio.  
 **Status:** Final  
-**Version:** 0.9  
+**Version:** 0.10  
 **Updated:** 2026-10-04  
 **Peer document:** `DESIGN.md` v0.7 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
 **Upstream:** `PRD.md` v0.4 — path labels (D-15), destinations (D-16/D-17), speaking status (A-13), the audience re-ordering (D-21/D-22), and the entry-context requirement (FR-24 / D-23) are consumed below.
@@ -249,6 +249,12 @@ order — not interleaved. A visitor is recognized, then offered the choice of w
 go, then shown proof, in that sequence. §6.5's personality composition is resolved into
 §6.4 rather than forming its own stacked section.
 
+Reference: [`mockups/key-homepage.html`](mockups/key-homepage.html) shows the desktop and
+mobile homepage on the DESIGN.md dark palette: header, Recognition with the D-25
+positioning statement, label-only Exploration, Evidence & Highlights, and footer. Content
+that is still open (§24 items 1–4) is drawn as dashed placeholders rather than invented.
+It is a visual reference only, and this section wins on conflict.
+
 ---
 
 ### 6.2 Recognition Surface
@@ -266,6 +272,15 @@ The professional title is a product decision and must not be replaced by a cleve
 name/title, folded into this same Recognition block rather than forming its own visual
 section. Exact wording is a product/content decision (owned by `bmad-prd` / a content
 pass, §24) — not invented here.
+
+**Headshot — DECIDED (UX-027):** the existing headshot
+(`asprinkleofcode/src/assets/alisha-sprinkle-korba-headshot.jpg`) sits in the Recognition
+block as a rounded-rectangle portrait. On desktop it sits to the **right** of the
+name / title / positioning statement. On mobile it stacks **below** that text, so the
+name and title are still the first things read (§4.3, DESIGN.md §4.3). It uses the
+default radius and a `border.default` edge. It is identity, not decoration: it gets
+meaningful alt text (the name), not an empty `alt`. Exact dimensions and crop are
+implementation-level.
 
 ---
 
@@ -981,6 +996,7 @@ The current product decisions explicitly establish this quality-over-quota rule.
 | UX-022 | Primary audience is the by-choice visitor who already knows Alisha (§3.2, UJ-2); the time-boxed read is secondary (PRD D-21) | AUTHORITATIVE |
 | UX-023 | The ~90-second budget is a legibility floor on the entry surface, not a statement of audience (PRD D-22) | AUTHORITATIVE |
 | UX-024 | The entry surface must be legible to someone arriving from a talk, without requiring a speaking surface to exist (PRD FR-24 / D-23) | DECIDED — surface treatment UX-owned |
+| UX-027 | Homepage headshot: existing headshot in Recognition as a portrait right of the text on desktop, stacked below the text on mobile (§6.2) | DECIDED |
 | UX-025 | Homepage allocation (PRD A-10 / C-6): section order Recognition → Exploration → Evidence & Highlights (§6.1); positioning statement folded into Recognition (§6.2); Exploration stays label-only (§6.3); each of the 3 paths gets ≥1 highlight line in §6.4 (Engineering + Leadership & Enablement each get their own evidence teaser, Beyond the Code gets a personal-hint teaser, not evidence); homepage personality composition = exactly that one hint, nothing more (§6.5) | DECIDED |
 
 ---
@@ -1023,6 +1039,9 @@ UX-026). The dimension is also renamed "Birdhouses" throughout, in place of "Mak
 Birdhouses" (PRD D-18). This clears the "Known cross-document staleness" notes in
 `epics.md` and AD-20. Those notes are now out of date themselves, so they are flagged for
 their owning skills rather than edited here.
+
+Resolved in v0.10: homepage headshot placement (§6.2, UX-027) — portrait beside the
+Recognition text on desktop, below it on mobile.
 
 **UX design work still to do:** none remaining. Both items tracked in this section
 since v0.6 (nav structure, homepage allocation) are now resolved.
