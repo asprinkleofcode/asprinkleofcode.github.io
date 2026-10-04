@@ -17,9 +17,11 @@ inputDocuments:
 
 ## Overview
 
-This document provides the complete epic and story breakdown for the Alisha Sprinkle Korba Portfolio, decomposing the requirements from `PRD.md` v0.8 (+ `addendum.md`, the same date), the UX design contract (`DESIGN.md` v0.6 + `EXPERIENCE.md` v0.8), `ARCHITECTURE-SPINE.md` (updated 2026-09-13), and the `spec-portfolio` SPEC set into implementable stories, optimized for upload to a GitHub Project.
+This document provides the complete epic and story breakdown for the Alisha Sprinkle Korba Portfolio, decomposing the requirements from `PRD.md` v0.8 (+ `addendum.md`, the same date), the UX design contract (`DESIGN.md` v0.7 + `EXPERIENCE.md` v0.9), `ARCHITECTURE-SPINE.md` (updated 2026-09-13), and the `spec-portfolio` SPEC set into implementable stories, optimized for upload to a GitHub Project.
 
-**Re-extraction note (2026-09-13):** this supersedes a step-1 pass from 2026-09-11 that predated the current `ARCHITECTURE-SPINE.md` (which added AD-20), the new `addendum.md`, and the current `SPEC.md`. The FR/NFR set itself is unchanged in substance between the two passes — only the Additional Requirements and UX Design Requirements sections picked up real deltas (AD-20, the now-resolved care-guide status, and the two confirmed Engineering story selections). See "Known cross-document staleness" at the end of Additional Requirements for one still-open inconsistency between documents.
+**Re-extraction note (2026-09-13):** this supersedes a step-1 pass from 2026-09-11 that predated the current `ARCHITECTURE-SPINE.md` (which added AD-20), the new `addendum.md`, and the current `SPEC.md`. The FR/NFR set itself is unchanged in substance between the two passes — only the Additional Requirements and UX Design Requirements sections picked up real deltas (AD-20, the now-resolved care-guide status, and the two confirmed Engineering story selections).
+
+**Update note (2026-10-04):** `DESIGN.md` v0.7 and `EXPERIENCE.md` v0.9 now match PRD A-12 / AD-20 on the Birdhouses care guide (new UX-026 and `EXPERIENCE.md` §13 Document Links) and use the visitor-facing name "Birdhouses" throughout (D-18). The cross-document inconsistency previously flagged here is resolved, so UX-DR17 and Story 4.3 now follow the UX contract directly. No epics or stories were added, removed, or renumbered.
 
 ## Requirements Inventory
 
@@ -61,7 +63,7 @@ FR-17: The portfolio must provide clear opportunities for professional visitors 
 
 FR-18 (CONDITIONAL on A-13): The portfolio should support professional speaking visibility when Alisha has appropriate public speaking content. Speaking content must not be invented. Not an MVP deliverable — near-term follow-up once public-safe material exists.
 
-FR-19: Where a Beyond the Code dimension has a real external presence, the portfolio should link out to it from that dimension's own context (D-17): powerlifting → powerlifting Instagram; birdhouse/gourd making → birdhouse-making Instagram. No hosted content or commerce — contextual outbound links only. Handles pending from Alisha (A-14).
+FR-19: Where a Beyond the Code dimension has a real external presence, the portfolio should link out to it from that dimension's own context (D-17): powerlifting → powerlifting Instagram; Birdhouses → birdhouse-making Instagram. No hosted content or commerce — contextual outbound links only. Handles pending from Alisha (A-14).
 
 FR-20: Professional stories must be expressible at a level that demonstrates Alisha's thinking and responsibility without exposing confidential information (generalized problem classes/business context, role, public-safe technologies, generalized architecture patterns, decisions, tradeoffs, collaboration patterns, generalized outcomes, lessons learned).
 
@@ -120,8 +122,6 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 - A third Engineering story remains an optional stretch, not required (PRD §14.3 item 1).
 - Leadership & Enablement story selection (2–3) remains **open** — no candidates confirmed yet (PRD §14.3 item 2). Do not invent content for this path.
 
-**Known cross-document staleness (flag, do not silently resolve):** `DESIGN.md` §11/§20 and `EXPERIENCE.md` §9.3/§13/§24 still describe the Birdhouses care-guide destination as **OPEN** / "a lightweight page… external link acceptable." This is superseded by PRD A-12 (resolved 2026-09-12) and `ARCHITECTURE-SPINE.md` AD-20 (2026-09-13), which the architecture spine itself flags as a pending reconciliation for `bmad-ux`, not something it corrects. Epic/story design in Step 2 should follow the more recent PRD + Architecture + `SPEC.md` CAP-7 resolution (in-portfolio downloadable PDF), not the stale UX wording.
-
 ### UX Design Requirements
 
 **Design tokens (DESIGN.md §7, §18a):**
@@ -142,10 +142,10 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 - UX-DR11: Capability Signal component (HYPOTHESIS — validate with a real visitor before treating as final) — connects a story to the capability it demonstrates; capability values come from the controlled vocabulary (`business-to-engineering`, `ownership`, `engineering-judgment`, `ambiguity`, `enablement`).
 - UX-DR12: Decision Block component — makes engineering reasoning visible within a deep story.
 - UX-DR13: Outcome Block component — makes impact legible within a deep story.
-- UX-DR14: Personal Story component — supports authentic personal exploration (powerlifting, making) without forced engineering metaphor.
+- UX-DR14: Personal Story component — supports authentic personal exploration (powerlifting, Birdhouses) without forced engineering metaphor.
 - UX-DR15: Speaking Item component — represents public speaking activity; build only when public-safe content exists (conditional on FR-18/A-13; must not block or appear empty in the meantime).
 - UX-DR16: External Link component/pattern — every outbound link (LinkedIn, GitHub, powerlifting Instagram, birdhouse-making Instagram) opens `target="_blank"` + `rel="noopener noreferrer"` with a visible "leaves the site" affordance.
-- UX-DR17: Care Guide Link — **RESOLVED (updated from prior extraction, where this was still OPEN):** a `listed: false` `personal` entry with a `pdf?` frontmatter field pointing at a static asset under `public/downloads/`. Rendered as a plain same-origin `<a href>` — no `target`, `rel`, or `download` attribute — optionally paired with an inline `<iframe>`/`<object>` preview. Per PRD A-12 / `ARCHITECTURE-SPINE.md` AD-20 / `SPEC.md` CAP-7. (`DESIGN.md`/`EXPERIENCE.md` still show this as open — see "Known cross-document staleness" above; follow the resolution, not the stale wording.)
+- UX-DR17: Care Guide Link (Document Link pattern) — `DESIGN.md` §11, `EXPERIENCE.md` §9.3 + §13 Document Links, UX-026; PRD A-12 / `ARCHITECTURE-SPINE.md` AD-20 / `SPEC.md` CAP-7. The Birdhouses care guide is a PDF hosted within the portfolio: a `listed: false` `personal` entry with a `pdf?` frontmatter field pointing at a static asset under `public/downloads/`, reached from the Birdhouses dimension's own content (never from `/beyond` or a teaser). It renders as a plain same-origin `<a href>` that opens in place, with no `target`, `rel`, or `download` attribute and no "leaves the site" affordance. The link says it is a PDF before the visitor activates it (e.g. a "(PDF)" suffix), and that marker is part of the accessible name, not just an icon; exact label wording is content. An optional inline `<iframe>`/`<object>` preview needs an accessible name and fallback text, and never replaces the plain link. Until the PDF exists, no care-guide link renders (UX-DR29 Missing Content).
 - UX-DR18: Footer component — closing orientation and external/social destination links.
 - UX-DR19: AmbientLayer component — single mount point per AD-12; `aria-hidden`, `pointer-events: none`, static reduced-motion render path; app functions if it never mounts.
 
@@ -803,15 +803,19 @@ So that I get real, usable information without being redirected to an external s
 
 **Given** the rendering rule
 **When** the link renders
-**Then** it is a plain same-origin `<a href>` with no `target="_blank"`, no `rel`, and no `download` attribute (these belong only to the outbound-link convention)
+**Then** it is a plain same-origin `<a href>` that opens the PDF in place, with no `target="_blank"`, no `rel`, and no `download` attribute (these belong only to the outbound-link convention), and it shows no "leaves the site" affordance (UX-026, `EXPERIENCE.md` §13 Document Links)
+
+**Given** UX-DR17 / UX-026
+**When** the care-guide link renders
+**Then** its visible text or an adjacent visible marker says it is a PDF before activation (e.g. a "(PDF)" suffix), and that marker is part of the link's accessible name, not an icon alone; exact label wording is supplied as content, not invented
 
 **Given** AD-20 permits an optional richer preview
 **When** implemented
-**Then** an `<iframe>`/`<object>` embed may accompany the link with an accessible name (AD-15) — not required for MVP
+**Then** an `<iframe>`/`<object>` embed may accompany the link, with an accessible name (AD-15) and fallback text, and it never replaces the plain link, because mobile browsers vary in how they handle embedded PDFs. The preview is not required for MVP.
 
 **Given** the actual PDF file has not yet been supplied by Alisha
 **When** this story ships
-**Then** the mechanism exists but is not wired to a real asset until the file is supplied — no placeholder PDF is committed (NFR-4)
+**Then** the mechanism exists but is not wired to a real asset until the file is supplied: no placeholder PDF is committed and no care-guide link renders anywhere (NFR-4, UX-DR29 Missing Content, `EXPERIENCE.md` Birdhouse Flow)
 
 **And** the Birdhouses dimension's own entry (Story 4.4) links to this care-guide entry from its own content context once both exist
 
