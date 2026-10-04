@@ -1,0 +1,3 @@
+# BMAD installer answers scoped to one person (name, skill level).
+# Regenerated locally on every install; not part of the published repo.
+_bmad/config.user.toml
