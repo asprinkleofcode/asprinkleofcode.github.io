@@ -1,4 +1,4 @@
-import { FC } from "react";
+import type { FC } from "react";
 import "./Footer.css";
 import {
   FooterCopyright,
@@ -6,9 +6,8 @@ import {
   Footer as FlowbiteFooter,
 } from "flowbite-react";
 import { BsLinkedin, BsGithub, BsInstagram, Bs1Circle } from "react-icons/bs";
-interface FooterProps {}
 
-const Footer: FC<FooterProps> = () => (
+const Footer: FC = () => (
   <FlowbiteFooter container>
     <div className="w-full">
       <div className="w-full sm:flex sm:items-center sm:justify-between">

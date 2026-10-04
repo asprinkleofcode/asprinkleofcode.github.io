@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import type { FC } from "react";
 import "./Header.css";
 import {
   Navbar,
@@ -6,14 +6,16 @@ import {
   NavbarToggle,
   NavbarCollapse,
 } from "flowbite-react";
-import { Link } from "react-router";
+import { Link, type LinkProps } from "react-router";
 import { RouterNavbarLink } from "./RouterNavlink";
 
-interface HeaderProps {}
+// NavbarBrand's `as` prop is not polymorphically typed, so `to` can't be passed
+// through it directly; bind the router destination here instead.
+const HomeLink: FC<Omit<LinkProps, "to">> = (props) => <Link {...props} to="/" />;
 
-const Header: FC<HeaderProps> = () => (
+const Header: FC = () => (
   <Navbar fluid>
-    <NavbarBrand as={Link} href="https://flowbite-react.com">
+    <NavbarBrand as={HomeLink}>
       <img src="/cupcake.png" className="navbar-logo" alt="Cupcake Logo" />
       <span className="navbar-brand-text">Alisha Korba</span>
     </NavbarBrand>

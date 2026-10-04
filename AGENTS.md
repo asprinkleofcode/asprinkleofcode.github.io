@@ -3,7 +3,7 @@
 
 ## asprinkleofcode.github.io
 
-Personal portfolio site for Alisha Sprinkle Korba, deployed to GitHub Pages. The app is a Vite + React 19 single-page app using Tailwind v4 and `flowbite-react`; it lives entirely in the `asprinkleofcode/` subdirectory — the repo root has no buildable project. No test suite.
+Personal portfolio site for Alisha Sprinkle Korba, deployed to GitHub Pages. The app is a Vite + React 19 single-page app using Tailwind v4 and `flowbite-react`; it lives entirely in the `asprinkleofcode/` subdirectory — the repo root has no buildable project. TypeScript (strict), ESLint, and a Vitest + Testing Library smoke test gate the build.
 
 ## Policy
 
@@ -14,14 +14,14 @@ Personal portfolio site for Alisha Sprinkle Korba, deployed to GitHub Pages. The
 ## Where things are
 
 - All app code, configs, and `package.json` are under `asprinkleofcode/`.
-- Routes in `asprinkleofcode/src/App.jsx`; entry point `asprinkleofcode/src/main.jsx`.
-- Color tokens in `asprinkleofcode/src/theme/colors.css`; flowbite theme object in `asprinkleofcode/src/theme/aSprinkleOfCodeTheme.js`.
+- Routes in `asprinkleofcode/src/App.tsx`; entry point `asprinkleofcode/src/main.tsx`. Tests live next to code (`*.test.tsx`); shared setup in `src/test/setup.ts`.
+- Color tokens in `asprinkleofcode/src/theme/colors.css` (primitive ramps + semantic role tokens; UI uses roles only); Tailwind mapping, radius, and `type-*` scale in `src/theme/theme.css`; flowbite theme object in `asprinkleofcode/src/theme/aSprinkleOfCodeTheme.ts`.
 
 ## Running and verifying
 
 - Run all npm commands from `asprinkleofcode/`, not the repo root (root has only a stub `package-lock.json`).
-- No tests exist — verify changes with `npm run lint` and `npm run build`.
-- `npm run lint` covers only `.js`/`.jsx`; it does not lint `.tsx`, so it will not catch problems in newer components.
+- Verify changes with `npm run typecheck`, `npm run lint`, `npm test`, then `npm run build`. `build` runs tsc (both `tsconfig.json` and `tsconfig.node.json`), `eslint .`, and `vitest run` before `vite build`, so any type, lint, or test failure blocks deploy.
+- `npm run lint` covers `.js`/`.jsx`/`.ts`/`.tsx` with typescript-eslint and `jsx-a11y`. Legacy `.jsx` is linted but not type-checked (`allowJs` is off); typed files import it with an explicit `.jsx` extension.
 
 ## Conventions that differ from defaults
 

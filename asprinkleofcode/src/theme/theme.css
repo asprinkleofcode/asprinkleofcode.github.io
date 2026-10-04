@@ -1,0 +1,110 @@
+/*
+ * Tailwind v4 theme mapping for the AD-10 role tokens defined in colors.css.
+ * `inline` makes utilities reference the role variables directly, e.g.
+ * `bg-background-primary`, `text-text-secondary`, `border-border-essential`,
+ * `ring-focus-ring`, `bg-brand-primary-fill`.
+ */
+@theme inline {
+  --color-background-primary: var(--background-primary);
+  --color-background-secondary: var(--background-secondary);
+  --color-background-recessed: var(--background-recessed);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-border-default: var(--border-default);
+  --color-border-essential: var(--border-essential);
+
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-fill: var(--brand-primary-fill);
+
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-secondary-fill: var(--accent-secondary-fill);
+
+  --color-focus-ring: var(--focus-ring);
+
+  --color-status-success: var(--status-success);
+  --color-status-error: var(--status-error);
+  --color-status-warning: var(--status-warning);
+
+  /* Signature brand glow (DESIGN §15) — also the interim brand-fill hover. */
+  --drop-shadow-glow: 0 0 6px var(--brand-primary);
+}
+
+@theme {
+  /* Radius (DESIGN §15): rounded-default, rounded-control, rounded-pill */
+  --radius-default: 0.5rem;
+  --radius-control: 0.375rem;
+  --radius-pill: 9999px;
+
+  /* System sans stack (DESIGN §8); no web font. Emoji fallbacks kept from Tailwind's default. */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/*
+ * Type scale (DESIGN §8). Utilities rather than `--text-*` keys because some
+ * levels carry case, tracking, and colour as well as size.
+ */
+
+/* 1 — Identity / name */
+@utility type-identity {
+  font-family: var(--font-sans);
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.25rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* 2 — Professional title: directly below identity, sentence case */
+@utility type-title {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* 3 — Section heading */
+@utility type-section {
+  font-family: var(--font-sans);
+  font-size: 1.375rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+/* 4 — Story title: smaller than section heading */
+@utility type-story {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+/* 5 — Supporting heading */
+@utility type-supporting {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-secondary);
+}
+
+/* 6 — Body */
+@utility type-body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.625;
+  font-weight: 400;
+}
+
+/* 7 — Metadata */
+@utility type-meta {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
