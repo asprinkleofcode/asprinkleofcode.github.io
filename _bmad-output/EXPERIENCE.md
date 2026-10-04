@@ -3,9 +3,9 @@
 **Name:** Alisha Sprinkle Korba Portfolio  
 **Description:** Experience contract defining the information architecture, journeys, interaction patterns, and accessibility behavior for the portfolio.  
 **Status:** Final  
-**Version:** 0.10  
+**Version:** 0.11  
 **Updated:** 2026-10-04  
-**Peer document:** `DESIGN.md` v0.7 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
+**Peer document:** `DESIGN.md` v0.8 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
 **Upstream:** `PRD.md` v0.8 — path labels (D-15), destinations (D-16/D-17), the Birdhouses naming (D-18), speaking status (A-13), the care guide (A-12), the audience re-ordering (D-21/D-22), the entry-context requirement (FR-24 / D-23), and the positioning statement (D-25) are consumed below.
 
 ---
@@ -212,9 +212,10 @@ On mobile (UX-013), the row collapses via the existing flowbite-react `NavbarTog
 `NavbarCollapse` hamburger pattern already used in `Header.tsx` — no always-visible
 compact bar, no bottom tab bar.
 
-External and social destinations (LinkedIn, GitHub, powerlifting IG, birdhouse-making
-IG — PRD D-16/D-17) are **footer-only**; the header carries no quick-access icons for
-them.
+External and social destinations (LinkedIn, GitHub, powerlifting IG @asprinkleofcode,
+birdhouse-making IG @orangecatwoodcraft — PRD D-16/D-17) are **footer-only**; the header
+carries no quick-access icons for them. The footer shows them as an icon row (§13 Footer
+Links, UX-028).
 
 Reference: [`mockups/key-header.html`](mockups/key-header.html) shows the desktop row
 and the mobile collapsed / expanded states on the DESIGN.md dark palette. It is a visual
@@ -477,8 +478,10 @@ The experience may include:
 
 Destinations — **DECIDED**:
 
-- **Birdhouse-making Instagram** (PRD D-17) — a contextual outbound link from the
-  Birdhouses context (§13 External Links). Handle pending from Alisha (PRD A-14).
+- **Birdhouse-making Instagram** (PRD D-17) — **@orangecatwoodcraft**
+  (`https://www.instagram.com/orangecatwoodcraft/`), a contextual outbound link from the
+  Birdhouses context (§13 External Links). It also appears in the footer (§13 Footer
+  Links).
 - **Care guide** (PRD A-12, `ARCHITECTURE-SPINE.md` AD-20) — a downloadable PDF
   **hosted within the portfolio**, not an external link, reached from the Birdhouses
   dimension's own content. It is a supporting page, not a third Beyond the Code
@@ -612,13 +615,53 @@ External destinations should clearly communicate that the visitor is leaving the
 Destinations (PRD D-16 / D-17):
 
 - **Professional** — LinkedIn, GitHub. Placed as professional continuation.
-- **Personal** — the powerlifting Instagram (from the powerlifting context) and the
-  birdhouse-making Instagram (from the Birdhouses context). Contextual outbound links only;
-  the portfolio hosts neither that content nor any commerce.
+- **Personal** — the powerlifting Instagram **@asprinkleofcode**
+  (`https://www.instagram.com/asprinkleofcode/`, from the powerlifting context) and the
+  birdhouse-making Instagram **@orangecatwoodcraft**
+  (`https://www.instagram.com/orangecatwoodcraft/`, from the Birdhouses context). These
+  are outbound links only; the portfolio hosts neither that content nor any commerce.
+  Both also appear in the footer (Footer Links below).
 
-Exact handles / URLs are supplied by Alisha before implementation (PRD A-14).
+Handles supplied by Alisha on 2026-10-04 (PRD A-14, UX-028). LinkedIn and GitHub use
+the URLs already in `index.html`'s `sameAs`.
+
+Every outbound link opens in a new tab (`target="_blank"`, `rel="noopener noreferrer"`)
+and shows a visible "leaves the site" marker. The footer icon row is the one exception
+(Footer Links below).
 
 The care guide is **not** an external link — see Document Links below.
+
+---
+
+### Footer Links
+
+**DECIDED** (UX-028)
+
+The footer carries the external destinations as an **icon-only row**, continuing the
+existing footer pattern. Order, left to right:
+
+1. LinkedIn
+2. Instagram — **@asprinkleofcode** (powerlifting)
+3. Instagram — **@orangecatwoodcraft** (Birdhouses / woodcraft)
+4. GitHub
+
+The two Instagram icons share the same glyph, so the handle in each accessible name is what
+tells them apart.
+
+- **The logo is the exit cue.** A platform logo already tells the visitor they are going to
+  that platform, so footer icons carry no extra visible "leaves the site" marker. They
+  still open in a new tab with `rel="noopener noreferrer"`.
+- **Accessible name** — every icon has one that names the platform, the handle where there
+  is one, and the new tab: for example, "Instagram @orangecatwoodcraft (opens in a new
+  tab)". An icon with no accessible name is a defect.
+- **@orangecatwoodcraft glow** — on hover and keyboard focus only, the woodcraft icon gets a
+  slight apricot glow (`{colors.glow.woodcraft}`, DESIGN.md §15). It is decorative: the
+  solid `{colors.focus.ring}` stays the focus cue, and nothing depends on seeing the glow.
+  No glow at rest.
+- **Reachability** — the row stays reachable and legible at mobile and desktop widths, and
+  its keyboard focus order follows the visual order.
+- Other footer content, such as the copyright line and the existing icon-attribution link,
+  is unchanged by this decision.
 
 ---
 
@@ -882,10 +925,9 @@ Continue to the birdhouse-making Instagram, or open the care guide (PDF)
 
 Destinations (PRD D-17 / A-12): the birdhouse-making Instagram (outbound, §13 External
 Links), and the care guide, a downloadable PDF hosted within the portfolio (§13 Document
-Links, §9.3). The Instagram handle and the care-guide PDF are both pending from Alisha
-(PRD A-14). Each destination appears only once it exists; with neither, the flow
-terminates at the transformation-and-process step, and no placeholder link is rendered
-(§14 Missing Content).
+Links, §9.3). The Instagram handle is **@orangecatwoodcraft** (PRD A-14, UX-028). The
+care-guide PDF is still pending from Alisha; it appears only once it exists, and no
+placeholder link is rendered until then (§14 Missing Content).
 
 ---
 
@@ -903,9 +945,9 @@ Explore story
 Continue to the powerlifting Instagram, or return to Alisha's broader identity
 ```
 
-Destination (PRD D-17): the powerlifting Instagram, as a contextual outbound link from the
-powerlifting context — matching the Birdhouses dimension's treatment (§13). Handle pending from
-Alisha (PRD A-14); until one exists, the flow terminates at the return step.
+Destination (PRD D-17): the powerlifting Instagram **@asprinkleofcode**, as a contextual
+outbound link from the powerlifting context — matching the Birdhouses dimension's
+treatment (§13). Handle supplied (PRD A-14, UX-028).
 
 ---
 
@@ -990,7 +1032,8 @@ The current product decisions explicitly establish this quality-over-quota rule.
 | UX-017 | Performance budgets remain Architecture-owned | DEFERRED |
 | UX-018 | Summary → deep-story transition: ~180 ms cross-fade, context preserved, instant under reduced-motion | DECIDED |
 | UX-019 | Reduced-motion / ambient-effect behavior | DEFERRED to implementation (DESIGN.md §16) |
-| UX-020 | External + personal destinations: LinkedIn, GitHub, powerlifting IG, birdhouse-making IG (PRD D-16/D-17) | DECIDED — values pending (PRD A-14) |
+| UX-020 | External + personal destinations: LinkedIn, GitHub, powerlifting IG, birdhouse-making IG (PRD D-16/D-17) | DECIDED — Instagram handles supplied in UX-028 |
+| UX-028 | Footer is an icon-only row: LinkedIn, Instagram @asprinkleofcode (powerlifting), Instagram @orangecatwoodcraft (Birdhouses), GitHub. The logo is the exit cue (no extra visible marker; new tab and an accessible name naming platform + handle). @orangecatwoodcraft gets a slight apricot glow on hover/focus only (`glow.woodcraft`, DESIGN.md §15). Closes PRD A-14 for Instagram (§13 Footer Links) | DECIDED |
 | UX-026 | Birdhouses care guide is a PDF hosted within the portfolio, opened by a same-origin link labeled as a PDF — not an outbound link (PRD A-12, AD-20; §13 Document Links) | DECIDED — PDF pending |
 | UX-021 | Speaking surface is conditional; material in progress (PRD A-13) | CONDITIONAL — precondition: public-safe speaking material exists |
 | UX-022 | Primary audience is the by-choice visitor who already knows Alisha (§3.2, UJ-2); the time-boxed read is secondary (PRD D-21) | AUTHORITATIVE |
@@ -1045,6 +1088,11 @@ Recognition text on desktop, below it on mobile. Downstream docs (`PRD.md` v0.8,
 `ARCHITECTURE-SPINE.md`, `epics.md`) now cite `DESIGN.md` v0.7 / `EXPERIENCE.md` v0.10, so
 the staleness flagged in the v0.7 and v0.9 notes above is cleared
 (sprint-change-proposal-2026-10-04).
+
+Resolved in v0.11: Instagram handles and the footer icon row (§13 Footer Links, UX-028) —
+@asprinkleofcode is the powerlifting Instagram and @orangecatwoodcraft the
+birdhouse-making one; both sit in the footer, the woodcraft icon with an apricot
+hover/focus glow (`DESIGN.md` v0.8 `glow.woodcraft`). This closes PRD A-14 for Instagram.
 
 **UX design work still to do:** none remaining. Both items tracked in this section
 since v0.6 (nav structure, homepage allocation) are now resolved.

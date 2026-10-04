@@ -17,11 +17,13 @@ inputDocuments:
 
 ## Overview
 
-This document provides the complete epic and story breakdown for the Alisha Sprinkle Korba Portfolio, decomposing the requirements from `PRD.md` v0.8 (+ `addendum.md`, the same date), the UX design contract (`DESIGN.md` v0.7 + `EXPERIENCE.md` v0.10), `ARCHITECTURE-SPINE.md` (updated 2026-10-04), and the `spec-portfolio` SPEC set into implementable stories, optimized for upload to a GitHub Project.
+This document provides the complete epic and story breakdown for the Alisha Sprinkle Korba Portfolio, decomposing the requirements from `PRD.md` v0.8 (+ `addendum.md`, the same date), the UX design contract (`DESIGN.md` v0.8 + `EXPERIENCE.md` v0.11), `ARCHITECTURE-SPINE.md` (updated 2026-10-04), and the `spec-portfolio` SPEC set into implementable stories, optimized for upload to a GitHub Project.
 
 **Re-extraction note (2026-09-13):** this supersedes a step-1 pass from 2026-09-11 that predated the current `ARCHITECTURE-SPINE.md` (which added AD-20), the new `addendum.md`, and the current `SPEC.md`. The FR/NFR set itself is unchanged in substance between the two passes — only the Additional Requirements and UX Design Requirements sections picked up real deltas (AD-20, the now-resolved care-guide status, and the two confirmed Engineering story selections).
 
 **Update note (2026-10-04):** `DESIGN.md` v0.7 and `EXPERIENCE.md` v0.9 now match PRD A-12 / AD-20 on the Birdhouses care guide (new UX-026 and `EXPERIENCE.md` §13 Document Links) and use the visitor-facing name "Birdhouses" throughout (D-18). The cross-document inconsistency previously flagged here is resolved, so UX-DR17 and Story 4.3 now follow the UX contract directly. No epics or stories were added, removed, or renumbered.
+
+**Update note (2026-10-04, UX-028):** `DESIGN.md` v0.8 / `EXPERIENCE.md` v0.11 close PRD A-14 for Instagram (powerlifting = @asprinkleofcode, Birdhouses = @orangecatwoodcraft) and decide the footer as an icon-only row with an apricot hover/focus glow on the woodcraft icon (EXPERIENCE §13 Footer Links). UX-DR16, UX-DR18, Story 1.4 (both Instagram icons now ship in the footer) and Story 4.4 are updated; live citations now point at `DESIGN.md` v0.8 / `EXPERIENCE.md` v0.11. No epics or stories were added, removed, or renumbered.
 
 **Update note (2026-10-04, UX-027):** `EXPERIENCE.md` v0.10 §6.2 adds the existing headshot to the Recognition block (beside the text on desktop, below it on mobile). UX-DR28 and Story 1.6 pick this up. All live spine citations in this file, `PRD.md`, `SPEC.md`, and `ARCHITECTURE-SPINE.md` now point at `DESIGN.md` v0.7 / `EXPERIENCE.md` v0.10 / `PRD.md` v0.8 (`planning-artifacts/sprint-change-proposal-2026-10-04.md`). No epics or stories were added, removed, or renumbered.
 
@@ -57,7 +59,7 @@ FR-13: Personal stories must stand on their own as authentic representations of 
 
 FR-14: Where a personal dimension is presented as a meaningful experience rather than a simple profile detail, the visitor should have a path to explore the story, process, or context behind it — depth follows available material, not an arbitrary quota.
 
-FR-15: Each professional evidence path must let visitors: (1) understand what the path represents, (2) scan concise story summaries, (3) select a story, (4) explore a deeper story experience. The homepage must support an informed choice without requiring full story content (C-6, A-10 — resolved by `EXPERIENCE.md` v0.10 §6.1–§6.5, UX-025).
+FR-15: Each professional evidence path must let visitors: (1) understand what the path represents, (2) scan concise story summaries, (3) select a story, (4) explore a deeper story experience. The homepage must support an informed choice without requiring full story content (C-6, A-10 — resolved by `EXPERIENCE.md` v0.11 §6.1–§6.5, UX-025).
 
 FR-16: Deep stories must prioritize evidence, reasoning, and context over unsupported descriptive claims. Generic adjectives must not substitute for evidence.
 
@@ -65,7 +67,7 @@ FR-17: The portfolio must provide clear opportunities for professional visitors 
 
 FR-18 (CONDITIONAL on A-13): The portfolio should support professional speaking visibility when Alisha has appropriate public speaking content. Speaking content must not be invented. Not an MVP deliverable — near-term follow-up once public-safe material exists.
 
-FR-19: Where a Beyond the Code dimension has a real external presence, the portfolio should link out to it from that dimension's own context (D-17): powerlifting → powerlifting Instagram; Birdhouses → birdhouse-making Instagram. No hosted content or commerce — contextual outbound links only. Handles pending from Alisha (A-14).
+FR-19: Where a Beyond the Code dimension has a real external presence, the portfolio should link out to it from that dimension's own context (D-17): powerlifting → powerlifting Instagram; Birdhouses → birdhouse-making Instagram. No hosted content or commerce — contextual outbound links only. Handles supplied (A-14): powerlifting = @asprinkleofcode, Birdhouses = @orangecatwoodcraft.
 
 FR-20: Professional stories must be expressible at a level that demonstrates Alisha's thinking and responsibility without exposing confidential information (generalized problem classes/business context, role, public-safe technologies, generalized architecture patterns, decisions, tradeoffs, collaboration patterns, generalized outcomes, lessons learned).
 
@@ -146,9 +148,9 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 - UX-DR13: Outcome Block component — makes impact legible within a deep story.
 - UX-DR14: Personal Story component — supports authentic personal exploration (powerlifting, Birdhouses) without forced engineering metaphor.
 - UX-DR15: Speaking Item component — represents public speaking activity; build only when public-safe content exists (conditional on FR-18/A-13; must not block or appear empty in the meantime).
-- UX-DR16: External Link component/pattern — every outbound link (LinkedIn, GitHub, powerlifting Instagram, birdhouse-making Instagram) opens `target="_blank"` + `rel="noopener noreferrer"` with a visible "leaves the site" affordance.
+- UX-DR16: External Link component/pattern — every outbound link (LinkedIn, GitHub, powerlifting Instagram, birdhouse-making Instagram) opens `target="_blank"` + `rel="noopener noreferrer"` with a visible "leaves the site" affordance. Exception: the footer icon row, where the platform logo is the exit cue (UX-DR18).
 - UX-DR17: Care Guide Link (Document Link pattern) — `DESIGN.md` §11, `EXPERIENCE.md` §9.3 + §13 Document Links, UX-026; PRD A-12 / `ARCHITECTURE-SPINE.md` AD-20 / `SPEC.md` CAP-7. The Birdhouses care guide is a PDF hosted within the portfolio: a `listed: false` `personal` entry with a `pdf?` frontmatter field pointing at a static asset under `public/downloads/`, reached from the Birdhouses dimension's own content (never from `/beyond` or a teaser). It renders as a plain same-origin `<a href>` that opens in place, with no `target`, `rel`, or `download` attribute and no "leaves the site" affordance. The link says it is a PDF before the visitor activates it (e.g. a "(PDF)" suffix), and that marker is part of the accessible name, not just an icon; exact label wording is content. An optional inline `<iframe>`/`<object>` preview needs an accessible name and fallback text, and never replaces the plain link. Until the PDF exists, no care-guide link renders (UX-DR29 Missing Content).
-- UX-DR18: Footer component — closing orientation and external/social destination links.
+- UX-DR18: Footer component — closing orientation and external/social destination links (`EXPERIENCE.md` §13 Footer Links, UX-028): an icon-only row of LinkedIn, Instagram @asprinkleofcode, Instagram @orangecatwoodcraft, GitHub, in that order. The platform logo is the exit cue (no extra visible marker); each icon opens in a new tab with `rel="noopener noreferrer"` and has an accessible name naming platform, handle, and new tab. The @orangecatwoodcraft icon gets a slight `glow.woodcraft` (apricot `#F5A962`, 60% alpha) `drop-shadow` glow on hover/focus only (`DESIGN.md` §15); `focus.ring` stays the focus cue.
 - UX-DR19: AmbientLayer component — single mount point per AD-12; `aria-hidden`, `pointer-events: none`, static reduced-motion render path; app functions if it never mounts.
 
 **Typography (DESIGN.md §8):**
@@ -169,8 +171,8 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 
 **Information architecture & state behavior (EXPERIENCE.md §5–6, §14):**
 
-- UX-DR27: Navigation structure — **RESOLVED (`EXPERIENCE.md` v0.10 §5.2, UX-015):** single, flat, top-level header row — identity (logo + name), then Home, Engineering, Leadership & Enablement, Beyond the Code — identical and sticky on every page including deep stories (no breadcrumb, no chrome change with depth); external/social links are footer-only; mobile collapses via the existing flowbite-react `NavbarToggle`/`NavbarCollapse` hamburger pattern.
-- UX-DR28: Homepage composition — **RESOLVED (`EXPERIENCE.md` v0.10 §6.1–§6.5, UX-025, UX-027):** three stacked sections in order — Recognition (identity, title, and the decided one-line positioning statement, D-25: *"Give me a business problem and I'll turn it into an engineering decision worth trusting."*, and the existing headshot as a rounded-rectangle portrait with a `border.default` edge — right of the text on desktop, stacked below it on mobile — with meaningful alt text) → Exploration (the three path entries, label-only, no teaser copy) → Evidence & Highlights (Engineering and Leadership & Enablement each get ≥1 dedicated evidence teaser; Beyond the Code gets exactly one personal-hint line, not evidence). All deeper content lives on path/story pages (C-6).
+- UX-DR27: Navigation structure — **RESOLVED (`EXPERIENCE.md` v0.11 §5.2, UX-015):** single, flat, top-level header row — identity (logo + name), then Home, Engineering, Leadership & Enablement, Beyond the Code — identical and sticky on every page including deep stories (no breadcrumb, no chrome change with depth); external/social links are footer-only; mobile collapses via the existing flowbite-react `NavbarToggle`/`NavbarCollapse` hamburger pattern.
+- UX-DR28: Homepage composition — **RESOLVED (`EXPERIENCE.md` v0.11 §6.1–§6.5, UX-025, UX-027):** three stacked sections in order — Recognition (identity, title, and the decided one-line positioning statement, D-25: *"Give me a business problem and I'll turn it into an engineering decision worth trusting."*, and the existing headshot as a rounded-rectangle portrait with a `border.default` edge — right of the text on desktop, stacked below it on mobile — with meaningful alt text) → Exploration (the three path entries, label-only, no teaser copy) → Evidence & Highlights (Engineering and Leadership & Enablement each get ≥1 dedicated evidence teaser; Beyond the Code gets exactly one personal-hint line, not evidence). All deeper content lives on path/story pages (C-6).
 - UX-DR29: Implement the four state patterns: Cold Load (meaningful semantic content without waiting on decorative effects), Loading (never blocks identity recognition), Error (preserves navigation/recovery), Missing Content (no empty visual shells for content that doesn't exist — gracefully omit or simplify instead).
 - UX-DR30: Keyboard focus must remain visible (solid ring per UX-DR2) and logically ordered across all interactive flows.
 
@@ -219,7 +221,7 @@ A visitor can discover Alisha's personal side — powerlifting and Birdhouses �
 
 **FRs covered:** FR-12, FR-13, FR-14, FR-19
 **Architecture covered:** AD-20 (care guide as in-portfolio PDF asset)
-**Content status:** Partial risk — Instagram handles pending from Alisha (A-14); the care-guide PDF file itself needs to be supplied. Links/downloads render only once real values exist — no placeholders (NFR-4).
+**Content status:** Partial risk — Instagram handles supplied (A-14: @asprinkleofcode, @orangecatwoodcraft); the care-guide PDF file itself needs to be supplied. Links/downloads render only once real values exist — no placeholders (NFR-4).
 
 **Excluded from this MVP breakdown:** FR-18 (Speaking) is conditional on public-safe material existing (A-13) and is framed by Architecture as "purely additive later" (AD-18) — not planned as a story here, since there is no content yet to build against.
 
@@ -377,11 +379,15 @@ So that I can orient myself and reach any part of the site or Alisha's external 
 
 **Given** external/social destinations must be footer-only (UX-DR16, UX-DR27)
 **When** the footer renders
-**Then** it shows LinkedIn and GitHub as outbound links (`target="_blank"`, `rel="noopener noreferrer"`, a visible "leaves the site" affordance), using the real URLs already present in `index.html`'s `sameAs` (FR-17)
+**Then** it shows an icon-only row, in order: LinkedIn, Instagram @asprinkleofcode (`https://www.instagram.com/asprinkleofcode/`), Instagram @orangecatwoodcraft (`https://www.instagram.com/orangecatwoodcraft/`), GitHub. LinkedIn and GitHub use the real URLs already present in `index.html`'s `sameAs` (FR-17, A-14, UX-DR18)
 
-**Given** Instagram handles are not yet supplied (A-14)
-**When** the footer renders
-**Then** no powerlifting/birdhouse-making Instagram link appears — not stubbed or invented; added by Epic 4 once handles exist
+**Given** the footer icons are outbound links (UX-DR16, UX-DR18)
+**When** any footer icon renders
+**Then** it opens with `target="_blank"` + `rel="noopener noreferrer"`, carries no extra visible "leaves the site" marker (the platform logo is the cue), and has an accessible name naming the platform, the handle where there is one, and the new tab (e.g. "Instagram @orangecatwoodcraft (opens in a new tab)"), so the two Instagram icons are distinguishable to assistive tech
+
+**Given** the woodcraft account is marked as its own small brand (DESIGN §15, UX-028)
+**When** the @orangecatwoodcraft icon is hovered or keyboard-focused
+**Then** it shows a slight `glow.woodcraft` glow (`drop-shadow(0 0 6px)` of `#F5A962` at 60% alpha) — never at rest, never on any other icon — and the solid `focus.ring` still appears on focus
 
 **Given** UX-DR25/NFR-2 (mobile is a first-class experience)
 **When** the header and footer are viewed at supported mobile and desktop widths
@@ -735,7 +741,7 @@ A visitor can discover Alisha's personal side — powerlifting and Birdhouses �
 
 **FRs covered:** FR-12, FR-13, FR-14, FR-19
 **Architecture covered:** AD-20 (care guide as in-portfolio PDF asset)
-**Content status:** No narrative source material exists yet for either dimension (unlike Engineering's `addendum.md`) — do not invent content. Instagram handles pending from Alisha (A-14); the care-guide PDF file itself needs to be supplied. Links/downloads render only once real values exist — no placeholders (NFR-4).
+**Content status:** No narrative source material exists yet for either dimension (unlike Engineering's `addendum.md`) — do not invent content. Instagram handles supplied (A-14: @asprinkleofcode, @orangecatwoodcraft); the care-guide PDF file itself needs to be supplied. Links/downloads render only once real values exist — no placeholders (NFR-4).
 
 ### Story 4.1: Personal Story Component & Detail Page
 
@@ -853,9 +859,9 @@ So that I come away seeing a whole person, not a résumé.
 **When** a dimension has a real Instagram presence and Alisha has supplied the handle (A-14)
 **Then** the story's frontmatter `links` includes that outbound destination, rendered via the same External Link pattern as Story 1.4 (target, rel, leaving-the-site affordance)
 
-**Given** A-14 handles are not yet supplied
-**When** this story ships without them
-**Then** no Instagram link is stubbed or invented — the dimension renders complete without it (NFR-4)
+**Given** A-14 handles are supplied (powerlifting = @asprinkleofcode, Birdhouses = @orangecatwoodcraft)
+**When** each dimension's story is authored
+**Then** its frontmatter `links` uses exactly that handle's URL — no other Instagram link is stubbed or invented (NFR-4)
 
 **And** personal stories avoid exposing anyone else's private information without consent
 
