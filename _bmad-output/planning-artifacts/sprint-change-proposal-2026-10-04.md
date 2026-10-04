@@ -316,24 +316,28 @@ it won't be built. The lazy-loading note stops a homepage LCP regression.
 Adding `image` to the `Person` JSON-LD / `og:image` was considered but is **not** proposed.
 UX-027 does not ask for it, and it would be new scope for AD-14.
 
-### 4.5 UX — flagged for `bmad-ux`, not edited here
+### 4.5 UX headers (added at owner request, 2026-10-04)
 
-- `EXPERIENCE.md` header: "Upstream: `PRD.md` v0.4" → should read v0.8.
-- `DESIGN.md` header: the "Consumed by" line still describes v0.4-era consumers.
-- `EXPERIENCE.md` §24: the v0.7 and v0.9 notes describe downstream staleness that this
-  change clears.
+These were originally flagged for `bmad-ux`, and the owner asked for them in this PR. They
+are editorial only: no version bumps, and no UX decisions change.
+
+- `EXPERIENCE.md` header: "Upstream: `PRD.md` v0.4" → v0.8. The list of consumed decisions
+  also gains D-18 (Birdhouses naming), A-12 (care guide), and D-25 (positioning statement).
+- `DESIGN.md` header: "Consumed by" now reads `PRD.md` v0.8, `EXPERIENCE.md` v0.10,
+  `SPEC.md`, and `epics.md` at v0.7, with `ARCHITECTURE-SPINE.md` binding v0.7.
+- `EXPERIENCE.md` §24 v0.10 note: one sentence recording that the downstream staleness
+  flagged in the v0.7 and v0.9 notes is now cleared. The older notes stay as history.
 
 ## 5. Implementation Handoff
 
 **Scope: Minor.** The Developer agent implements this directly on branch
 `claude/docs-spine-version-sync-bc0efe`, then opens a PR to `main`. The branch already
 contains `main` @ `854766f`. Because UX-027 is already on `main` via #19, the PR diff will
-contain only this proposal and edits 4.1–4.4.
+contain only this proposal and edits 4.1–4.5.
 
 **Responsibilities**
 
-- **Developer agent:** apply edits 4.1–4.4 exactly; commit; open the PR.
-- **`bmad-ux` (follow-up, optional):** clear the items in 4.5 at the next UX pass.
+- **Developer agent:** apply edits 4.1–4.5 exactly; commit; open the PR.
 
 **Success criteria**
 
@@ -343,4 +347,5 @@ contain only this proposal and edits 4.1–4.4.
 - ARCHITECTURE-SPINE `binds:` reads PRD v0.8 / DESIGN v0.7 / EXPERIENCE v0.10.
 - UX-DR28, SPEC line 86, and Story 1.6 all describe the headshot consistently with
   `EXPERIENCE.md` §6.2.
+- `DESIGN.md` and `EXPERIENCE.md` headers name PRD v0.8 and their current consumers.
 - No files under `asprinkleofcode/` change, and no media is touched.
