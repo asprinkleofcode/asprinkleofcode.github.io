@@ -3,9 +3,9 @@
 **Name:** Alisha Sprinkle Korba Portfolio  
 **Description:** Experience contract defining the information architecture, journeys, interaction patterns, and accessibility behavior for the portfolio.  
 **Status:** Final  
-**Version:** 0.8  
-**Updated:** 2026-09-11  
-**Peer document:** `DESIGN.md` v0.5 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
+**Version:** 0.9  
+**Updated:** 2026-10-04  
+**Peer document:** `DESIGN.md` v0.7 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
 **Upstream:** `PRD.md` v0.4 — path labels (D-15), destinations (D-16/D-17), speaking status (A-13), the audience re-ordering (D-21/D-22), and the entry-context requirement (FR-24 / D-23) are consumed below.
 
 ---
@@ -317,7 +317,7 @@ Personality should be visible without interrupting the professional story.
 
 **Composition — DECIDED:** on the homepage itself, personality surfaces exactly as the
 Beyond the Code one-line hint in §6.4 — there is no separate, additional homepage
-personality section. Full material (powerlifting, birdhouse-making — PRD D-18's two
+personality section. Full material (powerlifting, Birdhouses — PRD D-18's two
 Beyond the Code dimensions) lives only once a visitor enters the Beyond the Code path.
 The ambient star layer is unaffected by this decision — it is a persistent, site-wide
 atmospheric layer, not a homepage-specific inclusion choice (role/treatment already
@@ -443,11 +443,13 @@ The experience should allow visitors to understand the journey and context rathe
 
 ---
 
-### 9.3 Making / Birdhouses
+### 9.3 Birdhouses
 
 **DECIDED**
 
-Making and birdhouses are a meaningful personal dimension.
+Birdhouses are a meaningful personal dimension. The visitor-facing name is
+**"Birdhouses"** only (PRD D-18) — gourds and making are material and technique within
+the content, not part of the label.
 
 The experience may include:
 
@@ -458,9 +460,17 @@ The experience may include:
 - care information
 - social content
 
-Destination — **DECIDED** (PRD D-17): the birdhouse-making Instagram. The care-guide
-location is assumed to be a lightweight page within the portfolio, with an external link
-acceptable if one exists (PRD A-12). Handles / URLs are pending from Alisha (PRD A-14).
+Destinations — **DECIDED**:
+
+- **Birdhouse-making Instagram** (PRD D-17) — a contextual outbound link from the
+  Birdhouses context (§13 External Links). Handle pending from Alisha (PRD A-14).
+- **Care guide** (PRD A-12, `ARCHITECTURE-SPINE.md` AD-20) — a downloadable PDF
+  **hosted within the portfolio**, not an external link, reached from the Birdhouses
+  dimension's own content. It is a supporting page, not a third Beyond the Code
+  dimension (D-18): it never appears in the `/beyond` index or a teaser. Link behavior is
+  §13 Document Links. The PDF itself is pending from Alisha; until it exists, no care-guide
+  link is rendered (§14 Missing Content).
+
 The exact content composition remains OPEN.
 
 ---
@@ -588,10 +598,34 @@ Destinations (PRD D-16 / D-17):
 
 - **Professional** — LinkedIn, GitHub. Placed as professional continuation.
 - **Personal** — the powerlifting Instagram (from the powerlifting context) and the
-  birdhouse-making Instagram (from the making context). Contextual outbound links only;
+  birdhouse-making Instagram (from the Birdhouses context). Contextual outbound links only;
   the portfolio hosts neither that content nor any commerce.
 
 Exact handles / URLs are supplied by Alisha before implementation (PRD A-14).
+
+The care guide is **not** an external link — see Document Links below.
+
+---
+
+### Document Links
+
+**DECIDED**
+
+A document hosted within the portfolio (currently only the Birdhouses care guide, PRD
+A-12) is reached by a same-origin link that opens the PDF in the browser
+(`ARCHITECTURE-SPINE.md` AD-20):
+
+- **Opens in place** — no new tab, no forced download, and no "leaves the site"
+  affordance; the visitor has not left the portfolio. The browser's own viewer handles
+  viewing and saving.
+- **Identifies itself as a PDF** — the visible link text or an adjacent visible marker
+  tells the visitor it is a PDF before they activate it (for example, a "(PDF)" suffix),
+  so it is distinct from both in-site navigation and outbound links. The marker is part of
+  the accessible name, not only an icon. Exact label wording is content (§24).
+- **Optional inline preview** — the care-guide page may also embed the same PDF. The
+  embed has an accessible name and fallback text, and it never replaces the plain
+  link: mobile browsers vary (some force a download, some show only the first page), so
+  the link stays the reliable path.
 
 ---
 
@@ -824,17 +858,18 @@ Return or Continue
 ```text
 Discover personal side
   ↓
-Explore making / birdhouses
+Explore Birdhouses
   ↓
 See transformation and process
   ↓
-Continue to the birdhouse-making Instagram or the care guide
+Continue to the birdhouse-making Instagram, or open the care guide (PDF)
 ```
 
-Destinations (PRD D-17 / A-12): the birdhouse-making Instagram, and the care guide —
-assumed to be a lightweight page within the portfolio, an external link acceptable if
-one exists. Handles / URLs pending from Alisha (PRD A-14). Until a destination exists the
-flow terminates at the transformation-and-process step; no placeholder link is rendered
+Destinations (PRD D-17 / A-12): the birdhouse-making Instagram (outbound, §13 External
+Links), and the care guide, a downloadable PDF hosted within the portfolio (§13 Document
+Links, §9.3). The Instagram handle and the care-guide PDF are both pending from Alisha
+(PRD A-14). Each destination appears only once it exists; with neither, the flow
+terminates at the transformation-and-process step, and no placeholder link is rendered
 (§14 Missing Content).
 
 ---
@@ -854,7 +889,7 @@ Continue to the powerlifting Instagram, or return to Alisha's broader identity
 ```
 
 Destination (PRD D-17): the powerlifting Instagram, as a contextual outbound link from the
-powerlifting context — matching the making dimension's treatment (§13). Handle pending from
+powerlifting context — matching the Birdhouses dimension's treatment (§13). Handle pending from
 Alisha (PRD A-14); until one exists, the flow terminates at the return step.
 
 ---
@@ -871,7 +906,8 @@ Every meaningful product need should map to an experience surface, and every exp
 | Ownership and ambiguity | Engineering deep story | UJ-2 Priya (primary) |
 | Making people better | Leadership / Enablement | UJ-2 Priya (primary) |
 | Whole-person recognition | Beyond the Code | UJ-2 Priya (primary) |
-| Personal exploration | Powerlifting / Making | UJ-2 Priya (primary) |
+| Personal exploration | Powerlifting / Birdhouses | UJ-2 Priya (primary) |
+| Birdhouse care information | Care guide (in-portfolio PDF) | Birdhouse Flow |
 | Professional continuation | LinkedIn / speaking destinations | UJ-1 / UJ-2 |
 | Public-safe storytelling | Story presentation pattern | Professional story |
 | Discoverability | Semantic page structure | Search entry (UJ-1 variant) |
@@ -927,7 +963,7 @@ The current product decisions explicitly establish this quality-over-quota rule.
 | UX-005 | Evidence over claims | AUTHORITATIVE |
 | UX-006 | Engineering / Technical and Leadership / Enablement are professional evidence paths | DECIDED |
 | UX-007 | Beyond the Code is personal, not professional evidence | AUTHORITATIVE |
-| UX-008 | Powerlifting and making are authentic personal dimensions | DECIDED |
+| UX-008 | Powerlifting and Birdhouses are authentic personal dimensions | DECIDED |
 | UX-009 | Personal stories must not depend on forced engineering metaphors | AUTHORITATIVE |
 | UX-010 | Show the thinking, not the secrets | AUTHORITATIVE |
 | UX-011 | Ambient layer (currently a star field) is personality, not navigation; its treatment is DEFERRED to implementation with fixed constraints | DECIDED (role) / DEFERRED (treatment) |
@@ -939,7 +975,8 @@ The current product decisions explicitly establish this quality-over-quota rule.
 | UX-017 | Performance budgets remain Architecture-owned | DEFERRED |
 | UX-018 | Summary → deep-story transition: ~180 ms cross-fade, context preserved, instant under reduced-motion | DECIDED |
 | UX-019 | Reduced-motion / ambient-effect behavior | DEFERRED to implementation (DESIGN.md §16) |
-| UX-020 | External + personal destinations: LinkedIn, GitHub, powerlifting IG, birdhouse-making IG, care guide (PRD D-16/D-17) | DECIDED — values pending (PRD A-14) |
+| UX-020 | External + personal destinations: LinkedIn, GitHub, powerlifting IG, birdhouse-making IG (PRD D-16/D-17) | DECIDED — values pending (PRD A-14) |
+| UX-026 | Birdhouses care guide is a PDF hosted within the portfolio, opened by a same-origin link labeled as a PDF — not an outbound link (PRD A-12, AD-20; §13 Document Links) | DECIDED — PDF pending |
 | UX-021 | Speaking surface is conditional; material in progress (PRD A-13) | CONDITIONAL — precondition: public-safe speaking material exists |
 | UX-022 | Primary audience is the by-choice visitor who already knows Alisha (§3.2, UJ-2); the time-boxed read is secondary (PRD D-21) | AUTHORITATIVE |
 | UX-023 | The ~90-second budget is a legibility floor on the entry surface, not a statement of audience (PRD D-22) | AUTHORITATIVE |
@@ -978,6 +1015,15 @@ Resolved in v0.8: homepage versus deeper-content allocation (§6.1–§6.5, UX-0
 section order, positioning-statement placement, exploration-surface label-only
 structure, per-path evidence/highlight minimums, and homepage personality composition.
 
+Reconciled in v0.9: the Birdhouses care guide now follows PRD A-12 (resolved 2026-09-12)
+and `ARCHITECTURE-SPINE.md` AD-20, replacing the v0.5 assumption of "a lightweight page,
+external link acceptable." It is a PDF hosted within the portfolio, opened by a
+same-origin link that is labeled as a PDF (§9.3, §13 Document Links, Birdhouse Flow,
+UX-026). The dimension is also renamed "Birdhouses" throughout, in place of "Making /
+Birdhouses" (PRD D-18). This clears the "Known cross-document staleness" notes in
+`epics.md` and AD-20. Those notes are now out of date themselves, so they are flagged for
+their owning skills rather than edited here.
+
 **UX design work still to do:** none remaining. Both items tracked in this section
 since v0.6 (nav structure, homepage allocation) are now resolved.
 
@@ -989,7 +1035,8 @@ not invent them):
 3. Leadership & Enablement story selection (2–3).
 4. Public-safe details for each story.
 5. Speaking topics and events, once material is ready.
-6. Photography / video available for the making dimension and story imagery.
+6. Photography / video available for the Birdhouses dimension and story imagery.
+7. The care-guide PDF itself, and its link label wording (§13 Document Links).
 
 ---
 

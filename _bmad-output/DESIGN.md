@@ -2,8 +2,8 @@
 name: Alisha Sprinkle Korba Portfolio
 description: Visual and interaction design contract for the Alisha Sprinkle Korba professional portfolio.
 status: final
-version: 0.6
-updated: 2026-09-11
+version: 0.7
+updated: 2026-10-04
 mode: dark-only
 colors:
   background: { primary: "#1E1E2F", secondary: "#2B2B3B", recessed: "#0F0F15" }
@@ -389,8 +389,8 @@ Exact spacing values remain implementation-level decisions unless established th
 
 - technology references
 - metadata
-- external destinations
-- care guide and social destinations where appropriate
+- external and social destinations where appropriate
+- the Birdhouses care guide (an in-portfolio PDF, not an external destination)
 
 ---
 
@@ -412,7 +412,7 @@ The following are **conceptual component roles**, not mandatory implementation n
 | Personal Story | Supports authentic personal exploration | AUTHORITATIVE |
 | Speaking Item | Represents public speaking activity when available | AUTHORITATIVE |
 | External Link | Continues a professional or personal journey | AUTHORITATIVE |
-| Care Guide Link | Provides birdhouse care resource | OPEN (destination) |
+| Care Guide Link | Opens the Birdhouses care guide — a PDF hosted in the portfolio (PRD A-12, AD-20); visibly labeled as a PDF, with no outbound "leaves the site" marker (EXPERIENCE §13 Document Links) | DECIDED (PDF pending) |
 | Footer | Closing orientation and external paths | DECIDED |
 | Ambient Layer | Ambient personality — currently a star field; the treatment may change in implementation (§16) | DECIDED (role) / DEFERRED (treatment) |
 
@@ -463,7 +463,7 @@ Not every story must expose every field equally, but unsupported claims should n
 
 Personal experiences should stand on their own.
 
-Powerlifting and making should not be presented as forced metaphors for engineering.
+Powerlifting and Birdhouses should not be presented as forced metaphors for engineering.
 
 Connections between the experiences may emerge naturally through storytelling, but the UI should not require a visitor to accept a marketing metaphor.
 
@@ -629,9 +629,12 @@ owned by the PRD (`bmad-prd`), and must not be invented by downstream agents:
 4. Exact homepage versus deeper-content allocation.
 5. Photography, imagery, and video availability.
 6. Final speaking content and destinations.
-7. Birdhouse care-guide destination.
-8. Instagram destination.
-9. Final story selection and public-safe details.
+7. Instagram destination.
+8. Final story selection and public-safe details.
+
+The Birdhouses care-guide destination is no longer open. In v0.7 it was resolved as a PDF
+hosted in the portfolio (PRD A-12, `ARCHITECTURE-SPINE.md` AD-20); only the PDF file
+itself is still pending.
 
 ---
 
