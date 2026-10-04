@@ -6,7 +6,7 @@
 **Version:** 0.10  
 **Updated:** 2026-10-04  
 **Peer document:** `DESIGN.md` v0.7 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
-**Upstream:** `PRD.md` v0.4 — path labels (D-15), destinations (D-16/D-17), speaking status (A-13), the audience re-ordering (D-21/D-22), and the entry-context requirement (FR-24 / D-23) are consumed below.
+**Upstream:** `PRD.md` v0.8 — path labels (D-15), destinations (D-16/D-17), the Birdhouses naming (D-18), speaking status (A-13), the care guide (A-12), the audience re-ordering (D-21/D-22), the entry-context requirement (FR-24 / D-23), and the positioning statement (D-25) are consumed below.
 
 ---
 
@@ -1041,7 +1041,10 @@ Birdhouses" (PRD D-18). This clears the "Known cross-document staleness" notes i
 their owning skills rather than edited here.
 
 Resolved in v0.10: homepage headshot placement (§6.2, UX-027) — portrait beside the
-Recognition text on desktop, below it on mobile.
+Recognition text on desktop, below it on mobile. Downstream docs (`PRD.md` v0.8, `SPEC.md`,
+`ARCHITECTURE-SPINE.md`, `epics.md`) now cite `DESIGN.md` v0.7 / `EXPERIENCE.md` v0.10, so
+the staleness flagged in the v0.7 and v0.9 notes above is cleared
+(sprint-change-proposal-2026-10-04).
 
 **UX design work still to do:** none remaining. Both items tracked in this section
 since v0.6 (nav structure, homepage allocation) are now resolved.
