@@ -1,0 +1,4 @@
+# Gitignored files Claude Code copies into each new worktree.
+# BMAD personal install answers (user_name, communication_language, user_skill_level);
+# without them BMAD skills halt with "missing config value".
+_bmad/config.user.toml
