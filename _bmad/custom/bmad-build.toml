@@ -1,0 +1,5 @@
+[workflow]
+
+persistent_facts = [
+  "Sprint status on PR: step 05 sets the story to `review` in sprint-status.yaml. When the user approves the changes and asks to raise or create a pull request, first set that story's `development_status` entry to `done` in `{implementation_artifacts}/sprint-status.yaml` (update `last_updated`, preserve comments and structure), commit it on the story branch, then push and open the PR. Merging the PR is what makes `done` true on main; a PR closed without merging never lands it. Do not mark the parent epic `done` unless every story in that epic is `done`.",
+]
