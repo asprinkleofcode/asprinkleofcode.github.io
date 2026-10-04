@@ -17,11 +17,13 @@ inputDocuments:
 
 ## Overview
 
-This document provides the complete epic and story breakdown for the Alisha Sprinkle Korba Portfolio, decomposing the requirements from `PRD.md` v0.8 (+ `addendum.md`, the same date), the UX design contract (`DESIGN.md` v0.7 + `EXPERIENCE.md` v0.9), `ARCHITECTURE-SPINE.md` (updated 2026-09-13), and the `spec-portfolio` SPEC set into implementable stories, optimized for upload to a GitHub Project.
+This document provides the complete epic and story breakdown for the Alisha Sprinkle Korba Portfolio, decomposing the requirements from `PRD.md` v0.8 (+ `addendum.md`, the same date), the UX design contract (`DESIGN.md` v0.7 + `EXPERIENCE.md` v0.10), `ARCHITECTURE-SPINE.md` (updated 2026-10-04), and the `spec-portfolio` SPEC set into implementable stories, optimized for upload to a GitHub Project.
 
 **Re-extraction note (2026-09-13):** this supersedes a step-1 pass from 2026-09-11 that predated the current `ARCHITECTURE-SPINE.md` (which added AD-20), the new `addendum.md`, and the current `SPEC.md`. The FR/NFR set itself is unchanged in substance between the two passes — only the Additional Requirements and UX Design Requirements sections picked up real deltas (AD-20, the now-resolved care-guide status, and the two confirmed Engineering story selections).
 
 **Update note (2026-10-04):** `DESIGN.md` v0.7 and `EXPERIENCE.md` v0.9 now match PRD A-12 / AD-20 on the Birdhouses care guide (new UX-026 and `EXPERIENCE.md` §13 Document Links) and use the visitor-facing name "Birdhouses" throughout (D-18). The cross-document inconsistency previously flagged here is resolved, so UX-DR17 and Story 4.3 now follow the UX contract directly. No epics or stories were added, removed, or renumbered.
+
+**Update note (2026-10-04, UX-027):** `EXPERIENCE.md` v0.10 §6.2 adds the existing headshot to the Recognition block (beside the text on desktop, below it on mobile). UX-DR28 and Story 1.6 pick this up. All live spine citations in this file, `PRD.md`, `SPEC.md`, and `ARCHITECTURE-SPINE.md` now point at `DESIGN.md` v0.7 / `EXPERIENCE.md` v0.10 / `PRD.md` v0.8 (`planning-artifacts/sprint-change-proposal-2026-10-04.md`). No epics or stories were added, removed, or renumbered.
 
 ## Requirements Inventory
 
@@ -55,7 +57,7 @@ FR-13: Personal stories must stand on their own as authentic representations of 
 
 FR-14: Where a personal dimension is presented as a meaningful experience rather than a simple profile detail, the visitor should have a path to explore the story, process, or context behind it — depth follows available material, not an arbitrary quota.
 
-FR-15: Each professional evidence path must let visitors: (1) understand what the path represents, (2) scan concise story summaries, (3) select a story, (4) explore a deeper story experience. The homepage must support an informed choice without requiring full story content (C-6, A-10 — resolved by `EXPERIENCE.md` v0.8 §6.1–§6.5, UX-025).
+FR-15: Each professional evidence path must let visitors: (1) understand what the path represents, (2) scan concise story summaries, (3) select a story, (4) explore a deeper story experience. The homepage must support an informed choice without requiring full story content (C-6, A-10 — resolved by `EXPERIENCE.md` v0.10 §6.1–§6.5, UX-025).
 
 FR-16: Deep stories must prioritize evidence, reasoning, and context over unsupported descriptive claims. Generic adjectives must not substitute for evidence.
 
@@ -167,8 +169,8 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 
 **Information architecture & state behavior (EXPERIENCE.md §5–6, §14):**
 
-- UX-DR27: Navigation structure — **RESOLVED (`EXPERIENCE.md` v0.8 §5.2, UX-015):** single, flat, top-level header row — identity (logo + name), then Home, Engineering, Leadership & Enablement, Beyond the Code — identical and sticky on every page including deep stories (no breadcrumb, no chrome change with depth); external/social links are footer-only; mobile collapses via the existing flowbite-react `NavbarToggle`/`NavbarCollapse` hamburger pattern.
-- UX-DR28: Homepage composition — **RESOLVED (`EXPERIENCE.md` v0.8 §6.1–§6.5, UX-025):** three stacked sections in order — Recognition (identity, title, and the decided one-line positioning statement, D-25: *"Give me a business problem and I'll turn it into an engineering decision worth trusting."*) → Exploration (the three path entries, label-only, no teaser copy) → Evidence & Highlights (Engineering and Leadership & Enablement each get ≥1 dedicated evidence teaser; Beyond the Code gets exactly one personal-hint line, not evidence). All deeper content lives on path/story pages (C-6).
+- UX-DR27: Navigation structure — **RESOLVED (`EXPERIENCE.md` v0.10 §5.2, UX-015):** single, flat, top-level header row — identity (logo + name), then Home, Engineering, Leadership & Enablement, Beyond the Code — identical and sticky on every page including deep stories (no breadcrumb, no chrome change with depth); external/social links are footer-only; mobile collapses via the existing flowbite-react `NavbarToggle`/`NavbarCollapse` hamburger pattern.
+- UX-DR28: Homepage composition — **RESOLVED (`EXPERIENCE.md` v0.10 §6.1–§6.5, UX-025, UX-027):** three stacked sections in order — Recognition (identity, title, and the decided one-line positioning statement, D-25: *"Give me a business problem and I'll turn it into an engineering decision worth trusting."*, and the existing headshot as a rounded-rectangle portrait with a `border.default` edge — right of the text on desktop, stacked below it on mobile — with meaningful alt text) → Exploration (the three path entries, label-only, no teaser copy) → Evidence & Highlights (Engineering and Leadership & Enablement each get ≥1 dedicated evidence teaser; Beyond the Code gets exactly one personal-hint line, not evidence). All deeper content lives on path/story pages (C-6).
 - UX-DR29: Implement the four state patterns: Cold Load (meaningful semantic content without waiting on decorative effects), Loading (never blocks identity recognition), Error (preserves navigation/recovery), Missing Content (no empty visual shells for content that doesn't exist — gracefully omit or simplify instead).
 - UX-DR30: Keyboard focus must remain visible (solid ring per UX-DR2) and logically ordered across all interactive flows.
 
@@ -422,6 +424,12 @@ So that I recognize her identity within a few seconds, whether I read the page o
 **Given** FR-1/FR-2 and UX-DR6/UX-DR28
 **When** a visitor lands on `/`
 **Then** the Recognition section shows "Alisha Sprinkle Korba", "Senior Software Engineer", and the decided positioning statement ("Give me a business problem and I'll turn it into an engineering decision worth trusting.") directly beneath the name/title (D-25)
+
+**Given** UX-DR28 and `EXPERIENCE.md` §6.2 (UX-027)
+**When** a visitor views the Recognition section
+**Then** the existing headshot (`src/assets/alisha-sprinkle-korba-headshot.jpg`) appears as a rounded-rectangle portrait (default radius, `border.default` edge) to the right of the name / title / positioning statement on desktop, and stacked below that text on mobile, so the name and title are read first at every width
+
+**And** the headshot has meaningful alt text naming Alisha (not an empty `alt`), explicit `width`/`height`, and no `loading="lazy"`, since it is above the fold (AD-15, Conventions → Images); any `webp`/`avif` derivative is added as a new asset and the original file is never modified or replaced (AGENTS.md)
 
 **Given** AD-14
 **When** the page is requested by a crawler or shared to a preview-generating service
