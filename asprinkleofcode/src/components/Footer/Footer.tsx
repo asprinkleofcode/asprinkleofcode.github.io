@@ -23,10 +23,11 @@ const PLATFORM_ICONS: Record<FooterPlatform, IconType> = {
 };
 
 // The brand glow on hover for every icon, except @orangecatwoodcraft, which
-// glows in glow.woodcraft on hover and keyboard focus only (UX-028).
+// turns apricot and glows in glow.woodcraft on hover and keyboard focus only
+// (UX-028). Its colour classes override the theme's hover:text-brand-primary.
 const glowClasses = (variant: FooterLink["variant"]) =>
   variant === "woodcraft"
-    ? "hover:drop-shadow-glow-woodcraft focus-visible:drop-shadow-glow-woodcraft"
+    ? "hover:text-woodcraft focus-visible:text-woodcraft hover:drop-shadow-glow-woodcraft focus-visible:drop-shadow-glow-woodcraft"
     : "hover:drop-shadow-glow";
 
 const Footer: FC = () => (

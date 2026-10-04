@@ -152,3 +152,7 @@ Pass 1 (blind, edge-case, verification-gap):
 
 **Manual checks:**
 - In the preview, walk the matrix at mobile and desktop widths with reduced motion on and off.
+
+## Post-Review Change
+
+- 2026-10-04, owner feedback: the @orangecatwoodcraft icon still turned brand pink on hover, because the shared `hover:text-brand-primary` won and the 60%-alpha apricot glow was too faint against it. The icon now turns apricot as well (`hover:text-woodcraft` and `focus-visible:text-woodcraft`, from a new solid `--woodcraft: #F5A962` token) on top of the `glow.woodcraft` glow. This goes past DESIGN.md v0.8's "never text or fill" note for `glow.woodcraft`, so DESIGN §15 / UX-028 should be updated to match.

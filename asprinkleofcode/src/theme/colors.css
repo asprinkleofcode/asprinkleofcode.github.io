@@ -63,9 +63,11 @@
   --status-warning: #F5B343;
 
   /*
-   * glow.woodcraft (UX-028) — decorative only: the hover/focus glow on the
-   * @orangecatwoodcraft footer icon, nowhere else. Never text, fill, border,
-   * or the sole cue for a state; focus.ring stays the focus cue.
+   * glow.woodcraft (UX-028) — apricot, for the @orangecatwoodcraft footer icon
+   * only, on hover and keyboard focus: the icon turns apricot and glows apricot
+   * at 60% alpha (owner direction, 2026-10-04). Nowhere else, and never the
+   * sole cue for a state; focus.ring stays the focus cue.
    */
+  --woodcraft: #F5A962;
   --glow-woodcraft: rgb(245 169 98 / 0.6); /* #F5A962 at 60% alpha */
 }

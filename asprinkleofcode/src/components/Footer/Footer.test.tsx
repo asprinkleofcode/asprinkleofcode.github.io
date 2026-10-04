@@ -50,9 +50,14 @@ describe("Footer", () => {
   it("puts the woodcraft glow on the @orangecatwoodcraft icon only", () => {
     const { container } = renderFooter();
     const woodcraft = screen.getByRole("link", { name: "Instagram @orangecatwoodcraft (opens in a new tab)" });
+    const woodcraftClasses = woodcraft.className.split(/\s+/);
     for (const cls of WOODCRAFT_GLOW) {
-      expect(woodcraft.className.split(/\s+/)).toContain(cls);
+      expect(woodcraftClasses).toContain(cls);
     }
+    // Apricot on hover/focus, not the brand pink the other icons use.
+    expect(woodcraftClasses).toContain("hover:text-woodcraft");
+    expect(woodcraftClasses).toContain("focus-visible:text-woodcraft");
+    expect(woodcraftClasses).not.toContain("hover:text-brand-primary");
     const otherIcons = within(screen.getByRole("navigation", { name: "Social profiles" }))
       .getAllByRole("link")
       .filter((link) => link !== woodcraft);
@@ -62,7 +67,7 @@ describe("Footer", () => {
     }
     const others = [...container.querySelectorAll("*")].filter((el) => el !== woodcraft);
     for (const el of others) {
-      expect(el.getAttribute("class") ?? "").not.toContain("glow-woodcraft");
+      expect(el.getAttribute("class") ?? "").not.toContain("woodcraft");
     }
   });
 

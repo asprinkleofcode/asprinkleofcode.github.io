@@ -28,6 +28,9 @@
   --color-status-error: var(--status-error);
   --color-status-warning: var(--status-warning);
 
+  /* UX-028: @orangecatwoodcraft footer icon hover/focus colour only. */
+  --color-woodcraft: var(--woodcraft);
+
   /* Signature brand glow (DESIGN §15) — also the interim brand-fill hover. */
   --drop-shadow-glow: 0 0 6px var(--brand-primary);
   /* UX-028: the @orangecatwoodcraft footer icon only, on hover and keyboard focus. */
