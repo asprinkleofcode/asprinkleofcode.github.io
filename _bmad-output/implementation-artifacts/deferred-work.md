@@ -15,3 +15,6 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-3-app-shell-routing-error-handling-navigation-behavior.md`
   summary: In Story 1.4, replace the footer copyright's `href="#"` (`asprinkleofcode/src/components/Footer/Footer.tsx:14`) so clicking it no longer acts as a raw hash navigation.
   evidence: Under `HashRouter`, clicking it sets the hash to `#`, which the router treats as a POP navigation to `/` with key `"default"`. That bypasses Story 1.3's forward-navigation scroll/focus handling. This predates Story 1.3, and Story 1.4 rebuilds the footer.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-5-ambient-layer.md`
+  summary: Add a browser-level test that the ambient layer's dots have no animation under prefers-reduced-motion.
+  evidence: Unit tests only check class names; jsdom applies no stylesheet, so deleting the `animation: none` rules would not fail any test.

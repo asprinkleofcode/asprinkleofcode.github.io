@@ -1,0 +1,41 @@
+.ambient-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--background-recessed);
+}
+
+.ambient-layer__dot {
+  position: absolute;
+  border-radius: 9999px;
+  background-color: var(--brand-primary);
+  opacity: 0.15;
+  animation: ambient-twinkle 5s ease-in-out infinite alternate;
+}
+
+@keyframes ambient-twinkle {
+  from {
+    opacity: 0.15;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+
+.ambient-layer--static .ambient-layer__dot {
+  opacity: 0.5;
+}
+
+.ambient-layer--static,
+.ambient-layer--static * {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-layer__dot {
+    animation: none;
+    opacity: 0.5;
+  }
+}
