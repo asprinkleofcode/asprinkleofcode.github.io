@@ -16,22 +16,34 @@ export default function BeyondTheCodePowerlifting() {
             <Carousel pauseOnHover slideInterval={5000}>
               <iframe
                 src="https://drive.google.com/file/d/1RHJBvlPYgu3c-SJBxHhD64AuE3YkBiWn/preview"
+                title="Powerlifting video 1"
                 className="relative w-full h-full"
               ></iframe>
               <iframe
                 src="https://drive.google.com/file/d/1rWYIpN7_0LOP_l2RA6aktJlBGPZ3tmTL/preview"
+                title="Powerlifting video 2"
                 className="relative w-full h-full"
               ></iframe>
               <iframe
                 src="https://drive.google.com/file/d/1y7e3A8FlzH_Ftg7tZzv0Qjuhi1Bui_BZ/preview"
+                title="Powerlifting video 3"
                 className="relative w-full h-full"
               ></iframe>
               <iframe
                 src="https://drive.google.com/file/d/1Xhryg4sPQyJah_U_Fye3ZD9pbV-gWDtV/preview"
+                title="Powerlifting video 4"
                 className="relative w-full h-full"
               ></iframe>
-              <img className="relative" src={photo1} />
-              <img className="relative" src={photo2} />
+              <img
+                className="relative"
+                src={photo1}
+                alt="Alisha smiling at a powerlifting meet beside the scoreboard showing her name"
+              />
+              <img
+                className="relative"
+                src={photo2}
+                alt="Team of lifters wearing medals on the platform at a powerlifting meet"
+              />
             </Carousel>
           </div>
           <div className="w-full aspect-video rounded-xl shadow-lg overflow-hidden">

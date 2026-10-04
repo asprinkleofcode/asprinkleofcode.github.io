@@ -1,0 +1,25 @@
+import { afterEach } from "vitest";
+import { cleanup } from "@testing-library/react";
+
+// Vitest globals are off, so Testing Library can't register auto-cleanup itself.
+afterEach(() => {
+  cleanup();
+});
+
+// jsdom does not implement matchMedia; flowbite-react reads it for theme mode.
+if (typeof window.matchMedia !== "function") {
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    configurable: true,
+    value: (query: string): MediaQueryList => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}

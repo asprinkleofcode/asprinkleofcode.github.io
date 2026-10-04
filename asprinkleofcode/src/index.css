@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "./theme/colors.css";
+@import "./theme/theme.css";
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
 
@@ -10,4 +12,3 @@ html, body, #root {
   display: flex;
   flex-direction: column;
 }
-

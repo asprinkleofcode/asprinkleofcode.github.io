@@ -1,0 +1,9 @@
+# Deferred Work
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-toolchain-compliance-baseline.md`
+  summary: Give the four powerlifting video iframes in `BeyondTheCodePowerlifting.jsx` descriptive titles that tell the clips apart (e.g. lift and meet) instead of "Powerlifting video 1–4".
+  evidence: Story 1.1 added the titles to satisfy jsx-a11y, but screen-reader users can't tell the clips apart; only the site owner knows what each clip shows. Best done when Epic 4 reworks the Beyond the Code pages.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-toolchain-compliance-baseline.md`
+  summary: In Story 1.4 (Header, Footer & Navigation), remove the legacy CSS that overrides the role-token theme and prune theme slots that never render or only duplicate flowbite defaults.
+  evidence: Found during the Story 1.1 walkthrough. (1) `asprinkleofcode/src/components/Header/Header.css:18` sets `.navbar-brand-text` to `var(--color-primary-100)`; unlayered CSS beats Tailwind utilities, so the theme's `text-brand-primary` never shows on the header name. (2) Raw primitive vars (`--color-primary-*`/`--color-dark-*`) remain in `App.css` (9), `Header.css` (5), `GradientWaves.css` (3), `BeyondTheCodePowerlifting.css` (7), and `StarBackground.tsx` (4); the last two belong to Story 1.5 / Epic 4. (3) `aSprinkleOfCodeTheme.ts` slots never rendered: `footer.brand`, `footer.groupLink`, `footer.title`, `footer.divider`, `footer.root.bgDark`, `navbar.link.disabled`, `navbar.root.rounded`/`bordered`. (4) Slots identical to flowbite defaults: `navbar.root.inner`, `navbar.collapse`, `navbar.link.base`, `navbar.toggle.icon`/`title`, `footer.brand.base`, `footer.icon.size`, `avatar.root.size.xl`. Story 1.4 rebuilds Header/Footer, so it should drop or start using these slots rather than pruning them separately.

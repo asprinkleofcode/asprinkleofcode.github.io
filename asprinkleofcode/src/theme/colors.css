@@ -23,3 +23,42 @@
   --color-dark-800: #1E1E2F;
   --color-dark-900: #0F0F15;
 }
+
+/*
+ * Semantic role tokens (AD-10, DESIGN §7). UI code uses these roles only —
+ * never the primitive ramps above, raw hex, or raw Tailwind palette colours.
+ * Fill and focus values are the §18a-remediated ones.
+ * `brand.primaryFillHover` is OPEN in DESIGN §7: do not add a token for it;
+ * use the brand.primary glow (`drop-shadow-glow`) as the interim hover.
+ */
+:root {
+  /* Background */
+  --background-primary: #1E1E2F;   /* dark-800 — dominant surface */
+  --background-secondary: #2B2B3B; /* dark-700 — hover, secondary button, raised panel */
+  --background-recessed: #0F0F15;  /* dark-900 — deepest sections, ambient layer */
+
+  /* Text */
+  --text-primary: #F8F8FA;   /* dark-50 */
+  --text-secondary: #9C9CBA; /* dark-300 — replaces raw gray-300/400 */
+  --text-inverse: #1E1E2F;   /* dark-800 — text on brand.primary / accent.secondary */
+
+  /* Border */
+  --border-default: #3A3A4D;   /* dark-600 — decorative only (1.5:1) */
+  --border-essential: #85879D; /* dark-400 — sole cue for an interactive boundary (4.6:1) */
+
+  /* Brand */
+  --brand-primary: #E48FB1;      /* primary-400 — identity, links, focus */
+  --brand-primary-fill: #A73E6C; /* primary-600 — solid button background only (§18a A3) */
+
+  /* Secondary accent — functional emphasis only (§7a) */
+  --accent-secondary: #93A4F6;
+  --accent-secondary-fill: #4F63D8; /* §18a A4 */
+
+  /* Focus — 2px solid ring, 2px offset (§18a A1) */
+  --focus-ring: #E48FB1;
+
+  /* Status — never the only signal (§7b) */
+  --status-success: #4FCF7F;
+  --status-error: #F87171;
+  --status-warning: #F5B343;
+}

@@ -1,9 +1,7 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
 import './GradientWaves.css';
 
-interface GradientWavesProps {}
-
-const GradientWaves: FC<GradientWavesProps> = () => (
+const GradientWaves: FC = () => (
   <div className="gradient-waves-bg" />
 );
 
