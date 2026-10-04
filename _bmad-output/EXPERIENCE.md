@@ -654,10 +654,11 @@ tells them apart.
 - **Accessible name** — every icon has one that names the platform, the handle where there
   is one, and the new tab: for example, "Instagram @orangecatwoodcraft (opens in a new
   tab)". An icon with no accessible name is a defect.
-- **@orangecatwoodcraft glow** — on hover and keyboard focus only, the woodcraft icon gets a
-  slight apricot glow (`{colors.glow.woodcraft}`, DESIGN.md §15). It is decorative: the
-  solid `{colors.focus.ring}` stays the focus cue, and nothing depends on seeing the glow.
-  No glow at rest.
+- **@orangecatwoodcraft apricot** — on hover and keyboard focus only, the woodcraft icon
+  turns apricot and gets a slight apricot glow (`{colors.glow.woodcraft}`, DESIGN.md §15),
+  where the other icons turn `brand.primary`. It is decorative: the solid
+  `{colors.focus.ring}` stays the focus cue, and nothing depends on seeing the colour.
+  No apricot at rest.
 - **Reachability** — the row stays reachable and legible at mobile and desktop widths, and
   its keyboard focus order follows the visual order.
 - Other footer content, such as the copyright line and the existing icon-attribution link,
@@ -1033,7 +1034,7 @@ The current product decisions explicitly establish this quality-over-quota rule.
 | UX-018 | Summary → deep-story transition: ~180 ms cross-fade, context preserved, instant under reduced-motion | DECIDED |
 | UX-019 | Reduced-motion / ambient-effect behavior | DEFERRED to implementation (DESIGN.md §16) |
 | UX-020 | External + personal destinations: LinkedIn, GitHub, powerlifting IG, birdhouse-making IG (PRD D-16/D-17) | DECIDED — Instagram handles supplied in UX-028 |
-| UX-028 | Footer is an icon-only row: LinkedIn, Instagram @asprinkleofcode (powerlifting), Instagram @orangecatwoodcraft (Birdhouses), GitHub. The logo is the exit cue (no extra visible marker; new tab and an accessible name naming platform + handle). @orangecatwoodcraft gets a slight apricot glow on hover/focus only (`glow.woodcraft`, DESIGN.md §15). Closes PRD A-14 for Instagram (§13 Footer Links) | DECIDED |
+| UX-028 | Footer is an icon-only row: LinkedIn, Instagram @asprinkleofcode (powerlifting), Instagram @orangecatwoodcraft (Birdhouses), GitHub. The logo is the exit cue (no extra visible marker; new tab and an accessible name naming platform + handle). @orangecatwoodcraft turns apricot with a slight apricot glow on hover/focus only (`glow.woodcraft`, DESIGN.md §15). Closes PRD A-14 for Instagram (§13 Footer Links) | DECIDED |
 | UX-026 | Birdhouses care guide is a PDF hosted within the portfolio, opened by a same-origin link labeled as a PDF — not an outbound link (PRD A-12, AD-20; §13 Document Links) | DECIDED — PDF pending |
 | UX-021 | Speaking surface is conditional; material in progress (PRD A-13) | CONDITIONAL — precondition: public-safe speaking material exists |
 | UX-022 | Primary audience is the by-choice visitor who already knows Alisha (§3.2, UJ-2); the time-boxed read is secondary (PRD D-21) | AUTHORITATIVE |
@@ -1091,8 +1092,9 @@ the staleness flagged in the v0.7 and v0.9 notes above is cleared
 
 Resolved in v0.11: Instagram handles and the footer icon row (§13 Footer Links, UX-028) —
 @asprinkleofcode is the powerlifting Instagram and @orangecatwoodcraft the
-birdhouse-making one; both sit in the footer, the woodcraft icon with an apricot
-hover/focus glow (`DESIGN.md` v0.8 `glow.woodcraft`). This closes PRD A-14 for Instagram.
+birdhouse-making one; both sit in the footer, the woodcraft icon turning apricot with an
+apricot glow on hover/focus (`DESIGN.md` v0.8 `glow.woodcraft`; icon colour amended
+2026-10-04). This closes PRD A-14 for Instagram.
 
 **UX design work still to do:** none remaining. Both items tracked in this section
 since v0.6 (nav structure, homepage allocation) are now resolved.
