@@ -1,4 +1,5 @@
 import { Button } from "flowbite-react";
+import { Link } from "react-router";
 import "./Hero.css";
 
 export default function Hero() {
@@ -19,7 +20,7 @@ export default function Hero() {
         </p>
 
         <div className="flex justify-center gap-4">
-          <Button color="primary" href="#/about" size="lg">
+          <Button as={Link} to="/about" color="primary" size="lg">
             Learn About Me
           </Button>
           <Button

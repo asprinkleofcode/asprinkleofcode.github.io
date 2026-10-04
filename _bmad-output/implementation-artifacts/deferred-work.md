@@ -11,3 +11,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-2-content-registry-frontmatter-schema.md`
   summary: Update the AGENTS.md "Where things are" test note to mention `*.test.ts` files and the top-level `plugins/` directory (build plugins and their tests, type-checked by `tsconfig.node.json`).
   evidence: Story 1.2 added `src/lib/*.test.ts` and `plugins/contentFrontmatter{,.test}.ts`, but AGENTS.md still says tests are `*.test.tsx` next to code with setup in `src/test/`. Review routed this to defer because the fix edits an agent-context file; best handled at the next bmad-project-context refresh.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-3-app-shell-routing-error-handling-navigation-behavior.md`
+  summary: In Story 1.4, replace the footer copyright's `href="#"` (`asprinkleofcode/src/components/Footer/Footer.tsx:14`) so clicking it no longer acts as a raw hash navigation.
+  evidence: Under `HashRouter`, clicking it sets the hash to `#`, which the router treats as a POP navigation to `/` with key `"default"`. That bypasses Story 1.3's forward-navigation scroll/focus handling. This predates Story 1.3, and Story 1.4 rebuilds the footer.
