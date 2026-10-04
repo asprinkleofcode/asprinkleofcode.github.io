@@ -32,7 +32,7 @@ components:
 
 Name, description, status, version, and date live in the YAML frontmatter above — the single source for this document's metadata.
 
-**Consumed by:** `PRD.md` v0.4 and `EXPERIENCE.md` v0.6 both cite this document at v0.4; `ARCHITECTURE-SPINE.md` binds it at v0.4.
+**Consumed by:** `PRD.md` v0.8, `EXPERIENCE.md` v0.10, `SPEC.md`, and `epics.md` all cite this document at v0.7; `ARCHITECTURE-SPINE.md` binds it at v0.7.
 
 ---
 
