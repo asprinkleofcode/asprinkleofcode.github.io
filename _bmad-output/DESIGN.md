@@ -2,7 +2,7 @@
 name: Alisha Sprinkle Korba Portfolio
 description: Visual and interaction design contract for the Alisha Sprinkle Korba professional portfolio.
 status: final
-version: 0.7
+version: 0.8
 updated: 2026-10-04
 mode: dark-only
 colors:
@@ -16,6 +16,8 @@ colors:
   accent: { secondary: "#93A4F6", secondaryFill: "#4F63D8" }
   focus: { ring: "#E48FB1", style: "solid", width: "2px", offset: "2px", glowAlpha: 0.3 }
   status: { success: "#4FCF7F", error: "#F87171", warning: "#F5B343" }
+  # Decorative hover/focus glow for the @orangecatwoodcraft footer icon only (UX-028). Never text or fill.
+  glow: { woodcraft: "#F5A962", woodcraftAlpha: 0.6 }
   # Pre-contract values these three replaced, kept for reference only (see §18a). Never emit.
   inherited: { brandPrimaryFill: "#C45F87", accentSecondaryFill: "#6F82EE", focusRingAlpha: 0.3 }
 typography:
@@ -32,7 +34,7 @@ components:
 
 Name, description, status, version, and date live in the YAML frontmatter above — the single source for this document's metadata.
 
-**Consumed by:** `PRD.md` v0.8, `EXPERIENCE.md` v0.10, `SPEC.md`, and `epics.md` all cite this document at v0.7; `ARCHITECTURE-SPINE.md` binds it at v0.7.
+**Consumed by:** `PRD.md` v0.8, `EXPERIENCE.md` v0.11, `SPEC.md`, and `epics.md` all cite this document at v0.8; `ARCHITECTURE-SPINE.md` binds it at v0.8.
 
 ---
 
@@ -288,6 +290,7 @@ copy if a value changes.
 | `status.success` | `#4FCF7F` | new (tuned) | 8.2:1 on `background.primary`; always paired with icon or text |
 | `status.error` | `#F87171` | new (tuned) | 5.9:1 on `background.primary`; always paired with icon or text |
 | `status.warning` | `#F5B343` | new (tuned) | 8.9:1 on `background.primary`; always paired with icon or text |
+| `glow.woodcraft` | `#F5A962` (apricot), applied at 60% alpha | new (UX-028) | decorative only: the hover/focus glow on the @orangecatwoodcraft footer icon (§15). Never text, fill, border, or the sole cue for a state |
 
 Reference: [`mockups/color-secondary-accent.html`](mockups/color-secondary-accent.html)
 shows the palette and the rejected accent options on the dark surfaces. It is a record of
@@ -413,7 +416,7 @@ The following are **conceptual component roles**, not mandatory implementation n
 | Speaking Item | Represents public speaking activity when available | AUTHORITATIVE |
 | External Link | Continues a professional or personal journey | AUTHORITATIVE |
 | Care Guide Link | Opens the Birdhouses care guide — a PDF hosted in the portfolio (PRD A-12, AD-20); visibly labeled as a PDF, with no outbound "leaves the site" marker (EXPERIENCE §13 Document Links) | DECIDED (PDF pending) |
-| Footer | Closing orientation and external paths | DECIDED |
+| Footer | Closing orientation and external paths: an icon-only row of LinkedIn, Instagram @asprinkleofcode, Instagram @orangecatwoodcraft, and GitHub (EXPERIENCE §13 Footer Links, UX-028) | DECIDED |
 | Ambient Layer | Ambient personality — currently a star field; the treatment may change in implementation (§16) | DECIDED (role) / DEFERRED (treatment) |
 
 Implementation names may change.
@@ -498,6 +501,12 @@ One signature effect is retained: a soft `brand.primary` glow
 (`drop-shadow(0 0 6px …)`) on hover for brand-colored interactive elements. It is
 decorative, never the sole carrier of a state, and — if it animates — is suppressed
 under `prefers-reduced-motion` (a static glow may remain).
+
+One named variant (UX-028): the **@orangecatwoodcraft** footer icon glows in
+**`glow.woodcraft`** (apricot `#F5A962`) instead of `brand.primary`, using the same
+`drop-shadow(0 0 6px …)` at 60% alpha, on hover and keyboard focus only and never at rest.
+It marks the woodcraft account as its own small brand. `focus.ring` is unchanged and stays
+the real focus cue. No other element uses this color.
 
 ---
 
@@ -629,7 +638,7 @@ owned by the PRD (`bmad-prd`), and must not be invented by downstream agents:
 4. Exact homepage versus deeper-content allocation.
 5. Photography, imagery, and video availability.
 6. Final speaking content and destinations.
-7. Instagram destination.
+7. ~~Instagram destination.~~ Resolved in v0.8 (UX-028): @asprinkleofcode (powerlifting) and @orangecatwoodcraft (Birdhouses), each linked from the footer and from its dimension's own context.
 8. Final story selection and public-safe details.
 
 The Birdhouses care-guide destination is no longer open. In v0.7 it was resolved as a PDF
