@@ -2,7 +2,7 @@
 name: Alisha Sprinkle Korba Portfolio
 description: Visual and interaction design contract for the Alisha Sprinkle Korba professional portfolio.
 status: final
-version: 0.8
+version: 0.9
 updated: 2026-10-04
 mode: dark-only
 colors:
@@ -23,6 +23,10 @@ colors:
 typography:
   fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
   weights: { regular: 400, medium: 500, semibold: 600, bold: 700 }
+  # v0.9 (UX-030): anchors from the homepage mockup, applied to the global scale (§8).
+  identity: { size: "~3rem desktop / ~2.1rem mobile", weight: 700, lineHeight: 1.05, tracking: "0.02em" }
+  title: { size: "~1.35rem desktop / ~1.1rem mobile", weight: 600 }
+  headerBrand: { size: "~1rem", weight: 700, tracking: "0.02em" }
 rounded: { default: "0.5rem", control: "0.375rem", pill: "9999px" }
 spacing:
   note: "Existing Tailwind spacing scale; exact values are implementation-level."
@@ -34,7 +38,7 @@ components:
 
 Name, description, status, version, and date live in the YAML frontmatter above — the single source for this document's metadata.
 
-**Consumed by:** `PRD.md` v0.8, `EXPERIENCE.md` v0.11, `SPEC.md`, and `epics.md` all cite this document at v0.8; `ARCHITECTURE-SPINE.md` binds it at v0.8.
+**Consumed by:** `EXPERIENCE.md` v0.13 cites this document at v0.9. `PRD.md` v0.8, `SPEC.md`, and `epics.md` still cite v0.8, and `ARCHITECTURE-SPINE.md` binds v0.8. v0.9 (UX-030, homepage look matched to the mockup) leaves those one revision behind; see EXPERIENCE §24.
 
 ---
 
@@ -245,10 +249,15 @@ transparent background, which is effectively invisible on `background.primary`
 (`#1E1E2F`) — this is a contrast defect, not just a style preference. In the header, the
 icon recolors to **`brand.primary`** (`#E48FB1`, 6.9:1 on `background.primary`).
 `brand.primary` is already the identity token (§7: "identity, links, focus"), so this
-keeps the mark's color consistent with the same role it already plays for the name and
-links. *Implementation note:* a raster PNG can't be recolored with CSS alone — this
+keeps the mark's color consistent with the same role it plays for the professional title
+and links (§7a). *Implementation note:* a raster PNG can't be recolored with CSS alone — this
 needs either an SVG version of the icon or a CSS mask (`mask-image` using the PNG as the
 mask, filled with `brand.primary`). Technique is implementation-owned; the token is not.
+
+**Header brand text — DECIDED (v0.9, UX-030):** beside the mark, the header reads
+**"Alisha Korba"** in `text.primary`, ~1rem, weight 700, tracking ~0.02em. It is its own
+treatment, not a type-scale level, so it does not grow with §8 level 2. The rose lives in
+the mark beside it.
 
 **Favicon — DECIDED:** stays the **original, unrecolored** icon. A favicon renders in
 browser chrome (tabs, bookmarks, history), a context this product doesn't theme — it is
@@ -273,9 +282,9 @@ copy if a value changes.
 
 | Token role | Value | Source | Notes |
 |---|---|---|---|
-| `background.primary` | `#1E1E2F` | `--color-dark-800` | dominant surface |
+| `background.primary` | `#1E1E2F` | `--color-dark-800` | dominant surface: the page background on every route, under the ambient layer (§16). Replaces the legacy grey `--color-dark-600` on `body`, which is retired (v0.9, UX-030) |
 | `background.secondary` | `#2B2B3B` | `--color-dark-700` | hover, secondary button, raised panel |
-| `background.recessed` | `#0F0F15` | `--color-dark-900` | deepest sections, ambient layer |
+| `background.recessed` | `#0F0F15` | `--color-dark-900` | deepest sections, such as the footer (§15) |
 | `text.primary` | `#F8F8FA` | `--color-dark-50` | 15.4:1 on `background.primary` |
 | `text.secondary` | `#9C9CBA` | `--color-dark-300` | 6.2:1 on `background.primary`, 5.2:1 on `background.secondary`; replaces hardcoded `gray-300/400` |
 | `text.inverse` | `#1E1E2F` | `--color-dark-800` | text on `brand.primary` / `accent.secondary` fills (6.9:1 on both) |
@@ -301,7 +310,13 @@ inherited values.
 
 **AUTHORITATIVE**
 
-`brand.primary` (rose) is the identity color: the name, the primary call to action, focus.
+`brand.primary` (rose) is the identity color: the professional title, the brand mark, the
+active navigation link, links, the primary call to action, and focus.
+
+The name itself is `text.primary` (white) in both the Recognition block and the header.
+Inactive header navigation links are `text.secondary`; only the active link is rose.
+*Amended v0.9 (UX-030):* through v0.8, this rule made the name rose. The homepage mockup put
+the name in white with a rose title, and the owner chose the mockup.
 
 `accent.secondary` (periwinkle) carries *functional* emphasis only — capability signals,
 secondary calls to action, in-page highlights, "explore" affordances. It is **not** a
@@ -337,15 +352,20 @@ emphasis, 700 identity.
 
 | # | Level | Treatment | Repo anchor |
 |---|---|---|---|
-| 1 | Identity / name | ~`1.5rem`+, weight 700, `tracking-wide` (~0.02em) | footer brand `text-2xl font-semibold tracking-wide`; navbar brand `font-bold` |
-| 2 | Professional title | directly below identity, weight 500–600, sentence case (no all-caps) | new — subordinate to level 1 but immediately readable |
+| 1 | Identity / name | ~`3rem` desktop, ~`2.1rem` mobile, weight 700, line-height ~1.05, `tracking-wide` (~0.02em), `text.primary` | homepage mockup (v0.9, UX-030) |
+| 2 | Professional title | ~`1.35rem` desktop, ~`1.1rem` mobile, weight 600, `brand.primary`, ~10px below identity, sentence case (no all-caps) | homepage mockup (v0.9, UX-030) |
 | 3 | Section heading | weight 600, sentence case | new |
 | 4 | Story title | weight 600, smaller than section heading | new |
 | 5 | Supporting heading | `0.75rem`, weight 600, `uppercase`, `tracking-widest` (~0.14em) | footer title convention |
 | 6 | Body | `1rem`, weight 400, comfortable measure for deep stories | `text-base` |
 | 7 | Metadata | `0.875rem`, weight 400, `text.secondary` | `text-sm` (use the token, not raw `gray-400`) |
 
-Exact px sizes and line-heights for levels 2–4 are implementation-level within this hierarchy.
+Levels 1 and 2 are **global**: every page that shows the name and title uses these sizes,
+not just the homepage (v0.9, UX-030). These are target values; how sizes scale between
+mobile and desktop is implementation-level. Exact px sizes and line-heights for
+levels 3–4 are implementation-level within this hierarchy. The homepage positioning line
+uses level 6 (body, `1rem`) in `text.secondary`. The header brand text is not a scale
+level (§6 Header brand text).
 
 Typography must support rapid scanning and readable deep stories. Do not introduce
 typography solely to create visual novelty.
@@ -366,6 +386,11 @@ The layout should:
 - maintain clear visual hierarchy between summary and detail
 
 Exact spacing values remain implementation-level decisions unless established through the final visual system.
+
+**Homepage Recognition — DECIDED (v0.9, UX-030):** generous vertical space, as in the
+mockup: about 88px above and 72px below on desktop, 56px and 48px on mobile. The
+positioning line wraps at about 34ch. On mobile the text block and the headshot are both
+left-aligned.
 
 ---
 
@@ -416,8 +441,8 @@ The following are **conceptual component roles**, not mandatory implementation n
 | Speaking Item | Represents public speaking activity when available | AUTHORITATIVE |
 | External Link | Continues a professional or personal journey | AUTHORITATIVE |
 | Care Guide Link | Opens the Birdhouses care guide — a PDF hosted in the portfolio (PRD A-12, AD-20); visibly labeled as a PDF, with no outbound "leaves the site" marker (EXPERIENCE §13 Document Links) | DECIDED (PDF pending) |
-| Footer | Closing orientation and external paths: an icon-only row of LinkedIn, Instagram @asprinkleofcode, Instagram @orangecatwoodcraft, and GitHub (EXPERIENCE §13 Footer Links, UX-028) | DECIDED |
-| Ambient Layer | Ambient personality — currently a star field; the treatment may change in implementation (§16) | DECIDED (role) / DEFERRED (treatment) |
+| Footer | Closing orientation and external paths: an icon-only row of LinkedIn, Instagram @asprinkleofcode, Instagram @orangecatwoodcraft, and GitHub (EXPERIENCE §13 Footer Links, UX-028), on a `background.recessed` surface (§15) | DECIDED |
+| Ambient Layer | Ambient personality: a field of tiny, slowly twinkling stars on `background.primary` (§16) | DECIDED |
 
 Implementation names may change.
 
@@ -487,6 +512,11 @@ Hierarchy is communicated by **borders and background steps**
 stacked shadows. Elevation is limited to a single low `shadow`, plus `shadow-inner`
 for inset areas such as the footer.
 
+**Footer surface — DECIDED (v0.9, UX-030):** the footer sits on `background.recessed`
+with a 1px `border.default` top edge and a visible inset shadow
+(`inset 0 2px 6px rgb(0 0 0 / 0.5)`), as in the homepage mockup. Now that the page is
+`background.primary`, this step down is what separates the footer from the page.
+
 Any border that is the sole cue for an interactive element or an input uses
 `border.essential`; `border.default` (~1.5:1) is for decorative separation only.
 
@@ -531,10 +561,24 @@ preserved, and is instant under `prefers-reduced-motion` (see EXPERIENCE.md §13
 
 ### Reduced motion and ambient effects
 
-**DEFERRED** — to Architecture / Implementation.
+**DECIDED (treatment, v0.9, UX-030)**
 
-The team may keep the current star field or pivot to a different ambient treatment.
-That choice, and the exact reduced-motion behavior, are made during implementation.
+The ambient layer is a field of **tiny stars** on `background.primary`, uniform on every
+route, as in the homepage mockup:
+
+- **Stars:** about 1px, a few at 1.5px, sparse (the mockup shows roughly 10 per
+  420×520px area). No glow, no blur.
+- **Tints:** `text.primary` for most stars, with a few in `accent.secondary` and a few in
+  `brand.primary`. They stay faint because the layer's opacity is low, not because they
+  use special pale colors. No new tokens.
+- **Motion:** each star twinkles slowly and on its own phase (opacity roughly 0.25 → 0.8
+  over ~5s). Nothing drifts.
+- **Reduced motion:** the same field, static, at a fixed faint opacity.
+
+This replaces the Story 1.5 "breathing bokeh" (28 glowing pink dots on the legacy grey).
+The owner preferred the cleaner mockup look. Exact counts, opacities, and timings are
+implementation-level within the description above. Whether each navigation reshuffles the
+field is implementation-level too.
 
 These constraints stay **AUTHORITATIVE** regardless of the treatment chosen:
 
@@ -631,6 +675,10 @@ Do not:
 Resolved in v0.4: exact color values (§7), typography family and measurements (§8),
 shape and elevation (§15). Reduced-motion / ambient treatment is now **DEFERRED** to
 implementation with fixed constraints (§16).
+
+Resolved in v0.9 (UX-030): the homepage look now matches
+[`mockups/key-homepage.html`](mockups/key-homepage.html), and the ambient treatment is
+decided. See §6, §7, §7a, §8, §9, §15, and §16.
 
 The following remain intentionally unresolved. They are **product / content** decisions,
 owned by the PRD (`bmad-prd`), and must not be invented by downstream agents:

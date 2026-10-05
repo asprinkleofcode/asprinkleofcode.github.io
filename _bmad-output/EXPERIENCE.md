@@ -3,9 +3,9 @@
 **Name:** Alisha Sprinkle Korba Portfolio  
 **Description:** Experience contract defining the information architecture, journeys, interaction patterns, and accessibility behavior for the portfolio.  
 **Status:** Final  
-**Version:** 0.12  
+**Version:** 0.13  
 **Updated:** 2026-10-04  
-**Peer document:** `DESIGN.md` v0.8 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
+**Peer document:** `DESIGN.md` v0.9 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
 **Upstream:** `PRD.md` v0.8 — path labels (D-15), destinations (D-16/D-17), the Birdhouses naming (D-18), speaking status (A-13), the care guide (A-12), the audience re-ordering (D-21/D-22), the entry-context requirement (FR-24 / D-23), and the positioning statement (D-25) are consumed below.
 
 ---
@@ -199,7 +199,8 @@ sub-navigation, no progressive disclosure — and it is **identical on every pag
 including inside a deep story: no breadcrumb, no collapse-to-back-affordance. Depth is
 signaled inside the content, not by changing the chrome around it.
 
-Left to right: identity (logo + name) — **Home** — **Engineering** — **Leadership &
+Left to right: identity (logo + "Alisha Korba", styled per DESIGN.md §6 Header brand
+text) — **Home** — **Engineering** — **Leadership &
 Enablement** — **Beyond the Code**. Identity is a left-aligned brand mark, links sit to
 its right (conventional pattern, matches the existing `Header.tsx`). "Home" is kept as
 its own explicit link rather than relying on visitors recognizing the logo as clickable.
@@ -219,7 +220,9 @@ Links, UX-028).
 
 Reference: [`mockups/key-header.html`](mockups/key-header.html) shows the desktop row
 and the mobile collapsed / expanded states on the DESIGN.md dark palette. It is a visual
-reference only — this section wins on conflict.
+reference only — this section wins on conflict. It predates v0.13: for the brand text and
+link colors, the header in [`mockups/key-homepage.html`](mockups/key-homepage.html) is
+current (UX-030).
 
 The navigation must expose the exploration paths while maintaining professional clarity
 during the initial scan.
@@ -254,7 +257,9 @@ Reference: [`mockups/key-homepage.html`](mockups/key-homepage.html) shows the de
 mobile homepage on the DESIGN.md dark palette: header, Recognition with the D-25
 positioning statement, label-only Exploration, Evidence & Highlights, and footer. Content
 that is still open (§24 items 1–4) is drawn as dashed placeholders rather than invented.
-It is a visual reference only, and this section wins on conflict.
+It is a visual reference only, and this section wins on conflict. As of v0.13 (UX-030)
+the mockup is kept in step with the spines: when a spine changes the homepage's look,
+update the mockup in the same change.
 
 ---
 
@@ -278,7 +283,8 @@ pass, §24) — not invented here.
 (`asprinkleofcode/src/assets/alisha-sprinkle-korba-headshot.jpg`) sits in the Recognition
 block as a rounded-rectangle portrait. On desktop it sits to the **right** of the
 name / title / positioning statement. On mobile it stacks **below** that text, so the
-name and title are still the first things read (§4.3, DESIGN.md §4.3). It uses the
+name and title are still the first things read (§4.3, DESIGN.md §4.3). On mobile the text
+and the headshot are both **left-aligned**, not centered (UX-030). It uses the
 default radius and a `border.default` edge. It is identity, not decoration: it gets
 meaningful alt text (the name), not an empty `alt`. Exact dimensions and crop are
 implementation-level.
@@ -751,10 +757,9 @@ placeholder, a stock image, or an empty frame (§22 Photography).
 
 Core content and navigation remain fully usable without animation.
 
-The exact ambient-effect behavior is **DEFERRED** to implementation (see DESIGN.md §16).
-Regardless of which ambient treatment is chosen, a static, reduced-motion-safe fallback
-is mandatory, and the effect must never block, compete with, or be required to
-understand the experience.
+The ambient layer is tiny, slowly twinkling stars (DESIGN.md §16, UX-030). Under reduced
+motion the same field renders static. The fallback is mandatory, and the effect must
+never block, compete with, or be required to understand the experience.
 
 ---
 
@@ -1106,7 +1111,7 @@ gallery is also open (§9.3). Both are decided with the first real photos, in St
 | UX-008 | Powerlifting and Birdhouses are authentic personal dimensions | DECIDED |
 | UX-009 | Personal stories must not depend on forced engineering metaphors | AUTHORITATIVE |
 | UX-010 | Show the thinking, not the secrets | AUTHORITATIVE |
-| UX-011 | Ambient layer (currently a star field) is personality, not navigation; its treatment is DEFERRED to implementation with fixed constraints | DECIDED (role) / DEFERRED (treatment) |
+| UX-011 | Ambient layer is personality, not navigation. Its treatment was DEFERRED to implementation with fixed constraints until UX-030 decided it (tiny twinkling stars, DESIGN.md §16) | DECIDED |
 | UX-012 | WCAG 2.2 AA | AUTHORITATIVE |
 | UX-013 | Mobile is first-class | AUTHORITATIVE |
 | UX-014 | Speaking must use authentic material only | AUTHORITATIVE |
@@ -1114,7 +1119,7 @@ gallery is also open (§9.3). Both are decided with the first real photos, in St
 | UX-016 | Visual tokens (color, type, radius, elevation) | DECIDED in DESIGN.md v0.5 |
 | UX-017 | Performance budgets remain Architecture-owned | DEFERRED |
 | UX-018 | Summary → deep-story transition: ~180 ms cross-fade, context preserved, instant under reduced-motion | DECIDED |
-| UX-019 | Reduced-motion / ambient-effect behavior | DEFERRED to implementation (DESIGN.md §16) |
+| UX-019 | Reduced-motion / ambient-effect behavior: the star field renders static (UX-030, DESIGN.md §16) | DECIDED |
 | UX-020 | External + personal destinations: LinkedIn, GitHub, powerlifting IG, birdhouse-making IG (PRD D-16/D-17) | DECIDED — Instagram handles supplied in UX-028 |
 | UX-028 | Footer is an icon-only row: LinkedIn, Instagram @asprinkleofcode (powerlifting), Instagram @orangecatwoodcraft (Birdhouses), GitHub. The logo is the exit cue (no extra visible marker; new tab and an accessible name naming platform + handle). @orangecatwoodcraft turns apricot with a slight apricot glow on hover/focus only (`glow.woodcraft`, DESIGN.md §15). Closes PRD A-14 for Instagram (§13 Footer Links) | DECIDED |
 | UX-026 | Birdhouses care guide is a PDF hosted within the portfolio, opened by a same-origin link labeled as a PDF — not an outbound link (PRD A-12, AD-20; §13 Document Links) | DECIDED — PDF pending |
@@ -1124,6 +1129,7 @@ gallery is also open (§9.3). Both are decided with the first real photos, in St
 | UX-024 | The entry surface must be legible to someone arriving from a talk, without requiring a speaking surface to exist (PRD FR-24 / D-23) | DECIDED — surface treatment UX-owned |
 | UX-027 | Homepage headshot: existing headshot in Recognition as a portrait right of the text on desktop, stacked below the text on mobile (§6.2) | DECIDED |
 | UX-025 | Homepage allocation (PRD A-10 / C-6): section order Recognition → Exploration → Evidence & Highlights (§6.1); positioning statement folded into Recognition (§6.2); Exploration stays label-only (§6.3); each of the 3 paths gets ≥1 highlight line in §6.4 (Engineering + Leadership & Enablement each get their own evidence teaser, Beyond the Code gets a personal-hint teaser, not evidence); homepage personality composition = exactly that one hint, nothing more (§6.5) | DECIDED |
+| UX-030 | Homepage look matched to [`mockups/key-homepage.html`](mockups/key-homepage.html); spines stay authoritative and the mockup is synced to them. Navy page, twinkling stars, white name and rose title, larger global identity and title sizes, white header brand, recessed footer (DESIGN.md v0.9 §6–§16; here §6.1, §6.2, §14) | DECIDED |
 | UX-029 | Photography: web-ready exports live in `asprinkleofcode/src/assets/media/<folder>/`; per-page counts (about 15–22 for launch); work stories have no photo by default, with an optional, rare hero; capture guidance, public-safety rules, alt text, and loading (§22 Photography) | DECIDED — photos pending; visual treatment OPEN |
 
 ---
@@ -1182,6 +1188,15 @@ apricot glow on hover/focus (`DESIGN.md` v0.8 `glow.woodcraft`; icon colour amen
 Resolved in v0.12: where photos live, how many each page carries, and how they are
 chosen, credited, described, and loaded (§22 Photography, UX-029). This partly answers
 item 6 below: the rules are set, the photos themselves are still to come.
+
+Resolved in v0.13 (DESIGN.md v0.9): the homepage look now matches the mockup the owner
+preferred (UX-030), and the DEFERRED ambient treatment is decided (UX-011, UX-019).
+This changes finished work: Story 1.4 (header brand and nav colors, footer surface),
+Story 1.5 (ambient layer and page background), and Story 1.6 (Recognition colors,
+sizes, spacing, mobile alignment). `PRD.md`, `SPEC.md`, `epics.md`, and
+`ARCHITECTURE-SPINE.md` (whose Deferred table still lists the ambient treatment) now cite
+`DESIGN.md` v0.8 / `EXPERIENCE.md` v0.12, one revision behind. These are flagged for
+`bmad-correct-course` and the owning skills, not edited here.
 
 **UX design work still to do:** the visual treatment of story photos and the Birdhouses
 sequence-or-gallery presentation (§22 Photography). Both are decided with the first real
