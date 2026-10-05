@@ -15,6 +15,15 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-3-app-shell-routing-error-handling-navigation-behavior.md`
   summary: In Story 1.4, replace the footer copyright's `href="#"` (`asprinkleofcode/src/components/Footer/Footer.tsx:14`) so clicking it no longer acts as a raw hash navigation.
   evidence: Under `HashRouter`, clicking it sets the hash to `#`, which the router treats as a POP navigation to `/` with key `"default"`. That bypasses Story 1.3's forward-navigation scroll/focus handling. This predates Story 1.3, and Story 1.4 rebuilds the footer.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-header-footer-navigation.md`
+  summary: Stop flowbite's default theme classes from merging into the role-token theme slots, so dark-mode and gray defaults no longer leak into the header and footer. Examples are `dark:text-white` on the active nav link, `dark:hover:text-white` on footer icons, `focus:ring-gray-200` on the navbar toggle, and `sm:text-center dark:text-gray-400` on the copyright.
+  evidence: `createTheme` overrides are twMerged with flowbite defaults per slot. This build's `dark` variant compiles to `@media (prefers-color-scheme: dark)`, so visitors whose OS is in dark mode get raw palette colours instead of role tokens, against AD-10. This predates Story 1.4: the same slots merged the same defaults before. The fix is likely `clearTheme` or `applyTheme: "replace"` on the affected slots, plus a test that rendered header and footer carry no `gray-` or `dark:` classes.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-header-footer-navigation.md`
+  summary: Move the hard-coded GitHub project URL in `asprinkleofcode/src/pages/Landing/Hero.jsx:28` ("Follow the Build") into `src/lib/links.ts` and give it the outbound-link treatment, or drop it, when Story 1.6 rebuilds Landing.
+  evidence: `links.ts` is meant to hold every external URL (AD conventions), but this legacy button keeps its own literal and opens in the same tab without the new-tab notice.
+
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-5-ambient-layer.md`
   summary: Add a browser-level test that the ambient layer's dots have no animation under prefers-reduced-motion.
   evidence: Unit tests only check class names; jsdom applies no stylesheet, so deleting the `animation: none` rules would not fail any test.

@@ -1,0 +1,12 @@
+/* Visible "leaves the site" cue; sized to the link text and kept on its line. */
+.external-link {
+  white-space: nowrap;
+}
+
+.external-link__arrow {
+  display: inline-block;
+  width: 0.875em;
+  height: 0.875em;
+  margin-left: 0.125em;
+  vertical-align: -0.0625em;
+}
