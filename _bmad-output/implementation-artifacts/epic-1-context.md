@@ -15,6 +15,7 @@ This epic turns the existing Vite + React 19 portfolio (brownfield, GitHub Pages
 - Story 1.5: Ambient Layer
 - Story 1.6: Homepage Recognition & Discoverability
 - Story 1.7: Homepage Exploration Paths & Path Indexes
+- Story 1.8: Visual Alignment to the Homepage Mockup (UX-030). Built before 1.7, on the Story 1.6 branch.
 
 ## Requirements & Constraints
 
@@ -90,6 +91,7 @@ This epic turns the existing Vite + React 19 portfolio (brownfield, GitHub Pages
   - It has a static reduced-motion path.
   - The app must work if the layer never mounts.
   - `StarBackground`, `GradientWaves` and the Hero sparkles get folded into it or removed.
+  - Treatment (UX-030, `DESIGN.md` v0.9 §16): sparse ~1px stars (a few 1.5px), mostly `text.primary` with a few `accent.secondary` and `brand.primary`, each twinkling slowly (opacity ~0.25 → 0.8 over ~5s), no drift, no glow, on the `background.primary` page. Static under reduced motion. This replaces the 1.5 bokeh.
   - The visual treatment is left to implementation. The goal is "something visual and engaging."
 - **Static head (`index.html`):**
   - Expanded `Person` JSON-LD with `knowsAbout` and `sameAs`.
@@ -115,6 +117,7 @@ This epic turns the existing Vite + React 19 portfolio (brownfield, GitHub Pages
   - On mobile it collapses to a hamburger using flowbite `NavbarToggle`/`NavbarCollapse`.
   - No social icons.
   - The cupcake mark is recolored to `brand.primary` in the header with an SVG or CSS mask. The favicon stays the original.
+  - The brand text reads "Alisha Korba" in `text.primary`, ~1rem, weight 700, tracking ~0.02em, independent of `type-title`. Inactive nav links are `text.secondary`; the active link is `brand.primary` (UX-030).
 - **Footer:**
   - External and social links appear here, not in the header. Epic 4 stories also carry their own contextual Instagram link.
   - An icon-only row, in order: LinkedIn, Instagram @asprinkleofcode, Instagram @orangecatwoodcraft, GitHub. The platform logo is the exit cue, so there is no extra visible marker. Each icon opens in a new tab with `rel="noopener noreferrer"` and has an accessible name naming platform, handle and new tab (e.g. "Instagram @orangecatwoodcraft (opens in a new tab)").
@@ -122,12 +125,14 @@ This epic turns the existing Vite + React 19 portfolio (brownfield, GitHub Pages
   - Every other outbound link uses `target="_blank"` and `rel="noopener noreferrer"`, with a visible "leaves the site" affordance.
   - The copyright line and the existing icon-attribution link stay.
   - The footer is the only place for a low shadow or `shadow-inner`. Everywhere else, hierarchy comes from borders and background steps.
+  - It sits on `background.recessed` with a 1px `border.default` top edge and `inset 0 2px 6px rgb(0 0 0 / 0.5)` (UX-030).
 - **Homepage:** three stacked sections, in this order.
   1. **Recognition:**
      - Name, title and positioning line form one block.
      - The existing headshot (`src/assets/alisha-sprinkle-korba-headshot.jpg`) is a rounded-rectangle portrait with the default radius and a `border.default` edge.
      - On desktop it sits to the right of the text. On mobile it stacks below the text, so the name and title are read first.
      - Its alt text names Alisha; an empty `alt` is not acceptable.
+     - Look (UX-030): white name (`text.primary`, ~3rem desktop / ~2.1rem mobile), rose title (`brand.primary`, ~1.35rem / ~1.1rem, weight 600), body-size positioning line wrapping at ~34ch; ~88/72px vertical padding on desktop, ~56/48px on mobile; on mobile the text and the headshot are both left-aligned.
      - Dimensions and crop are up to the implementer.
   2. **Exploration:** the three path entries, label-only, with no teaser copy.
   3. **Evidence & Highlights:**
@@ -145,7 +150,7 @@ This epic turns the existing Vite + React 19 portfolio (brownfield, GitHub Pages
 ## Cross-Story Dependencies
 
 - 1.1 (done) provides the build gate, tokens, TS entry files and smoke-test harness. 1.2 (done) provides the registry and schema. 1.3 (done) provides the shell, routes, error boundary, scroll and focus handling, and `usePrefersReducedMotion`. Stories 1.4–1.7 build on these.
-- 1.4's Header and Footer and 1.5's AmbientLayer mount in the 1.3 shell. 1.6 and 1.7 both build the Landing page: 1.6 owns Recognition and the static head, 1.7 owns Exploration, Evidence & Highlights and the three path indexes.
+- 1.4's Header and Footer and 1.5's AmbientLayer mount in the 1.3 shell. 1.6 and 1.7 both build the Landing page: 1.6 owns Recognition and the static head, 1.7 owns Exploration, Evidence & Highlights and the three path indexes. 1.8 revises the look of 1.4 and 1.5 (page background, ambient layer, header colors, footer surface, global type levels 1–2) and lands before 1.7.
 - 1.6's identity block must match the `index.html` JSON-LD, and the smoke test enforces it.
 - Epic 1 blocks Epics 2–4:
   - Epic 2 replaces the work detail placeholder and fills the Engineering teaser.
