@@ -3,7 +3,7 @@
 **Name:** Alisha Sprinkle Korba Portfolio  
 **Description:** Experience contract defining the information architecture, journeys, interaction patterns, and accessibility behavior for the portfolio.  
 **Status:** Final  
-**Version:** 0.11  
+**Version:** 0.12  
 **Updated:** 2026-10-04  
 **Peer document:** `DESIGN.md` v0.8 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
 **Upstream:** `PRD.md` v0.8 — path labels (D-15), destinations (D-16/D-17), the Birdhouses naming (D-18), speaking status (A-13), the care guide (A-12), the audience re-ordering (D-21/D-22), the entry-context requirement (FR-24 / D-23), and the positioning statement (D-25) are consumed below.
@@ -457,6 +457,8 @@ Powerlifting is a meaningful personal story.
 
 The experience should allow visitors to understand the journey and context rather than reducing it to a set of numbers.
 
+Photos: what to capture, where they live, and how many — §22 Photography (UX-029).
+
 ---
 
 ### 9.3 Birdhouses
@@ -490,6 +492,8 @@ Destinations — **DECIDED**:
   link is rendered (§14 Missing Content).
 
 The exact content composition remains OPEN.
+
+Photos: what to capture, where they live, and how many — §22 Photography (UX-029).
 
 ---
 
@@ -736,6 +740,9 @@ Do not render empty visual shells for content that does not exist.
 
 If optional content is unavailable, the experience should gracefully omit or simplify that surface.
 
+The same applies to photos: a photo slot with no real photo is left out. It never shows a
+placeholder, a stock image, or an empty frame (§22 Photography).
+
 ---
 
 ### Reduced Motion
@@ -799,6 +806,7 @@ Minimum experience requirements:
 - readable text
 - accessible external links
 - pointer targets at least 24 × 24 CSS px (SC 2.5.8)
+- descriptive alt text on every meaningful photo (§22 Photography)
 
 Three patterns inherited from the existing codebase (focus-ring alpha, primary-button
 text contrast, secondary-fill text contrast) do not meet this floor and are logged as
@@ -844,6 +852,10 @@ UX owns the experience expectation:
 - decorative effects must not block content
 - media must not make the experience feel sluggish
 - interaction should feel intentional rather than excessive
+
+The photo side of the media strategy is now set: per-page photo counts, export size, and
+loading behavior are in §22 Photography (UX-029). Architecture can set image budgets
+against it.
 
 ---
 
@@ -1008,6 +1020,76 @@ Two strong stories are preferable to three weak stories.
 
 The current product decisions explicitly establish this quality-over-quota rule.
 
+### Photography
+
+**DECIDED (UX-029)**
+
+Photos show Alisha and her process. They are evidence of a real person doing real
+things, not decoration, so §21 applies: no stock images and no placeholders. A slot with
+no real photo is left out (§14 Missing Content).
+
+**Where photos live.** Web-ready photo exports go in one place:
+`asprinkleofcode/src/assets/media/<folder>/`, with one folder per dimension or path:
+`powerlifting/`, `birdhouses/`, and `engineering/` or `leadership/` only if a work story
+ever uses a photo. Content refers to a photo by its path inside `media/` (for example
+`birdhouses/01-raw-gourd.webp`); how that path resolves is `ARCHITECTURE-SPINE.md`
+Conventions → Images. The existing headshot and `pl-1.jpg` / `pl-2.jpg` stay where they
+are (AGENTS.md). Camera originals stay out of the repo. The practical export and naming
+steps are in `asprinkleofcode/src/assets/media/README.md`.
+
+**How many.**
+
+| Surface | Photos | Notes |
+|---|---|---|
+| Homepage | 1 | The existing headshot (§6.2, UX-027). No other photos. |
+| Engineering / Leadership stories | 0 by default | Diagrams over photos (PRD A-11). A story may carry one hero photo when a photo really helps, such as a speaking shot. Rare, never required. |
+| `/beyond` index | up to 2 | One per dimension card, only if the card shows an image. |
+| Powerlifting | 1 hero + 4–6 | |
+| Birdhouses | 1 hero + 5–7 process + 3–6 finished pieces | The process photos form one sequence (§9.3). |
+
+That is about 15–22 photos for launch. Gather two to three times that and cut hard. The
+counts are ceilings, not quotas: a few strong photos beat many weak ones (§22). Each
+dimension's Instagram already covers "see more" (§9.3, §13 External Links).
+
+**What to capture.**
+
+- **Powerlifting:** the journey over time (§9.2) — training, setbacks, progress — not
+  only competition lifts.
+- **Birdhouses:** one gourd photographed at every stage, from the same angle against the
+  same background, so the set reads as one transformation (§9.3). Then finished pieces,
+  ideally at least one in use.
+- **Every set:** a mix of wide (Alisha in the space), medium (Alisha doing the work), and
+  close-up (hands, tools, texture).
+
+**Quality floor.** In sharp focus on the subject. Source at least 2000 px on the long
+edge. Enough space around the subject that the same photo can crop wide for desktop and
+taller for mobile (§15). The same light and editing within a set; no heavy filters. The
+site is dark-only (`background.primary`), so a bright, white-background photo stands out
+strongly against it. Treat that as a choice made per photo, not an accident.
+
+**Public-safety rules — AUTHORITATIVE.** The repo and these planning documents are
+public (`ARCHITECTURE-SPINE.md` AD-4):
+
+- location metadata (EXIF / GPS) is removed before a photo is committed;
+- nothing from work appears in a photo: screens, badges, whiteboards, documents (§12);
+- other people are cropped out or have agreed to appear (gym members, competition
+  spectators, birdhouse customers);
+- a photo someone else took, especially a competition photographer's, needs their
+  permission, and credit if they ask for it.
+
+**Alt text and captions.** Every meaningful photo has alt text describing what the photo
+shows that matters to the story. Alt text is written when the photo is chosen, and is
+never the file name or empty. Captions are optional and visible, and never the only place
+information lives. A purely decorative image is rare and uses empty alt text.
+
+**Loading.** Above-the-fold photos (the headshot, a page's hero) load straight away.
+Everything below the fold loads lazily (§18). A photo never shifts the layout as it loads.
+
+**Not decided yet.** The visual treatment of story photos (aspect ratios, radius, edge)
+belongs to `DESIGN.md` and is still open; only the headshot's treatment is decided
+(UX-027). Whether the Birdhouses process photos appear as a step-by-step sequence or as a
+gallery is also open (§9.3). Both are decided with the first real photos, in Story 4.1.
+
 ---
 
 ## 23. Decision Log
@@ -1042,6 +1124,7 @@ The current product decisions explicitly establish this quality-over-quota rule.
 | UX-024 | The entry surface must be legible to someone arriving from a talk, without requiring a speaking surface to exist (PRD FR-24 / D-23) | DECIDED — surface treatment UX-owned |
 | UX-027 | Homepage headshot: existing headshot in Recognition as a portrait right of the text on desktop, stacked below the text on mobile (§6.2) | DECIDED |
 | UX-025 | Homepage allocation (PRD A-10 / C-6): section order Recognition → Exploration → Evidence & Highlights (§6.1); positioning statement folded into Recognition (§6.2); Exploration stays label-only (§6.3); each of the 3 paths gets ≥1 highlight line in §6.4 (Engineering + Leadership & Enablement each get their own evidence teaser, Beyond the Code gets a personal-hint teaser, not evidence); homepage personality composition = exactly that one hint, nothing more (§6.5) | DECIDED |
+| UX-029 | Photography: web-ready exports live in `asprinkleofcode/src/assets/media/<folder>/`; per-page counts (about 15–22 for launch); work stories have no photo by default, with an optional, rare hero; capture guidance, public-safety rules, alt text, and loading (§22 Photography) | DECIDED — photos pending; visual treatment OPEN |
 
 ---
 
@@ -1096,8 +1179,14 @@ birdhouse-making one; both sit in the footer, the woodcraft icon turning apricot
 apricot glow on hover/focus (`DESIGN.md` v0.8 `glow.woodcraft`; icon colour amended
 2026-10-04). This closes PRD A-14 for Instagram.
 
-**UX design work still to do:** none remaining. Both items tracked in this section
-since v0.6 (nav structure, homepage allocation) are now resolved.
+Resolved in v0.12: where photos live, how many each page carries, and how they are
+chosen, credited, described, and loaded (§22 Photography, UX-029). This partly answers
+item 6 below: the rules are set, the photos themselves are still to come.
+
+**UX design work still to do:** the visual treatment of story photos and the Birdhouses
+sequence-or-gallery presentation (§22 Photography). Both are decided with the first real
+photos, in Story 4.1. Both items tracked in this section since v0.6 (nav structure,
+homepage allocation) are resolved.
 
 **Product / content decisions still open** (owned by `bmad-prd` §14.3; downstream must
 not invent them):
@@ -1107,7 +1196,8 @@ not invent them):
 3. Leadership & Enablement story selection (2–3).
 4. Public-safe details for each story.
 5. Speaking topics and events, once material is ready.
-6. Photography / video available for the Birdhouses dimension and story imagery.
+6. Photography / video available for the Birdhouses dimension and story imagery. Where
+   photos go and how many are decided (§22 Photography, UX-029); the photos are pending.
 7. The care-guide PDF itself, and its link label wording (§13 Document Links).
 
 ---

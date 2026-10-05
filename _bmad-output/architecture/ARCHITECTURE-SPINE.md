@@ -11,7 +11,7 @@ updated: '2026-10-04'
 binds:
   - PRD.md v0.8 (FR-1..FR-24, NFR-1..NFR-5, C-1..C-6)
   - DESIGN.md v0.8
-  - EXPERIENCE.md v0.11
+  - EXPERIENCE.md v0.12
 sources:
   - _bmad-output/PRD.md
   - _bmad-output/specs/spec-portfolio/SPEC.md
@@ -26,7 +26,7 @@ companions: []
 
 This spine fixes the invariants that keep separately built parts of the portfolio consistent. Structural detail (the source tree, the full data shape) is **seed** — accurate at authoring, owned by the code once it exists. Rationale lives in `.memlog.md`, not here.
 
-It augments **PRD.md v0.8** at feature altitude. `DESIGN.md v0.8` and `EXPERIENCE.md v0.11` remain authoritative for their domains; this spine defers to them and never overrides them.
+It augments **PRD.md v0.8** at feature altitude. `DESIGN.md v0.8` and `EXPERIENCE.md v0.12` remain authoritative for their domains; this spine defers to them and never overrides them.
 
 ---
 
@@ -194,13 +194,13 @@ graph LR
 | Concern | Convention |
 | --- | --- |
 | File / component naming | Component per folder: `src/components/<Name>/<Name>.tsx` + `<Name>.css`. Route targets: `src/pages/<Target>/<Target>.tsx`. Content files: kebab-case slug `.mdx`. Helpers: `src/lib/<camelCase>.ts`. |
-| Frontmatter keys | `work`: `type`, `title`, `path` (`engineering`\|`leadership`), `slug?`, `summary` (one-liner), `role`, `capabilities: Capability[]`, `date?`, `hero?`, `featured?: number`, `draft?: boolean`. `personal`: `type`, `title`, `slug?`, `summary`, `date?`, `hero?`, `links?: { label, href }[]`, `pdf?: string` (static asset path, AD-20), `featured?: number`, `draft?: boolean`, `listed?: boolean` (default `true`). Unknown keys rejected by the schema. |
+| Frontmatter keys | `work`: `type`, `title`, `path` (`engineering`\|`leadership`), `slug?`, `summary` (one-liner), `role`, `capabilities: Capability[]`, `date?`, `hero?: { src, alt }`, `featured?: number`, `draft?: boolean`. `personal`: `type`, `title`, `slug?`, `summary`, `date?`, `hero?: { src, alt }`, `links?: { label, href }[]`, `pdf?: string` (static asset path, AD-20), `featured?: number`, `draft?: boolean`, `listed?: boolean` (default `true`). Unknown keys rejected by the schema. |
 | Downloadable / viewable documents | Static assets only, under `public/downloads/<slug>.pdf`, referenced via `pdf` on a dedicated `listed: false` `personal` entry (AD-20, AD-2) — never merged onto the dimension's own entry, never a `personal.links` item. Plain `<a href>`, no `target`/`rel`/`download`; optional inline `<iframe>`/`<object>` preview with an accessible name (AD-15). Visible PDF marker in the link's accessible name (EXPERIENCE §13 Document Links). Build fails if a non-draft `pdf` path has no committed file. No server, no PDF-viewer dependency for MVP. |
 | Capability vocabulary | `capabilities` draws from one controlled union, aligned to PRD D-4 / the evidence model: `business-to-engineering`, `ownership`, `engineering-judgment`, `ambiguity`, `enablement`. Extending the list is a deliberate edit to `frontmatter.ts`, not an ad-hoc string. |
 | Index ordering | A path index lists `featured` stories first (ascending `featured`), then the rest by `date` descending, then by `title`. Ties *within* the featured set fall through to the same `date` descending, then `title` tie-break — ordering is total, so two surfaces never order the same stories differently. Same rule for homepage teasers. |
 | Colour & tokens | Semantic role tokens only (AD-10). `status-*` always paired with a non-colour cue (AD-10). |
 | External URLs & outbound links | URL literals only — in content frontmatter (`personal.links`) or `src/lib/links.ts`. No secrets, no `.env`, no runtime config (see Non-goals). `index.html` already carries the real GitHub and LinkedIn `sameAs` URLs — ratify those, don't re-ask. The Instagram handles are supplied (PRD A-14, EXPERIENCE v0.11 UX-028): `https://www.instagram.com/asprinkleofcode/` (powerlifting) and `https://www.instagram.com/orangecatwoodcraft/` (birdhouse-making). Every outbound link opens with `target="_blank"` + `rel="noopener noreferrer"` and a visible "leaves the site" affordance (EXPERIENCE §13), except the footer icon row, where the platform logo is the cue and the accessible name says it opens in a new tab (EXPERIENCE §13 Footer Links). |
-| Images | Explicit `width`/`height` (CLS), `loading="lazy"` below the fold, `webp`/`avif`, sized to display. Never modify or delete existing media in `src/assets/` or `public/` (AGENTS.md) — add only. |
+| Images | Explicit `width`/`height` (CLS), `loading="lazy"` below the fold, `webp`/`avif`, sized to display. Never modify or delete existing media in `src/assets/` or `public/` (AGENTS.md) — add only. **Content photos** (EXPERIENCE v0.12 §22 Photography, UX-029) live only under `src/assets/media/<folder>/` (`powerlifting/`, `birdhouses/`, and `engineering/` or `leadership/` only if needed), as web-ready exports — camera originals are never committed. Content names a photo by its path inside `media/` (e.g. `birdhouses/01-raw-gourd.webp`): frontmatter `hero` is `{ src, alt }` with `src` in that form, and in-body photos go through one sanctioned MDX photo block (AD-8) that takes the same `src` plus a required `alt`. One helper resolves the path via `import.meta.glob` over `src/assets/media/`, so Vite fingerprints the file; an unresolved `src` fails the build (frontmatter validation, AD-2) or the test run — it never ships as a broken image. The existing headshot and `pl-*.jpg` stay where they are and are imported directly. |
 | Third-party embeds (YouTube, Google Drive) | Click-to-load facade (poster + play control; real `<iframe>` only on interaction). Never auto-loaded, never on the homepage. |
 | Errors & state | No state library — router + local component state + the flowbite `ThemeProvider` only. Error handling per AD-16. |
 | Motion | Reduced-motion via `usePrefersReducedMotion` only (AD-13). No transition may gate content access. |
@@ -252,6 +252,8 @@ asprinkleofcode/
     content/
       work/*.mdx               # Engineering + Leadership stories (path: in frontmatter)
       personal/*.mdx           # Beyond the Code dimensions
+    assets/
+      media/<folder>/*.webp     # content photos, web-ready exports only (Conventions → Images, UX-029)
     lib/
       registry.ts              # import.meta.glob loader, derived summary index (AD-5, AD-6)
       frontmatter.ts           # work | personal schemas, build-time validation (AD-2)
@@ -331,7 +333,7 @@ Single environment (production). No staging or PR-preview environment. Pre-merge
 | Item | Why it can wait | Revisit when |
 | --- | --- | --- |
 | Ambient-layer **treatment** (stars / waves / new; uniform vs per-route) | DESIGN §16 / EXPERIENCE §14 hand it to implementation under fixed constraints; cheap to change behind the `<AmbientLayer>` boundary (AD-12); blocks no story work. Design goal: "something visual and engaging." | A design/Stitch exploration (DESIGN §22) lands a direction. |
-| Media-dependent performance numbers (image budgets, concrete bundle ceiling) | PRD A-8 defers until final content/media strategy exists. Guardrails are set (AD-6, Conventions). | Media strategy for the Birdhouses dimension + story imagery is decided (PRD §14.3 #8). |
+| Media-dependent performance numbers (image budgets, concrete bundle ceiling) | PRD A-8 defers until final content/media strategy exists. Guardrails are set (AD-6, Conventions). | Media strategy for the Birdhouses dimension + story imagery is decided (PRD §14.3 #8). Photo counts and export size are now set (EXPERIENCE v0.12 §22 Photography, UX-029); set the image budget once the photos are committed. |
 | `frontmatter.ts` validation mechanism (hand-rolled guard vs `zod`) | Schema is tiny; either works; low-dependency ethos leans hand-rolled. Not a divergence risk — the schema shape is fixed in Conventions. | The baseline story implements it. |
 | Custom in-page PDF viewer (PDF.js-style library) for the Birdhouses care guide | AD-20's direct-link / `<iframe>`-`<object>` approach already satisfies "downloadable" and "viewable" with zero new dependency; a richer in-page reader is a nice-to-have, not required for MVP. | The plain static-asset preview proves insufficient in practice. |
 | Speaking surface (FR-18) | Conditional — no public-safe material yet (PRD A-13). When built, it is another `personal`-adjacent surface or a small dedicated page under the same rules, added on top of a complete entry surface (AD-18). Post-talk arrivals are served by FR-24 meanwhile, which does not wait on it (PRD D-23). | Public-safe speaking content exists. |
