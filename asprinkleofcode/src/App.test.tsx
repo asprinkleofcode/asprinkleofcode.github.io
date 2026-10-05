@@ -5,6 +5,7 @@ import { MemoryRouter, useNavigate, type NavigateFunction } from "react-router";
 import indexHtml from "../index.html?raw";
 import App from "./App";
 import { IDENTITY } from "./lib/identity";
+import { expectNoFlowbiteDefaults } from "./test/expectNoFlowbiteDefaults";
 import type { Entry } from "./lib/registry";
 import type { PersonalFrontmatter, WorkFrontmatter } from "./lib/frontmatter";
 
@@ -323,11 +324,18 @@ describe("App smoke test", () => {
     });
   });
 
+  it("applies the theme's replace map, so the header and footer carry no flowbite dark:/gray- defaults", async () => {
+    renderAt("/");
+    await h1(IDENTITY.name);
+    expectNoFlowbiteDefaults(screen.getByRole("navigation", { name: "Main" }));
+    expectNoFlowbiteDefaults(screen.getByRole("contentinfo"));
+  });
+
   it("mounts exactly one ambient layer across route changes", async () => {
     renderAt("/");
     await h1(IDENTITY.name);
     expect(document.querySelectorAll(".ambient-layer")).toHaveLength(1);
-    const field = () => (document.querySelector(".ambient-layer__dot") as HTMLElement).style.cssText;
+    const field = () => (document.querySelector(".ambient-layer__star") as HTMLElement).style.cssText;
     let previous = field();
     // Not `/about`: its h1 is the same name as the homepage's, so awaiting it would not wait for the route.
     for (const [route, heading] of [["/leadership", "Leadership & Enablement"], ["/engineering", "Engineering"], ["/nope", "Page not found"]]) {

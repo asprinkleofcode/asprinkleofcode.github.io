@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { ThemeProvider } from "flowbite-react";
 import { MemoryRouter, useLocation, useNavigationType } from "react-router";
-import { aSprinkleOfCodeTheme } from "../../theme/aSprinkleOfCodeTheme";
+import { aSprinkleOfCodeApplyTheme, aSprinkleOfCodeTheme } from "../../theme/aSprinkleOfCodeTheme";
+import { expectNoFlowbiteDefaults } from "../../test/expectNoFlowbiteDefaults";
 import Header from "./Header";
 
 let lastNavigation = "";
@@ -15,7 +16,7 @@ function LocationProbe() {
 
 function renderAt(route: string) {
   return render(
-    <ThemeProvider theme={aSprinkleOfCodeTheme}>
+    <ThemeProvider theme={aSprinkleOfCodeTheme} applyTheme={aSprinkleOfCodeApplyTheme}>
       <MemoryRouter initialEntries={[route]}>
         <Header />
         <LocationProbe />
@@ -81,6 +82,30 @@ describe("Header", () => {
     expect(active.className.split(/\s+/)).toContain("md:underline");
     const inactive = screen.getByRole("link", { name: "Engineering" });
     expect(inactive.className.split(/\s+/)).not.toContain("md:underline");
+  });
+
+  it("shows a white wordmark independent of type-title, and secondary-text inactive links (UX-030)", () => {
+    renderAt("/engineering");
+    const brandText = within(nav()).getByText("Alisha Korba");
+    const brandClasses = brandText.className.split(/\s+/);
+    expect(brandClasses).toEqual(expect.arrayContaining(["text-base", "tracking-[0.02em]"]));
+    expect(brandClasses).not.toContain("type-title");
+    // Colour comes from the navbar.brand slot on the brand link.
+    expect(within(nav()).getAllByRole("link")[0].className.split(/\s+/)).toContain("text-text-primary");
+
+    const active = screen.getByRole("link", { name: "Engineering" }).className.split(/\s+/);
+    expect(active).toContain("md:text-brand-primary");
+    for (const name of ["Home", "Leadership & Enablement", "Beyond the Code"]) {
+      const inactive = screen.getByRole("link", { name }).className.split(/\s+/);
+      expect(inactive, name).toContain("text-text-secondary");
+      expect(inactive, name).not.toContain("text-text-primary");
+    }
+  });
+
+  it("renders no flowbite dark-mode or gray palette classes, so OS dark mode keeps the role tokens", () => {
+    renderAt("/engineering");
+    fireEvent.click(screen.getByRole("button", { name: "Open main menu" }));
+    expectNoFlowbiteDefaults(nav());
   });
 
   it("gives every interactive element the solid focus ring", () => {

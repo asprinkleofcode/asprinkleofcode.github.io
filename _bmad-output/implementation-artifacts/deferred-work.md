@@ -43,3 +43,19 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-6-recognition-color-and-positioning.md`
   summary: When Story 1.8 lands on this branch, check `/` in a browser at 375px and 1280px: Recognition name ~2.1rem/~3rem (700, line-height ~1.05), title ~1.1rem/~1.35rem (600, rose), and the 56/48 → 88/72px padding, 40px gap and left-aligned mobile layout.
   evidence: Story 1.6's UX-030 AC includes level 1/2 sizes, which arrive only with Story 1.8's `theme.css` change. jsdom applies no CSS, so neither the sizes nor the Tailwind v4 dynamic spacing utilities (`pt-22`, `pb-18`, `mt-5.5`) can be caught by unit tests; only a manual or browser check verifies them.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-8-visual-alignment-to-homepage-mockup.md`
+  summary: Resolved by Story 1.8: the Story 1.4 item on flowbite `dark:` and `gray-` defaults leaking into the header and footer theme slots.
+  evidence: `aSprinkleOfCodeApplyTheme` (`asprinkleofcode/src/theme/aSprinkleOfCodeTheme.ts`) sets `"replace"` on every navbar and footer slot the theme defines and is passed to `ThemeProvider` in `App.tsx`. `Header.test.tsx` and `Footer.test.tsx` assert no rendered element carries a `dark:` or `gray-` class.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-8-visual-alignment-to-homepage-mockup.md`
+  summary: Stop flowbite `dark:` defaults leaking outside the header and footer (Avatar and Carousel on legacy `/about`, the error-fallback Button), ideally site-wide with `@custom-variant dark (&:where(.dark, .dark *));` in `index.css` instead of per-component `applyTheme`.
+  evidence: Story 1.8's `aSprinkleOfCodeApplyTheme` replaces only the navbar and footer slots; other flowbite components still merge defaults with `dark:` palette classes, which this build applies under OS dark mode.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-8-visual-alignment-to-homepage-mockup.md`
+  summary: Declare `:root { color-scheme: dark; }` so native scrollbars, form controls and autofill match the always-dark page for visitors in OS light mode.
+  evidence: Nothing in `index.html` or `src/` sets `color-scheme`; the page is dark navy (and was dark grey before Story 1.8), so light native controls can appear on it.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-8-visual-alignment-to-homepage-mockup.md`
+  summary: Resolved by Story 1.8: the Story 1.6 browser check of Recognition level 1/2 sizes and spacing (name 33.6px/48px, title 17.6px/21.6px at 600, padding 56/48 and 88/72, left-aligned mobile) passed on `vite preview`.
+  evidence: Measured computed styles at 375px and 1280px after Story 1.8's `theme.css` change; see the Implementation Notes in the Story 1.8 spec.

@@ -35,7 +35,7 @@
   /* Background */
   --background-primary: #1E1E2F;   /* dark-800 — dominant surface */
   --background-secondary: #2B2B3B; /* dark-700 — hover, secondary button, raised panel */
-  --background-recessed: #0F0F15;  /* dark-900 — deepest sections, ambient layer */
+  --background-recessed: #0F0F15;  /* dark-900 — deepest sections such as the footer */
 
   /* Text */
   --text-primary: #F8F8FA;   /* dark-50 */

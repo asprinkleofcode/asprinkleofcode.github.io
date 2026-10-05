@@ -2,7 +2,7 @@ import "./App.css";
 import { lazy, Suspense, useLayoutEffect, useRef } from "react";
 import { ThemeProvider } from "flowbite-react";
 import { Route, Routes, useLocation, useNavigationType } from "react-router";
-import { aSprinkleOfCodeTheme } from "./theme/aSprinkleOfCodeTheme";
+import { aSprinkleOfCodeApplyTheme, aSprinkleOfCodeTheme } from "./theme/aSprinkleOfCodeTheme";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import AmbientLayer from "./components/AmbientLayer/AmbientLayer";
@@ -43,7 +43,7 @@ function App() {
   const settle = useNavigationScroll(mainRef);
 
   return (
-    <ThemeProvider theme={aSprinkleOfCodeTheme}>
+    <ThemeProvider theme={aSprinkleOfCodeTheme} applyTheme={aSprinkleOfCodeApplyTheme}>
       <AmbientBoundary>
         {/* Keyed per navigation so every page gets a freshly shuffled field. */}
         <AmbientLayer key={location.key} />

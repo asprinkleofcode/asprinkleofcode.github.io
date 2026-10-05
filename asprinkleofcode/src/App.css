@@ -2,9 +2,10 @@
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
 
+/* Page surface (AD-10, DESIGN §7 / UX-030): role tokens only. */
 body {
-  background: var(--color-dark-600);
-  color: var(--color-dark-50);
+  background: var(--background-primary);
+  color: var(--text-primary);
 }
 
 h1 {

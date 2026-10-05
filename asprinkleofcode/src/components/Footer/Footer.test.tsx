@@ -2,13 +2,14 @@ import { describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import { ThemeProvider } from "flowbite-react";
 import indexHtml from "../../../index.html?raw";
-import { aSprinkleOfCodeTheme } from "../../theme/aSprinkleOfCodeTheme";
+import { aSprinkleOfCodeApplyTheme, aSprinkleOfCodeTheme } from "../../theme/aSprinkleOfCodeTheme";
 import { GITHUB_URL, INSTAGRAM_POWERLIFTING_URL, LINKEDIN_URL } from "../../lib/links";
+import { expectNoFlowbiteDefaults } from "../../test/expectNoFlowbiteDefaults";
 import Footer from "./Footer";
 
 function renderFooter() {
   return render(
-    <ThemeProvider theme={aSprinkleOfCodeTheme}>
+    <ThemeProvider theme={aSprinkleOfCodeTheme} applyTheme={aSprinkleOfCodeApplyTheme}>
       <Footer />
     </ThemeProvider>
   );
@@ -27,6 +28,26 @@ describe("Footer", () => {
   it("is the contentinfo landmark", () => {
     renderFooter();
     expect(screen.getByRole("contentinfo").tagName).toBe("FOOTER");
+  });
+
+  it("sits on the recessed surface with a top border and inset shadow (UX-030)", () => {
+    renderFooter();
+    const classes = screen.getByRole("contentinfo").className.split(/\s+/);
+    expect(classes).toEqual(
+      expect.arrayContaining([
+        "bg-background-recessed",
+        "border-t",
+        "border-border-default",
+        "shadow-recessed-inset",
+      ])
+    );
+    expect(classes).not.toContain("bg-background-primary");
+    expect(classes).not.toContain("shadow-inner");
+  });
+
+  it("renders no flowbite dark-mode or gray palette classes, so OS dark mode keeps the role tokens", () => {
+    renderFooter();
+    expectNoFlowbiteDefaults(screen.getByRole("contentinfo"));
   });
 
   it("renders the four social icons in order with names, href, target and rel", () => {
