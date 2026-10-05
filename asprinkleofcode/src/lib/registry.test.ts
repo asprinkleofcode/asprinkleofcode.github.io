@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { MDXModule } from "mdx/types";
 import type { Frontmatter, PersonalFrontmatter, WorkFrontmatter } from "./frontmatter";
-import { buildIndex, entries, getEntry, getPathEntries, type BodyLoader } from "./registry";
+import { buildIndex, entries, getEntry, getFeaturedEntry, getPathEntries, type BodyLoader } from "./registry";
 
 const loader: BodyLoader = () => Promise.resolve({ default: () => null } as unknown as MDXModule);
 
@@ -96,6 +96,39 @@ describe("buildIndex", () => {
     expect(getPathEntries("beyond", built).map((e) => e.slug)).toEqual(["garden"]);
     expect(getPathEntries("engineering", built).map((e) => e.slug)).toEqual(["foo"]);
     expect(getEntry("leadership", "foo", built)).toBeUndefined();
+  });
+});
+
+describe("getFeaturedEntry", () => {
+  it("returns undefined for an empty index", () => {
+    expect(getFeaturedEntry("engineering", [])).toBeUndefined();
+  });
+
+  it("returns undefined when the path has only unfeatured entries", () => {
+    const built = index({
+      "../content/work/a.mdx": work({ title: "A" }),
+      "../content/work/b.mdx": work({ title: "B", path: "leadership", featured: 1 }),
+    });
+    expect(getFeaturedEntry("engineering", built)).toBeUndefined();
+  });
+
+  it("picks the lowest featured number in the path", () => {
+    const built = index({
+      "../content/work/two.mdx": work({ title: "Two", featured: 2 }),
+      "../content/work/one.mdx": work({ title: "One", featured: 1 }),
+      "../content/work/plain.mdx": work({ title: "Plain" }),
+    });
+    expect(getFeaturedEntry("engineering", built)?.slug).toBe("one");
+  });
+
+  it("skips unlisted entries", () => {
+    const built = index({
+      "../content/personal/care.mdx": personal({ listed: false, featured: 1 }),
+      "../content/personal/garden.mdx": personal({ featured: 2 }),
+    });
+    expect(getFeaturedEntry("beyond", built)?.slug).toBe("garden");
+    const onlyUnlisted = index({ "../content/personal/care.mdx": personal({ listed: false, featured: 1 }) });
+    expect(getFeaturedEntry("beyond", onlyUnlisted)).toBeUndefined();
   });
 });
 

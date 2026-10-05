@@ -59,3 +59,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-8-visual-alignment-to-homepage-mockup.md`
   summary: Resolved by Story 1.8: the Story 1.6 browser check of Recognition level 1/2 sizes and spacing (name 33.6px/48px, title 17.6px/21.6px at 600, padding 56/48 and 88/72, left-aligned mobile) passed on `vite preview`.
   evidence: Measured computed styles at 375px and 1280px after Story 1.8's `theme.css` change; see the Implementation Notes in the Story 1.8 spec.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-7-homepage-exploration-paths-path-indexes.md`
+  summary: Move App.css's unlayered legacy `h1`/`h2`/`p` rules into a cascade layer (or retire them) so components stop copying the `revert-layer` reset.
+  evidence: Recognition, ExplorationPaths, EvidenceHighlights and PathIndex each carry the same six-property `revert-layer` block because App.css's bare element rules beat Tailwind's layered `type-*` utilities; every new component needs another copy until the legacy pages that rely on them (AboutMe) are migrated.
