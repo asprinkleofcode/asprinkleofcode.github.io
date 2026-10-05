@@ -1,31 +1,47 @@
+/*
+ * No fill of its own: the page background (body) shows through, so the
+ * layer only adds soft bokeh that twinkles and drifts slowly ("breathing").
+ */
 .ambient-layer {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
-  background-color: var(--background-recessed);
 }
 
 .ambient-layer__dot {
   position: absolute;
   border-radius: 9999px;
-  background-color: var(--brand-primary);
-  opacity: 0.15;
-  animation: ambient-twinkle 5s ease-in-out infinite alternate;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--brand-primary) 90%, transparent) 0%,
+    color-mix(in srgb, var(--brand-primary) 45%, transparent) 40%,
+    transparent 70%
+  );
+  opacity: 0.25;
+  animation:
+    ambient-twinkle 5s ease-in-out var(--twinkle-delay, 0s) infinite alternate,
+    ambient-drift 14s ease-in-out var(--drift-delay, 0s) infinite;
 }
 
 @keyframes ambient-twinkle {
   from {
-    opacity: 0.15;
+    opacity: 0.25;
   }
   to {
-    opacity: 0.9;
+    opacity: 0.95;
+  }
+}
+
+@keyframes ambient-drift {
+  50% {
+    transform: translate(10px, -16px);
   }
 }
 
 .ambient-layer--static .ambient-layer__dot {
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .ambient-layer--static,
@@ -36,6 +52,6 @@
 @media (prefers-reduced-motion: reduce) {
   .ambient-layer__dot {
     animation: none;
-    opacity: 0.5;
+    opacity: 0.6;
   }
 }

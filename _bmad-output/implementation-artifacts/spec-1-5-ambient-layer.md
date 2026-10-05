@@ -20,11 +20,11 @@ context:
 
 ## Boundaries & Constraints
 
-**Always:** `aria-hidden="true"`, `pointer-events: none`, `position: fixed; inset: 0`, and a fixed negative or base z-index below the header, `<main>` and footer. Use semantic role tokens only (`--background-recessed`, `--brand-primary`); no primitive ramps or raw hex. Generate dot positions deterministically once at module scope, never `Math.random()` during render. The layer must read as background only; content legibility is unchanged. Get the reduced-motion signal only from `src/lib/usePrefersReducedMotion.ts`.
+**Always:** `aria-hidden="true"`, `pointer-events: none`, `position: fixed; inset: 0`, and a fixed negative or base z-index below the header, `<main>` and footer. Use semantic role tokens only (`--brand-primary`); no primitive ramps or raw hex. Generate dot positions deterministically once at module scope, never `Math.random()` during render. The layer must read as background only; content legibility is unchanged. Get the reduced-motion signal only from `src/lib/usePrefersReducedMotion.ts`.
 
 **Never:** Import `AmbientLayer` from any page. Leave per-page ambient decoration in place. Add a `variant` prop (YAGNI until a per-route treatment is decided). Use canvas/WebGL or new dependencies. Touch the Header/Footer markup (Story 1.4). Modify or delete media in `src/assets/` or `public/`.
 
-**Decision — treatment (2026-10-04, option D "quiet stardust"):** uniform on every route, ~40 tiny (1–3px) round dots on the `--background-recessed` surface, each slowly twinkling (opacity ~0.15 → 0.9 over ~5s, staggered delays), dot colour from `--brand-primary`. No star icons, no gradient, no movement beyond opacity. Reduced motion shows the same dots at a fixed mid opacity.
+**Decision — treatment (2026-10-04, revised after build; replaces option D "quiet stardust"):** "breathing bokeh", uniform on every route. The layer paints no fill of its own, so the existing site grey on `body` shows through. ~28 soft glowing bokeh (10–22px radial glow from `--brand-primary`), each twinkling (opacity ~0.25 → 0.95 over ~5s) and drifting slowly (~10–16px over ~14s), with staggered delays. Reduced motion: no twinkle or drift, fixed opacity ~0.6.
 
 ## I/O & Edge-Case Matrix
 
@@ -44,13 +44,13 @@ context:
 - `asprinkleofcode/src/components/StarBackground/`, `GradientWaves/` -- superseded by the Decision; delete both folders (nothing carried over).
 - `asprinkleofcode/src/pages/AboutMe/Primary.jsx:4,12`, `BeyondTheCodePowerlifting.jsx:3,10` -- legacy; remove only the import and element lines.
 - `asprinkleofcode/src/pages/Landing/Hero.jsx` + `Hero.css` -- remove the four `.sparkle` spans and the `pulseSoft`/`.sparkle*` CSS only.
-- `asprinkleofcode/src/theme/colors.css` -- `--background-recessed` is the ambient surface token.
+- `asprinkleofcode/src/App.css` -- `body` background is the visible surface behind the layer.
 - `asprinkleofcode/src/App.test.tsx`, `src/test/setup.ts` -- existing shell smoke tests; `matchMedia` may be stubbed there.
 
 ## Tasks & Acceptance
 
 **Execution:**
-- [x] `src/components/AmbientLayer/AmbientLayer.tsx` + `AmbientLayer.css` -- quiet stardust per the Decision (seeded PRNG at module scope; dots are absolutely positioned spans); root `div.ambient-layer` with the contract; adds a `ambient-layer--static` modifier when reduced motion is on, which sets `animation: none` on all descendants.
+- [x] `src/components/AmbientLayer/AmbientLayer.tsx` + `AmbientLayer.css` -- breathing bokeh per the Decision (seeded PRNG at module scope; dots are absolutely positioned spans); root `div.ambient-layer` with the contract; adds a `ambient-layer--static` modifier when reduced motion is on, which sets `animation: none` on all descendants.
 - [x] `src/components/AmbientLayer/AmbientLayer.test.tsx` -- asserts `aria-hidden`, the static modifier under a reduced-motion `matchMedia` stub, and the animated class otherwise.
 - [x] `src/App.tsx` -- mount once as described in the Code Map.
 - [x] `src/App.test.tsx` -- assert exactly one `.ambient-layer` across route renders; assert routes still render when `AmbientLayer` is mocked to `null`.
@@ -64,6 +64,8 @@ context:
 ## Implementation Notes
 
 ## Spec Change Log
+
+- 2026-10-04, human review after build: option D read as too dark (`--background-recessed` fill) and too dust-like. Human chose the current site grey with glowing bokeh plus slow drift (preview options F + H). Amended the frozen Decision and Always (no layer fill), the Code Map and the task note. KEEP: the AD-12 contract, `AmbientBoundary`, the seeded module-scope PRNG, the CSS reduced-motion fallback, and all shell tests.
 
 ## Review Triage Log
 

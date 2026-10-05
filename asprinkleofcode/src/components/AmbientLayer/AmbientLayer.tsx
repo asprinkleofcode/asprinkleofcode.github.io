@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { usePrefersReducedMotion } from "../../lib/usePrefersReducedMotion";
 import "./AmbientLayer.css";
 
-const DOT_COUNT = 40;
+const DOT_COUNT = 28;
 
 /** Seeded mulberry32 PRNG so the field is identical on every load and render. */
 function mulberry32(seed: number): () => number {
@@ -16,19 +16,21 @@ function mulberry32(seed: number): () => number {
 }
 
 const random = mulberry32(0x5eed);
-const DOTS: CSSProperties[] = Array.from({ length: DOT_COUNT }, () => {
-  const size = 1 + Math.round(random() * 2);
+const DOTS = Array.from({ length: DOT_COUNT }, () => {
+  const size = 10 + Math.round(random() * 12);
   return {
     top: `${(random() * 100).toFixed(2)}%`,
     left: `${(random() * 100).toFixed(2)}%`,
     width: `${size}px`,
     height: `${size}px`,
-    animationDelay: `${(random() * -5).toFixed(2)}s`,
-  };
+    "--twinkle-delay": `${(random() * -5).toFixed(2)}s`,
+    "--drift-delay": `${(random() * -14).toFixed(2)}s`,
+    // Custom properties feed the per-dot animation delays in AmbientLayer.css.
+  } as CSSProperties;
 });
 
 /**
- * Site-wide decorative "quiet stardust" (AD-12). Mounted once in the app
+ * Site-wide decorative "breathing bokeh" (AD-12). Mounted once in the app
  * shell; never imported by a page. Purely presentational: hidden from
  * assistive tech, ignores pointer input, and is static under reduced motion.
  */
