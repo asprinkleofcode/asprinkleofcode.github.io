@@ -27,6 +27,8 @@ This document provides the complete epic and story breakdown for the Alisha Spri
 
 **Update note (2026-10-04, UX-027):** `EXPERIENCE.md` v0.10 §6.2 adds the existing headshot to the Recognition block (beside the text on desktop, below it on mobile). UX-DR28 and Story 1.6 pick this up. All live spine citations in this file, `PRD.md`, `SPEC.md`, and `ARCHITECTURE-SPINE.md` now point at `DESIGN.md` v0.7 / `EXPERIENCE.md` v0.10 / `PRD.md` v0.8 (`planning-artifacts/sprint-change-proposal-2026-10-04.md`). No epics or stories were added, removed, or renumbered.
 
+**Update note (2026-10-04, UX-029):** `EXPERIENCE.md` v0.12 adds §22 Photography: content photos live in `asprinkleofcode/src/assets/media/<folder>/`, with per-page counts (about 15–22 for launch), capture guidance, public-safety rules, alt text, and loading behavior. `ARCHITECTURE-SPINE.md` Conventions → Images now says how a photo path resolves, and frontmatter `hero` becomes `{ src, alt }`. New UX-DR31; Stories 4.1 and 4.4 pick it up. No epics or stories were added, removed, or renumbered.
+
 ## Requirements Inventory
 
 ### Functional Requirements
@@ -175,6 +177,7 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 - UX-DR28: Homepage composition — **RESOLVED (`EXPERIENCE.md` v0.11 §6.1–§6.5, UX-025, UX-027):** three stacked sections in order — Recognition (identity, title, and the decided one-line positioning statement, D-25: *"Give me a business problem and I'll turn it into an engineering decision worth trusting."*, and the existing headshot as a rounded-rectangle portrait with a `border.default` edge — right of the text on desktop, stacked below it on mobile — with meaningful alt text) → Exploration (the three path entries, label-only, no teaser copy) → Evidence & Highlights (Engineering and Leadership & Enablement each get ≥1 dedicated evidence teaser; Beyond the Code gets exactly one personal-hint line, not evidence). All deeper content lives on path/story pages (C-6).
 - UX-DR29: Implement the four state patterns: Cold Load (meaningful semantic content without waiting on decorative effects), Loading (never blocks identity recognition), Error (preserves navigation/recovery), Missing Content (no empty visual shells for content that doesn't exist — gracefully omit or simplify instead).
 - UX-DR30: Keyboard focus must remain visible (solid ring per UX-DR2) and logically ordered across all interactive flows.
+- UX-DR31: Photography — **DECIDED (`EXPERIENCE.md` v0.12 §22 Photography, UX-029; `ARCHITECTURE-SPINE.md` Conventions → Images):** content photos are web-ready exports under `src/assets/media/<folder>/` (`powerlifting/`, `birdhouses/`; `engineering/` or `leadership/` only if needed), referenced by their path inside `media/`. Per-page ceilings: homepage 1 (the existing headshot), work stories 0 by default with an optional, rare hero, `/beyond` up to 2, Powerlifting 1 hero + 4–6, Birdhouses 1 hero + 5–7 process + 3–6 finished. Every meaningful photo has descriptive alt text; above-the-fold photos load eagerly, the rest lazily, with no layout shift. No placeholder or stock photo ever renders (UX-DR29). Visual treatment (aspect ratio, radius, edge) and the Birdhouses sequence-or-gallery presentation are OPEN, decided with the first real photos.
 
 ### FR Coverage Map
 
@@ -775,6 +778,18 @@ So that the experience feels authentic rather than forced into the professional 
 **When** a personal story is read at a supported mobile width
 **Then** media, body content, and any embedded links remain readable and reachable without loss of hierarchy
 
+**Given** UX-DR31 and `ARCHITECTURE-SPINE.md` Conventions → Images
+**When** this story is complete
+**Then** frontmatter `hero` is `{ src, alt }` for both content types (replacing the bare string in `frontmatter.ts`), `src` names a file inside `src/assets/media/`, and a non-draft entry whose `hero.src` does not resolve fails the build
+
+**Given** in-body photos
+**When** a personal story's MDX shows a photo
+**Then** it uses one sanctioned photo block from `src/mdx-components.tsx` (AD-8) that takes a `media/`-relative `src` and a required `alt`, renders explicit `width`/`height`, and lazy-loads unless it is the page's hero; an unresolved `src` fails the test run rather than rendering a broken image
+
+**Given** the photo visual treatment is OPEN (UX-DR31)
+**When** the first real photos are placed
+**Then** their aspect ratio, radius, and edge, and the Birdhouses sequence-or-gallery presentation, are decided with Alisha and recorded in `DESIGN.md` / `EXPERIENCE.md` — not invented in code
+
 **And** a component test renders `PersonalPage` against fixture frontmatter/content to verify it doesn't throw
 
 ### Story 4.2: Beyond the Code Path Index
@@ -839,7 +854,7 @@ As a visitor who wants to understand Alisha beyond her professional work,
 I want to read authentic powerlifting and Birdhouses stories,
 So that I come away seeing a whole person, not a résumé.
 
-**Status:** Content-blocked — no narrative source material exists yet for either dimension (unlike Engineering's `addendum.md`); do not invent content. Photography/video availability is also an open question (A-11, PRD §14.3 item 6).
+**Status:** Content-blocked — no narrative source material exists yet for either dimension (unlike Engineering's `addendum.md`); do not invent content. Photography/video availability is also an open question (A-11, PRD §14.3 item 6); where photos go, how many, and how they are chosen are now decided (UX-DR31, `EXPERIENCE.md` v0.12 §22 Photography), and Alisha adds them under `src/assets/media/powerlifting/` and `src/assets/media/birdhouses/`.
 
 **Acceptance Criteria (to satisfy once content is supplied):**
 
@@ -862,6 +877,10 @@ So that I come away seeing a whole person, not a résumé.
 **Given** A-14 handles are supplied (powerlifting = @asprinkleofcode, Birdhouses = @orangecatwoodcraft)
 **When** each dimension's story is authored
 **Then** its frontmatter `links` uses exactly that handle's URL — no other Instagram link is stubbed or invented (NFR-4)
+
+**Given** UX-DR31
+**When** a dimension's photos are committed
+**Then** they come from `src/assets/media/<dimension>/`, stay within that page's photo count, have location metadata removed, show nothing from work, show other people only with consent, and credit a photographer when asked (`EXPERIENCE.md` §22 Photography)
 
 **And** personal stories avoid exposing anyone else's private information without consent
 
