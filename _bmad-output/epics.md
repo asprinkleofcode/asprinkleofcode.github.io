@@ -510,7 +510,7 @@ So that the site feels calm and polished, with personality that stays in the bac
 
 **Given** `DESIGN.md` v0.9 §16 (UX-030)
 **When** the ambient layer renders
-**Then** it shows sparse ~1px stars (a few at 1.5px), mostly `text.primary` with a few `accent.secondary` and `brand.primary`, each twinkling slowly on its own phase (opacity ~0.25 → 0.8 over ~5s) with no drift and no glow; the pink bokeh is removed
+**Then** it shows sparse ~1.5px stars (a few at 2px), mostly `text.primary` with a few `accent.secondary` and `brand.primary`, each twinkling slowly on its own phase (opacity ~0.25 → 0.8 over ~5s) with no drift and no glow; the pink bokeh is removed
 
 **And** under reduced motion the same field renders static at a fixed faint opacity (AD-13, NFR-5)
 

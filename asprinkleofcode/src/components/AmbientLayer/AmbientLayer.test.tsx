@@ -71,12 +71,12 @@ describe("AmbientLayer", () => {
     const [first] = stars(render(<AmbientLayer seed={0x5eed} />).container);
     expect(first.style.top).toBe("71%");
     expect(first.style.left).toBe("28.63%");
-    expect(first.style.width).toBe("1px");
+    expect(first.style.width).toBe("1.5px");
     expect(first.style.getPropertyValue("--twinkle-delay")).toBe("-3.78s");
     expect(tintOf(first)).toEqual(["ambient-layer__star--light"]);
   });
 
-  it("draws only 1px and 1.5px stars, tinted from the allowed set", () => {
+  it("draws only 1.5px and 2px stars, tinted from the allowed set", () => {
     setViewport(3840, 2160);
     const field = stars(render(<AmbientLayer seed={0x5eed} />).container);
     const sizes = new Set(field.map((star) => star.style.width));
@@ -86,7 +86,7 @@ describe("AmbientLayer", () => {
       expect(tintOf(star)).toHaveLength(1);
       expect(star.style.getPropertyValue("--twinkle-delay")).toMatch(/^-?\d+\.\d{2}s$/);
     }
-    expect([...sizes].sort()).toEqual(["1.5px", "1px"]);
+    expect([...sizes].sort()).toEqual(["1.5px", "2px"]);
     expect([...tints].sort()).toEqual([...TINT_CLASSES].sort());
   });
 

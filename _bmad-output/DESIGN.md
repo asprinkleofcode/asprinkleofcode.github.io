@@ -566,7 +566,7 @@ preserved, and is instant under `prefers-reduced-motion` (see EXPERIENCE.md §13
 The ambient layer is a field of **tiny stars** on `background.primary`, uniform on every
 route, as in the homepage mockup:
 
-- **Stars:** about 1px, a few at 1.5px, sparse (the mockup shows roughly 10 per
+- **Stars:** about 1.5px, a few at 2px, sparse (the mockup shows roughly 10 per
   420×520px area). No glow, no blur.
 - **Tints:** `text.primary` for most stars, with a few in `accent.secondary` and a few in
   `brand.primary`. They stay faint because the layer's opacity is low, not because they
@@ -574,6 +574,8 @@ route, as in the homepage mockup:
 - **Motion:** each star twinkles slowly and on its own phase (opacity roughly 0.25 → 0.8
   over ~5s). Nothing drifts.
 - **Reduced motion:** the same field, static, at a fixed faint opacity.
+
+*Amended 2026-10-05 (owner, after build):* star sizes raised from about 1px (a few at 1.5px) to about 1.5px (a few at 2px), because at 1px the field read as dust.
 
 This replaces the Story 1.5 "breathing bokeh" (28 glowing pink dots on the legacy grey).
 The owner preferred the cleaner mockup look. Exact counts, opacities, and timings are

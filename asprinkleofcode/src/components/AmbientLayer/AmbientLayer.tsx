@@ -49,8 +49,8 @@ function makeStars(seed: number): Star[] {
   return Array.from({ length: starCount() }, () => {
     const top = `${(random() * 100).toFixed(2)}%`;
     const left = `${(random() * 100).toFixed(2)}%`;
-    // Mostly 1px; about 1 in 6 at 1.5px.
-    const size = random() < 1 / 6 ? "1.5px" : "1px";
+    // Mostly 1.5px; about 1 in 6 at 2px.
+    const size = random() < 1 / 6 ? "2px" : "1.5px";
     const tint = pickTint(random());
     // A random point in the full 10s (5s each way, alternating) twinkle cycle,
     // so every star runs on its own phase.

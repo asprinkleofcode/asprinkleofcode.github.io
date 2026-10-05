@@ -44,17 +44,17 @@ body{margin:0;background:#08080c;color:var(--text-primary);padding:24px 16px 48p
 .page::before,.page::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-size:420px 520px;
   animation:twinkle 5s ease-in-out infinite alternate}
 .page::before{background-image:
-   radial-gradient(1px 1px at 12% 18%,var(--text-primary) 50%,transparent 51%),
-   radial-gradient(1.5px 1.5px at 64% 31%,var(--accent) 50%,transparent 51%),
-   radial-gradient(1px 1px at 88% 52%,var(--text-primary) 50%,transparent 51%),
-   radial-gradient(1px 1px at 46% 74%,var(--text-primary) 50%,transparent 51%),
-   radial-gradient(1px 1px at 22% 92%,var(--text-primary) 50%,transparent 51%)}
+   radial-gradient(1.5px 1.5px at 12% 18%,var(--text-primary) 50%,transparent 51%),
+   radial-gradient(2px 2px at 64% 31%,var(--accent) 50%,transparent 51%),
+   radial-gradient(1.5px 1.5px at 88% 52%,var(--text-primary) 50%,transparent 51%),
+   radial-gradient(1.5px 1.5px at 46% 74%,var(--text-primary) 50%,transparent 51%),
+   radial-gradient(1.5px 1.5px at 22% 92%,var(--text-primary) 50%,transparent 51%)}
 .page::after{animation-delay:-2.5s;background-image:
-   radial-gradient(1px 1px at 78% 9%,var(--text-primary) 50%,transparent 51%),
-   radial-gradient(1px 1px at 31% 44%,var(--text-primary) 50%,transparent 51%),
-   radial-gradient(1.5px 1.5px at 7% 67%,var(--brand-primary) 50%,transparent 51%),
-   radial-gradient(1px 1px at 93% 83%,var(--text-primary) 50%,transparent 51%),
-   radial-gradient(1px 1px at 55% 6%,var(--text-primary) 50%,transparent 51%)}
+   radial-gradient(1.5px 1.5px at 78% 9%,var(--text-primary) 50%,transparent 51%),
+   radial-gradient(1.5px 1.5px at 31% 44%,var(--text-primary) 50%,transparent 51%),
+   radial-gradient(2px 2px at 7% 67%,var(--brand-primary) 50%,transparent 51%),
+   radial-gradient(1.5px 1.5px at 93% 83%,var(--text-primary) 50%,transparent 51%),
+   radial-gradient(1.5px 1.5px at 55% 6%,var(--text-primary) 50%,transparent 51%)}
 @keyframes twinkle{from{opacity:.25}to{opacity:.8}}
 @media (prefers-reduced-motion:reduce){.page::before,.page::after{animation:none;opacity:.55}}
 

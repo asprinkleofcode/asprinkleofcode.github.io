@@ -91,7 +91,7 @@ This epic turns the existing Vite + React 19 portfolio (brownfield, GitHub Pages
   - It has a static reduced-motion path.
   - The app must work if the layer never mounts.
   - `StarBackground`, `GradientWaves` and the Hero sparkles get folded into it or removed.
-  - Treatment (UX-030, `DESIGN.md` v0.9 §16): sparse ~1px stars (a few 1.5px), mostly `text.primary` with a few `accent.secondary` and `brand.primary`, each twinkling slowly (opacity ~0.25 → 0.8 over ~5s), no drift, no glow, on the `background.primary` page. Static under reduced motion. This replaces the 1.5 bokeh.
+  - Treatment (UX-030, `DESIGN.md` v0.9 §16): sparse ~1.5px stars (a few 2px), mostly `text.primary` with a few `accent.secondary` and `brand.primary`, each twinkling slowly (opacity ~0.25 → 0.8 over ~5s), no drift, no glow, on the `background.primary` page. Static under reduced motion. This replaces the 1.5 bokeh.
   - The visual treatment is left to implementation. The goal is "something visual and engaging."
 - **Static head (`index.html`):**
   - Expanded `Person` JSON-LD with `knowsAbout` and `sameAs`.
