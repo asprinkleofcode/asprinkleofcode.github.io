@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from "vitest";
-import { act, configure, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, configure, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import type { MDXModule } from "mdx/types";
 import { MemoryRouter, useNavigate, type NavigateFunction } from "react-router";
 import indexHtml from "../index.html?raw";
@@ -74,9 +74,15 @@ vi.mock("./components/AmbientLayer/AmbientLayer", async (importOriginal) => {
   };
 });
 
+// Path-aware index state; empty by default (zero content), set per test.
+const registry = vi.hoisted(() => ({
+  pathEntries: {} as Record<string, Entry[]>,
+  featured: {} as Record<string, Entry>,
+}));
 vi.mock("./lib/registry", () => ({
   entries: [],
-  getPathEntries: () => [],
+  getPathEntries: (path: string) => registry.pathEntries[path] ?? [],
+  getFeaturedEntry: (path: string) => registry.featured[path],
   getEntry: (path: string, slug: string) => fixtures.find((e) => e.path === path && e.slug === slug),
   loadBody: (entry: Entry) => bodies[entry.key](),
 }));
@@ -208,13 +214,105 @@ describe("App smoke test", () => {
   it("navigates through header path links with the router (PUSH)", async () => {
     renderAt("/");
     await h1(IDENTITY.name);
-    const leadership = screen.getByRole("link", { name: "Leadership & Enablement" });
+    // Scoped to the header: the homepage's Explore tiles carry the same labels.
+    const leadership = within(screen.getByRole("navigation", { name: "Main" })).getByRole("link", {
+      name: "Leadership & Enablement",
+    });
     expect(leadership.getAttribute("href")).toBe("/leadership");
     fireEvent.click(leadership);
     const heading = await h1("Leadership & Enablement");
     await waitFor(() => expect(document.activeElement).toBe(heading));
     expect(leadership.getAttribute("aria-current")).toBe("page");
     expect(screen.getByRole("link", { name: "Home" }).getAttribute("aria-current")).toBeNull();
+  });
+
+  describe("homepage exploration (Story 1.7)", () => {
+    const explore = () => screen.getByRole("region", { name: "Explore" });
+
+    afterEach(() => {
+      registry.pathEntries = {};
+      registry.featured = {};
+    });
+
+    it("shows each path's featured entry under its own label, Highlights after Explore", async () => {
+      const hint: Entry = {
+        ...personal,
+        key: "personal/beyond/lifting",
+        slug: "lifting",
+        frontmatter: { ...personal.frontmatter, title: "Lifting", summary: "I lift heavy things." } as PersonalFrontmatter,
+      };
+      registry.featured = {
+        engineering: work("eng-feat", "Eng Featured"),
+        leadership: work("lead-feat", "Lead Featured", "leadership"),
+        beyond: hint,
+      };
+      renderAt("/");
+      await h1(IDENTITY.name);
+      const highlights = screen.getByRole("region", { name: "Highlights" });
+      expect(explore().compareDocumentPosition(highlights) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+      const rows = within(highlights).getAllByRole("listitem");
+      expect(
+        rows.map((row) => [row.firstElementChild?.textContent, within(row).getByRole("link").textContent, within(row).getByRole("link").getAttribute("href")])
+      ).toEqual([
+        ["Engineering", "Eng Featured", "/engineering/eng-feat"],
+        ["Leadership & Enablement", "Lead Featured", "/leadership/lead-feat"],
+        ["Beyond the Code", "I lift heavy things.", "/beyond/lifting"],
+      ]);
+    });
+
+    it.each([
+      { route: "/engineering", label: "Engineering", path: "engineering" },
+      { route: "/leadership", label: "Leadership & Enablement", path: "leadership" },
+      { route: "/beyond", label: "Beyond the Code", path: "beyond" },
+    ])("lists only $path entries on $route", async ({ route, label, path }) => {
+      const beyondEntry = (slug: string, title: string): Entry => ({
+        ...personal,
+        key: `personal/beyond/${slug}`,
+        slug,
+        frontmatter: { ...personal.frontmatter, title } as PersonalFrontmatter,
+      });
+      registry.pathEntries = {
+        engineering: [work("eng-a", "Eng A"), work("eng-b", "Eng B")],
+        leadership: [work("lead-a", "Lead A", "leadership")],
+        beyond: [beyondEntry("btc-a", "Btc A")],
+      };
+      renderAt(route);
+      await h1(label);
+      const links = within(screen.getByRole("main")).getAllByRole("link");
+      expect(links.map((a) => [a.textContent, a.getAttribute("href")])).toEqual(
+        registry.pathEntries[path].map((e) => [e.frontmatter.title, `/${path}/${e.slug}`])
+      );
+      expect(screen.queryByText("No stories published yet.")).toBeNull();
+    });
+
+    it("lists the three path links below Recognition, in order, with no Highlights heading", async () => {
+      renderAt("/");
+      const heading = await h1(IDENTITY.name);
+      const links = within(explore()).getAllByRole("link");
+      expect(links.map((a) => [a.textContent?.replace("→", ""), a.getAttribute("href")])).toEqual([
+        ["Engineering", "/engineering"],
+        ["Leadership & Enablement", "/leadership"],
+        ["Beyond the Code", "/beyond"],
+      ]);
+      expect(heading.compareDocumentPosition(explore()) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      // Zero featured content: Evidence & Highlights renders nothing, heading included.
+      expect(screen.queryByRole("heading", { name: "Highlights" })).toBeNull();
+      expect(consoleError).not.toHaveBeenCalled();
+    });
+
+    it.each(["Engineering", "Leadership & Enablement", "Beyond the Code"])(
+      "navigates from the %s tile to its index h1 and empty state",
+      async (label) => {
+        renderAt("/");
+        await h1(IDENTITY.name);
+        fireEvent.click(within(explore()).getByRole("link", { name: label }));
+        const indexHeading = await h1(label);
+        await waitFor(() => expect(document.activeElement).toBe(indexHeading));
+        expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+        expect(screen.getByText("No stories published yet.")).toBeDefined();
+      }
+    );
   });
 
   describe("header and footer on every route", () => {

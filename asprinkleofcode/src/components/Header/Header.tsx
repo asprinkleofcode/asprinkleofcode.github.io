@@ -9,6 +9,7 @@ import {
 } from "flowbite-react";
 import { Link, useLocation, type LinkProps } from "react-router";
 import { RouterNavbarLink } from "./RouterNavlink";
+import { EXPLORATION_PATHS } from "../../lib/paths";
 
 // NavbarBrand's `as` prop is not polymorphically typed, so `to` can't be passed
 // through it directly; bind the router destination here instead.
@@ -26,12 +27,7 @@ const CloseMenuOnNavigate: FC = () => {
 };
 
 /** Flat, sticky top-level nav (EXPERIENCE §5.2): identical on every route. */
-const NAV_ITEMS = [
-  { to: "/", label: "Home" },
-  { to: "/engineering", label: "Engineering" },
-  { to: "/leadership", label: "Leadership & Enablement" },
-  { to: "/beyond", label: "Beyond the Code" },
-] as const;
+const NAV_ITEMS = [{ to: "/", label: "Home" }, ...EXPLORATION_PATHS.map(({ to, label }) => ({ to, label }))];
 
 const Header: FC = () => (
   <Navbar fluid aria-label="Main">
