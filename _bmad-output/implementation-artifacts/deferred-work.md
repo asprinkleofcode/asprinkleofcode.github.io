@@ -23,3 +23,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-4-header-footer-navigation.md`
   summary: Move the hard-coded GitHub project URL in `asprinkleofcode/src/pages/Landing/Hero.jsx:28` ("Follow the Build") into `src/lib/links.ts` and give it the outbound-link treatment, or drop it, when Story 1.6 rebuilds Landing.
   evidence: `links.ts` is meant to hold every external URL (AD conventions), but this legacy button keeps its own literal and opens in the same tab without the new-tab notice.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-5-ambient-layer.md`
+  summary: Add a browser-level test that the ambient layer's dots have no animation under prefers-reduced-motion.
+  evidence: Unit tests only check class names; jsdom applies no stylesheet, so deleting the `animation: none` rules would not fail any test.

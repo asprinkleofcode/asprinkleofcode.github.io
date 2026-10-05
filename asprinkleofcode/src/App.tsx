@@ -5,6 +5,8 @@ import { Route, Routes, useLocation, useNavigationType } from "react-router";
 import { aSprinkleOfCodeTheme } from "./theme/aSprinkleOfCodeTheme";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
+import AmbientLayer from "./components/AmbientLayer/AmbientLayer";
+import { AmbientBoundary } from "./components/AmbientLayer/AmbientBoundary";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 import { useNavigationScroll, type SettleRoute } from "./lib/useNavigationScroll";
 
@@ -42,6 +44,10 @@ function App() {
 
   return (
     <ThemeProvider theme={aSprinkleOfCodeTheme}>
+      <AmbientBoundary>
+        {/* Keyed per navigation so every page gets a freshly shuffled field. */}
+        <AmbientLayer key={location.key} />
+      </AmbientBoundary>
       <Header />
       <div className="flex flex-1 flex-col">
         <main ref={mainRef} className="flex-1">

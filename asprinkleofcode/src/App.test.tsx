@@ -59,6 +59,18 @@ const bodies: Record<string, () => Promise<MDXModule>> = {
 // default when test files run in parallel.
 configure({ asyncUtilTimeout: 5000 });
 
+const ambient = vi.hoisted(() => ({ absent: false, throws: false }));
+vi.mock("./components/AmbientLayer/AmbientLayer", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./components/AmbientLayer/AmbientLayer")>();
+  const Real = actual.default;
+  return {
+    default: () => {
+      if (ambient.throws) throw new Error("Ambient layer failed");
+      return ambient.absent ? null : <Real />;
+    },
+  };
+});
+
 vi.mock("./lib/registry", () => ({
   entries: [],
   getPathEntries: () => [],
@@ -250,6 +262,49 @@ describe("App smoke test", () => {
     fireEvent.click(await screen.findByRole("link", { name: "Learn About Me" }));
     const heading = await h1("Alisha Sprinkle Korba");
     await waitFor(() => expect(document.activeElement).toBe(heading));
+  });
+
+  it("mounts exactly one ambient layer across route changes", async () => {
+    renderAt("/");
+    await h1("Welcome!");
+    expect(document.querySelectorAll(".ambient-layer")).toHaveLength(1);
+    const field = () => (document.querySelector(".ambient-layer__dot") as HTMLElement).style.cssText;
+    let previous = field();
+    for (const [route, heading] of [["/about", "Alisha Sprinkle Korba"], ["/engineering", "Engineering"], ["/nope", "Page not found"]]) {
+      act(() => navigate(route));
+      await h1(heading);
+      expect(document.querySelectorAll(".ambient-layer")).toHaveLength(1);
+      expect(field()).not.toBe(previous); // reshuffled per navigation
+      previous = field();
+    }
+  });
+
+  it("renders and navigates normally when the ambient layer is absent", async () => {
+    ambient.absent = true;
+    try {
+      renderAt("/");
+      await h1("Welcome!");
+      expect(document.querySelector(".ambient-layer")).toBeNull();
+      act(() => navigate("/engineering"));
+      expect(await h1("Engineering")).toBeDefined();
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      ambient.absent = false;
+    }
+  });
+
+  it("renders and navigates normally when the ambient layer throws", async () => {
+    consoleError.mockImplementation(() => {});
+    ambient.throws = true;
+    try {
+      renderAt("/");
+      expect(await h1("Welcome!")).toBeDefined();
+      expect(document.querySelector(".ambient-layer")).toBeNull();
+      act(() => navigate("/engineering"));
+      expect(await h1("Engineering")).toBeDefined();
+    } finally {
+      ambient.throws = false;
+    }
   });
 
   describe("scroll and focus", () => {

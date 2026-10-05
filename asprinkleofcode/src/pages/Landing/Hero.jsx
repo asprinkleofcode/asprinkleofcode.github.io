@@ -5,11 +5,6 @@ import "./Hero.css";
 export default function Hero() {
   return (
     <section className="hero">
-      <span className={`sparkle sparkle1`}>✨</span>
-      <span className={`sparkle sparkle2`}>✨</span>
-      <span className={`sparkle sparkle3`}>✨</span>
-      <span className={`sparkle sparkle4`}>✨</span>
-
       <div className="hero-content">
         <h1>Welcome!</h1>
 

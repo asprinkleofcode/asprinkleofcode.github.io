@@ -1,13 +1,11 @@
 import { Carousel } from "flowbite-react";
 import "./BeyondTheCodePowerlifting.css";
-import GradientWaves from "../../components/GradientWaves/GradientWaves";
 import photo1 from "../../assets/pl-1.jpg";
 import photo2 from "../../assets/pl-2.jpg";
 
 export default function BeyondTheCodePowerlifting() {
   return (
     <section className="relative w-full py-20 flex flex-col items-center">
-      <GradientWaves />
       <h1>Beyond the Code — Powerlifting</h1>
 
       <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
