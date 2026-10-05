@@ -45,7 +45,8 @@ function App() {
   return (
     <ThemeProvider theme={aSprinkleOfCodeTheme}>
       <AmbientBoundary>
-        <AmbientLayer />
+        {/* Keyed per navigation so every page gets a freshly shuffled field. */}
+        <AmbientLayer key={location.key} />
       </AmbientBoundary>
       <Header />
       <div className="flex flex-1 flex-col">

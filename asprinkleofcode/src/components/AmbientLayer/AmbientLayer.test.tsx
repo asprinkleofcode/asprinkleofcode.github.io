@@ -43,11 +43,18 @@ describe("AmbientLayer", () => {
     expect(layer(container).classList.contains("ambient-layer--static")).toBe(false);
   });
 
-  it("places dots from the fixed seed", () => {
-    const { container } = render(<AmbientLayer />);
+  it("places dots from a given seed", () => {
+    const { container } = render(<AmbientLayer seed={0x5eed} />);
     const first = container.querySelector(".ambient-layer__dot") as HTMLElement;
     expect(first.style.top).toBe("28.63%");
     expect(first.style.left).toBe("95.19%");
     expect(first.style.width).toBe("19px");
+  });
+
+  it("shuffles the field on each new mount", () => {
+    const first = (c: HTMLElement) => (c.querySelector(".ambient-layer__dot") as HTMLElement).style.cssText;
+    const a = render(<AmbientLayer />);
+    const b = render(<AmbientLayer />);
+    expect(first(a.container)).not.toBe(first(b.container));
   });
 });

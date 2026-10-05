@@ -20,11 +20,11 @@ context:
 
 ## Boundaries & Constraints
 
-**Always:** `aria-hidden="true"`, `pointer-events: none`, `position: fixed; inset: 0`, and a fixed negative or base z-index below the header, `<main>` and footer. Use semantic role tokens only (`--brand-primary`); no primitive ramps or raw hex. Generate dot positions deterministically once at module scope, never `Math.random()` during render. The layer must read as background only; content legibility is unchanged. Get the reduced-motion signal only from `src/lib/usePrefersReducedMotion.ts`.
+**Always:** `aria-hidden="true"`, `pointer-events: none`, `position: fixed; inset: 0`, and a fixed negative or base z-index below the header, `<main>` and footer. Use semantic role tokens only (`--brand-primary`); no primitive ramps or raw hex. Generate dot positions from a seeded PRNG once per mount (the shell keys the layer on `location.key`), never during render. The layer must read as background only; content legibility is unchanged. Get the reduced-motion signal only from `src/lib/usePrefersReducedMotion.ts`.
 
 **Never:** Import `AmbientLayer` from any page. Leave per-page ambient decoration in place. Add a `variant` prop (YAGNI until a per-route treatment is decided). Use canvas/WebGL or new dependencies. Touch the Header/Footer markup (Story 1.4). Modify or delete media in `src/assets/` or `public/`.
 
-**Decision — treatment (2026-10-04, revised after build; replaces option D "quiet stardust"):** "breathing bokeh", uniform on every route. The layer paints no fill of its own, so the existing site grey on `body` shows through. ~28 soft glowing bokeh (10–22px radial glow from `--brand-primary`), each twinkling (opacity ~0.25 → 0.95 over ~5s) and drifting slowly (~10–16px over ~14s), with staggered delays. Reduced motion: no twinkle or drift, fixed opacity ~0.6.
+**Decision — treatment (2026-10-04, revised after build; replaces option D "quiet stardust"):** "breathing bokeh", uniform on every route. The layer paints no fill of its own, so the existing site grey on `body` shows through. ~28 soft glowing bokeh (10–22px radial glow from `--brand-primary`), each twinkling (opacity ~0.4 → 1 over ~5s) and drifting slowly (~10–16px over ~14s), with staggered delays. Each navigation gets a freshly shuffled field that fades in over ~1.2s. Reduced motion: no fade, twinkle or drift; fixed opacity ~0.75.
 
 ## I/O & Edge-Case Matrix
 
@@ -64,6 +64,8 @@ context:
 ## Implementation Notes
 
 ## Spec Change Log
+
+- 2026-10-04, human follow-up: orbs a touch brighter, and a different field on each navigation. Amended the Decision and the Always rule on positions (seed drawn once per mount; shell keys the layer on `location.key`; layer fades in). KEEP: everything in the previous entry.
 
 - 2026-10-04, human review after build: option D read as too dark (`--background-recessed` fill) and too dust-like. Human chose the current site grey with glowing bokeh plus slow drift (preview options F + H). Amended the frozen Decision and Always (no layer fill), the Code Map and the task note. KEEP: the AD-12 contract, `AmbientBoundary`, the seeded module-scope PRNG, the CSS reduced-motion fallback, and all shell tests.
 

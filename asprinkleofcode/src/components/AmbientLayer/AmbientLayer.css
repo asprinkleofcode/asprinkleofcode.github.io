@@ -8,6 +8,13 @@
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
+  animation: ambient-fade-in 1.2s ease-out;
+}
+
+@keyframes ambient-fade-in {
+  from {
+    opacity: 0;
+  }
 }
 
 .ambient-layer__dot {
@@ -15,11 +22,11 @@
   border-radius: 9999px;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--brand-primary) 90%, transparent) 0%,
-    color-mix(in srgb, var(--brand-primary) 45%, transparent) 40%,
+    color-mix(in srgb, var(--brand-primary) 100%, transparent) 0%,
+    color-mix(in srgb, var(--brand-primary) 60%, transparent) 40%,
     transparent 70%
   );
-  opacity: 0.25;
+  opacity: 0.4;
   animation:
     ambient-twinkle 5s ease-in-out var(--twinkle-delay, 0s) infinite alternate,
     ambient-drift 14s ease-in-out var(--drift-delay, 0s) infinite;
@@ -27,10 +34,10 @@
 
 @keyframes ambient-twinkle {
   from {
-    opacity: 0.25;
+    opacity: 0.4;
   }
   to {
-    opacity: 0.95;
+    opacity: 1;
   }
 }
 
@@ -41,7 +48,7 @@
 }
 
 .ambient-layer--static .ambient-layer__dot {
-  opacity: 0.6;
+  opacity: 0.75;
 }
 
 .ambient-layer--static,
@@ -50,8 +57,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ambient-layer,
   .ambient-layer__dot {
     animation: none;
-    opacity: 0.6;
+  }
+
+  .ambient-layer__dot {
+    opacity: 0.75;
   }
 }

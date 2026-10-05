@@ -268,10 +268,14 @@ describe("App smoke test", () => {
     renderAt("/");
     await h1("Welcome!");
     expect(document.querySelectorAll(".ambient-layer")).toHaveLength(1);
+    const field = () => (document.querySelector(".ambient-layer__dot") as HTMLElement).style.cssText;
+    let previous = field();
     for (const [route, heading] of [["/about", "Alisha Sprinkle Korba"], ["/engineering", "Engineering"], ["/nope", "Page not found"]]) {
       act(() => navigate(route));
       await h1(heading);
       expect(document.querySelectorAll(".ambient-layer")).toHaveLength(1);
+      expect(field()).not.toBe(previous); // reshuffled per navigation
+      previous = field();
     }
   });
 
