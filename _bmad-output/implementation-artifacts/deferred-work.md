@@ -39,3 +39,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-6-homepage-recognition-discoverability.md`
   summary: Measure homepage LCP on a throttled mid-tier mobile profile; if it exceeds 2.5s, start the headshot fetch earlier (e.g. a preload of a fixed-name copy).
   evidence: Unverified (maybe-false, would be medium). The headshot sits in the lazy Landing chunk, so the browser discovers it only after the main bundle and route chunk load; `fetchPriority="high"` cannot help before then.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-6-recognition-color-and-positioning.md`
+  summary: When Story 1.8 lands on this branch, check `/` in a browser at 375px and 1280px: Recognition name ~2.1rem/~3rem (700, line-height ~1.05), title ~1.1rem/~1.35rem (600, rose), and the 56/48 → 88/72px padding, 40px gap and left-aligned mobile layout.
+  evidence: Story 1.6's UX-030 AC includes level 1/2 sizes, which arrive only with Story 1.8's `theme.css` change. jsdom applies no CSS, so neither the sizes nor the Tailwind v4 dynamic spacing utilities (`pt-22`, `pb-18`, `mt-5.5`) can be caught by unit tests; only a manual or browser check verifies them.

@@ -19,17 +19,36 @@ describe("Recognition", () => {
     expect(screen.getByText("A positioning line.").tagName).toBe("P");
   });
 
+  // Exact class tokens, so an `md:` variant never satisfies a mobile-first assertion.
+  const classes = (el: Element | null | undefined) => el?.className.split(/\s+/) ?? [];
+
   it("uses the type scale and role tokens", () => {
     render(<Recognition {...props} />);
-    const h1 = screen.getByRole("heading", { level: 1 }).className;
-    const title = screen.getByText("Principal Engineer").className;
-    const positioning = screen.getByText("A positioning line.").className;
-    expect(h1).toContain("type-identity");
-    expect(h1).toContain("text-brand-primary");
-    expect(title).toContain("type-title");
-    expect(title).toContain("text-text-primary");
-    expect(positioning).toContain("type-body");
-    expect(positioning).toContain("text-text-secondary");
+    const h1 = classes(screen.getByRole("heading", { level: 1 }));
+    const title = classes(screen.getByText("Principal Engineer"));
+    const positioning = classes(screen.getByText("A positioning line."));
+    // UX-030 (DESIGN §7a): white name, rose title.
+    expect(h1).toEqual(expect.arrayContaining(["type-identity", "text-text-primary"]));
+    expect(h1).not.toContain("text-brand-primary");
+    expect(title).toEqual(expect.arrayContaining(["type-title", "text-brand-primary", "mt-2.5"]));
+    expect(positioning).toEqual(expect.arrayContaining(["type-body", "text-text-secondary", "max-w-[34ch]", "mt-5.5"]));
+  });
+
+  it("left-aligns text and headshot on mobile, with the UX-030 vertical spacing", () => {
+    const { container } = render(<Recognition {...props} />);
+    const section = classes(container.querySelector("section"));
+    expect(section).toEqual(expect.arrayContaining(["flex-col", "items-start", "gap-6", "pt-14", "pb-12", "md:pt-22", "md:pb-18"]));
+    expect(section).not.toContain("items-center");
+    const textBlock = classes(screen.getByRole("heading", { level: 1 }).parentElement);
+    expect(textBlock).toContain("text-left");
+    expect(textBlock).not.toContain("text-center");
+  });
+
+  it("puts the headshot to the right of the text from md up", () => {
+    const { container } = render(<Recognition {...props} />);
+    expect(classes(container.querySelector("section"))).toEqual(
+      expect.arrayContaining(["md:flex-row", "md:items-center", "md:justify-between", "md:gap-10"])
+    );
   });
 
   it("renders the headshot eagerly with alt text and intrinsic dimensions", () => {

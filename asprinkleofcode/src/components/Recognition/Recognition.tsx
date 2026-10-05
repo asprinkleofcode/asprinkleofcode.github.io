@@ -11,15 +11,16 @@ interface RecognitionProps {
 /**
  * Homepage recognition block (FR-1): name, title and positioning line as one
  * text block, with the headshot right of it from `md` up and below it on
- * mobile. Text comes first in DOM order so it is read first.
+ * mobile, both left-aligned (UX-030). Text comes first in DOM order so it is
+ * read first. Level 1/2 sizes come from the global type scale (DESIGN §8).
  */
 export default function Recognition({ name, title, positioning, headshotSrc }: RecognitionProps) {
   return (
-    <section className="recognition mx-auto flex max-w-5xl flex-col items-center gap-8 px-4 py-12 md:flex-row md:justify-between md:gap-12 md:py-16">
-      <div className="max-w-xl text-center md:text-left">
-        <h1 className="type-identity text-brand-primary">{name}</h1>
-        <p className="type-title mt-2 text-text-primary">{title}</p>
-        <p className="type-body mt-4 text-text-secondary">{positioning}</p>
+    <section className="recognition mx-auto flex max-w-5xl flex-col items-start gap-6 px-4 pt-14 pb-12 md:flex-row md:items-center md:justify-between md:gap-10 md:pt-22 md:pb-18">
+      <div className="min-w-0 max-w-xl text-left">
+        <h1 className="type-identity text-text-primary">{name}</h1>
+        <p className="type-title mt-2.5 text-brand-primary">{title}</p>
+        <p className="type-body mt-5.5 max-w-[34ch] text-text-secondary">{positioning}</p>
       </div>
       <img
         src={headshotSrc}
