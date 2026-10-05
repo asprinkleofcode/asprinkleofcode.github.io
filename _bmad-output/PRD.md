@@ -15,7 +15,7 @@ Status, version, and dates live in the YAML frontmatter above — the single sou
 **Product:** Professional and personal portfolio website  
 **Existing Site:** `alishasprinklekorba.com`  
 **Existing Repository:** `asprinkleofcode.github.io`  
-**Companion UX contracts:** `DESIGN.md` v0.8 (visual), `EXPERIENCE.md` v0.11 (experience) — both final
+**Companion UX contracts:** `DESIGN.md` v0.9 (visual), `EXPERIENCE.md` v0.13 (experience) — both final
 
 ---
 
@@ -23,7 +23,7 @@ Status, version, and dates live in the YAML frontmatter above — the single sou
 
 This PRD defines the product goals, user needs, journeys, scope, features, requirements, success measures, constraints, and open decisions for the evolution of Alisha Sprinkle Korba's public portfolio.
 
-The PRD builds on the finalized UX spines (`DESIGN.md` v0.8, `EXPERIENCE.md` v0.11) and is intended to become the product contract for downstream BMAD planning.
+The PRD builds on the finalized UX spines (`DESIGN.md` v0.9, `EXPERIENCE.md` v0.13) and is intended to become the product contract for downstream BMAD planning.
 
 It should enable:
 
@@ -34,8 +34,8 @@ It should enable:
 
 This PRD does **not** define:
 
-- Final visual design or design tokens — see `DESIGN.md` v0.8.
-- Final navigation structure and layout — see `EXPERIENCE.md` v0.11.
+- Final visual design or design tokens — see `DESIGN.md` v0.9.
+- Final navigation structure and layout — see `EXPERIENCE.md` v0.13.
 - Detailed interaction specifications.
 - Technical architecture or implementation approach.
 - Specific performance budgets.
@@ -440,7 +440,7 @@ At minimum, the experience must expose paths corresponding to:
 
 The visitor-facing labels are: **"Engineering"**, **"Leadership & Enablement"**, and
 **"Beyond the Code"** (D-15). Navigation structure and placement are decided in
-`EXPERIENCE.md` v0.11 §5.2 (A-9, UX-015).
+`EXPERIENCE.md` v0.13 §5.2 (A-9, UX-015).
 
 ---
 
@@ -551,7 +551,7 @@ Each professional evidence path must allow visitors to:
 3. Select a story.
 4. Explore a deeper story experience.
 
-The homepage must provide enough information for visitors to make an informed exploration choice without requiring full story content. Deeper evidence should be available through the selected path rather than competing for attention on the homepage. Homepage content allocation follows C-6 and is decided in `EXPERIENCE.md` v0.11 §6.1–§6.5 (A-10, UX-025).
+The homepage must provide enough information for visitors to make an informed exploration choice without requiring full story content. Deeper evidence should be available through the selected path rather than competing for attention on the homepage. Homepage content allocation follows C-6 and is decided in `EXPERIENCE.md` v0.13 §6.1–§6.5 (A-10, UX-025).
 
 ### FR-16: Evidence over claims
 
@@ -1202,17 +1202,19 @@ and construction technique within the dimension's content, not part of its label
 
 ### D-19: UX contracts
 
-The visual design contract is `DESIGN.md` v0.8 (dark-only, system sans stack, rose
+The visual design contract is `DESIGN.md` v0.9 (dark-only, system sans stack, rose
 `brand.primary` + periwinkle `accent.secondary`, hierarchy via borders and background
-steps, cupcake brand mark). The experience contract is `EXPERIENCE.md` v0.11. Both are
+steps, cupcake brand mark). The experience contract is `EXPERIENCE.md` v0.13. Both are
 final and authoritative for their domains.
 
-### D-20: Ambient effect deferred
+### D-20: Ambient effect
 
-The ambient visual layer (currently a star field) and its reduced-motion behavior are
-deferred to implementation, under fixed constraints in `DESIGN.md` §16 and
-`EXPERIENCE.md` §14: a static reduced-motion fallback is mandatory, and the effect must
-never block, compete with, or be required to understand the experience.
+The ambient visual layer and its reduced-motion behavior were deferred to implementation,
+under fixed constraints in `DESIGN.md` §16 and `EXPERIENCE.md` §14. UX-030 (2026-10-04)
+has since decided the treatment: sparse tiny stars that twinkle slowly, static under
+reduced motion. The constraints still hold: a static reduced-motion fallback is
+mandatory, and the effect must never block, compete with, or be required to understand
+the experience.
 
 ### D-21: Primary audience re-set
 
@@ -1259,7 +1261,7 @@ exist only in the local working copy.
 
 ### D-25: Homepage positioning statement
 
-The one-line positioning statement in the Recognition surface (`EXPERIENCE.md` v0.11
+The one-line positioning statement in the Recognition surface (`EXPERIENCE.md` v0.13
 §6.2), directly under the name and title, is:
 
 > **"Give me a business problem and I'll turn it into an engineering decision worth trusting."**

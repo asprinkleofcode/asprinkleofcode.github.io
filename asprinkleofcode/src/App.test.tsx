@@ -2,7 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } fr
 import { act, configure, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { MDXModule } from "mdx/types";
 import { MemoryRouter, useNavigate, type NavigateFunction } from "react-router";
+import indexHtml from "../index.html?raw";
 import App from "./App";
+import { IDENTITY } from "./lib/identity";
+import { expectNoFlowbiteDefaults } from "./test/expectNoFlowbiteDefaults";
 import type { Entry } from "./lib/registry";
 import type { PersonalFrontmatter, WorkFrontmatter } from "./lib/frontmatter";
 
@@ -113,7 +116,7 @@ describe("App smoke test", () => {
   });
 
   it.each([
-    { route: "/", heading: "Welcome!" },
+    { route: "/", heading: IDENTITY.name },
     { route: "/about", heading: "Alisha Sprinkle Korba" },
     { route: "/engineering", heading: "Engineering" },
     { route: "/leadership", heading: "Leadership & Enablement" },
@@ -204,7 +207,7 @@ describe("App smoke test", () => {
 
   it("navigates through header path links with the router (PUSH)", async () => {
     renderAt("/");
-    await h1("Welcome!");
+    await h1(IDENTITY.name);
     const leadership = screen.getByRole("link", { name: "Leadership & Enablement" });
     expect(leadership.getAttribute("href")).toBe("/leadership");
     fireEvent.click(leadership);
@@ -224,7 +227,7 @@ describe("App smoke test", () => {
       );
 
     it.each([
-      { route: "/", heading: "Welcome!", current: ["Home"] },
+      { route: "/", heading: IDENTITY.name, current: ["Home"] },
       { route: "/engineering", heading: "Engineering", current: ["Engineering"] },
       { route: "/engineering/foo", heading: "Foo Story", current: ["Engineering"] },
       { route: "/beyond/garden", heading: "Garden", current: ["Beyond the Code"] },
@@ -257,20 +260,85 @@ describe("App smoke test", () => {
     });
   });
 
-  it("navigates from the Landing Learn About Me button with the router (PUSH)", async () => {
+  describe("homepage identity matches the static head (AD-14)", () => {
+    const head = new DOMParser().parseFromString(indexHtml, "text/html");
+    const jsonLd = JSON.parse(head.querySelector('script[type="application/ld+json"]')?.textContent ?? "{}") as {
+      "@graph"?: { "@type": string; name?: string; jobTitle?: string; description?: string }[];
+    };
+    const person = jsonLd["@graph"]?.find((node) => node["@type"] === "Person");
+    const profilePage = jsonLd["@graph"]?.find((node) => node["@type"] === "ProfilePage");
+
+    it("renders exactly one h1 on /", async () => {
+      renderAt("/");
+      await h1(IDENTITY.name);
+      expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    });
+
+    it("renders the homepage headshot derivative", async () => {
+      renderAt("/");
+      await h1(IDENTITY.name);
+      expect(screen.getByRole("img", { name: IDENTITY.name }).getAttribute("src")).toContain(
+        "alisha-sprinkle-korba-headshot-640"
+      );
+    });
+
+    it("does not render the homepage on /about", async () => {
+      renderAt("/about");
+      await h1(IDENTITY.name);
+      expect(screen.queryByText(IDENTITY.positioning)).toBeNull();
+    });
+
+    it("states the Person JSON-LD name, jobTitle and description as the h1, title and positioning", async () => {
+      renderAt("/");
+      const heading = await h1(IDENTITY.name);
+      const [title, positioning] = [...(heading.closest("section")?.querySelectorAll("p") ?? [])].map(
+        (p) => p.textContent
+      );
+      expect(person).toBeDefined();
+      expect(person?.name).toBe(heading.textContent);
+      expect(person?.jobTitle).toBe(title);
+      expect(person?.description).toBe(positioning);
+      expect({ name: person?.name, title: person?.jobTitle, positioning: person?.description }).toEqual(IDENTITY);
+    });
+
+    it("carries the identity in every title and description tag", () => {
+      for (const [label, value] of [
+        ["<title>", head.title],
+        ["og:title", head.querySelector('meta[property="og:title"]')?.getAttribute("content") ?? ""],
+        ["twitter:title", head.querySelector('meta[name="twitter:title"]')?.getAttribute("content") ?? ""],
+        ["ProfilePage name", profilePage?.name ?? ""],
+      ]) {
+        expect(value, label).toContain(IDENTITY.name);
+        expect(value, label).toContain(IDENTITY.title);
+      }
+      for (const selector of [
+        'meta[name="description"]',
+        'meta[property="og:description"]',
+        'meta[name="twitter:description"]',
+      ]) {
+        const content = head.querySelector(selector)?.getAttribute("content") ?? "";
+        expect(content, selector).toContain(IDENTITY.name);
+        expect(content, selector).toContain(IDENTITY.title);
+        expect(content, selector).toContain(IDENTITY.positioning);
+      }
+    });
+  });
+
+  it("applies the theme's replace map, so the header and footer carry no flowbite dark:/gray- defaults", async () => {
     renderAt("/");
-    fireEvent.click(await screen.findByRole("link", { name: "Learn About Me" }));
-    const heading = await h1("Alisha Sprinkle Korba");
-    await waitFor(() => expect(document.activeElement).toBe(heading));
+    await h1(IDENTITY.name);
+    expectNoFlowbiteDefaults(screen.getByRole("navigation", { name: "Main" }));
+    expectNoFlowbiteDefaults(screen.getByRole("contentinfo"));
   });
 
   it("mounts exactly one ambient layer across route changes", async () => {
     renderAt("/");
-    await h1("Welcome!");
+    await h1(IDENTITY.name);
     expect(document.querySelectorAll(".ambient-layer")).toHaveLength(1);
-    const field = () => (document.querySelector(".ambient-layer__dot") as HTMLElement).style.cssText;
+    const field = () => (document.querySelector(".ambient-layer__star") as HTMLElement).style.cssText;
     let previous = field();
-    for (const [route, heading] of [["/about", "Alisha Sprinkle Korba"], ["/engineering", "Engineering"], ["/nope", "Page not found"]]) {
+    // Not `/about`: its h1 is the same name as the homepage's, so awaiting it would not wait for the route.
+    for (const [route, heading] of [["/leadership", "Leadership & Enablement"], ["/engineering", "Engineering"], ["/nope", "Page not found"]]) {
       act(() => navigate(route));
       await h1(heading);
       expect(document.querySelectorAll(".ambient-layer")).toHaveLength(1);
@@ -283,7 +351,7 @@ describe("App smoke test", () => {
     ambient.absent = true;
     try {
       renderAt("/");
-      await h1("Welcome!");
+      await h1(IDENTITY.name);
       expect(document.querySelector(".ambient-layer")).toBeNull();
       act(() => navigate("/engineering"));
       expect(await h1("Engineering")).toBeDefined();
@@ -298,7 +366,7 @@ describe("App smoke test", () => {
     ambient.throws = true;
     try {
       renderAt("/");
-      expect(await h1("Welcome!")).toBeDefined();
+      expect(await h1(IDENTITY.name)).toBeDefined();
       expect(document.querySelector(".ambient-layer")).toBeNull();
       act(() => navigate("/engineering"));
       expect(await h1("Engineering")).toBeDefined();
@@ -331,7 +399,7 @@ describe("App smoke test", () => {
 
     it("scrolls to main and focuses the h1 after forward navigation resolves", async () => {
       renderAt("/");
-      await h1("Welcome!");
+      await h1(IDENTITY.name);
 
       act(() => navigate("/engineering/foo"));
       const heading = await h1("Foo Story");
@@ -343,7 +411,7 @@ describe("App smoke test", () => {
 
     it("does not scroll or focus while a route is still loading", async () => {
       renderAt("/");
-      await h1("Welcome!");
+      await h1(IDENTITY.name);
 
       act(() => navigate("/engineering/pending"));
       await new Promise((resolve) => setTimeout(resolve, 20));

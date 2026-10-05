@@ -2,7 +2,7 @@ import "./App.css";
 import { lazy, Suspense, useLayoutEffect, useRef } from "react";
 import { ThemeProvider } from "flowbite-react";
 import { Route, Routes, useLocation, useNavigationType } from "react-router";
-import { aSprinkleOfCodeTheme } from "./theme/aSprinkleOfCodeTheme";
+import { aSprinkleOfCodeApplyTheme, aSprinkleOfCodeTheme } from "./theme/aSprinkleOfCodeTheme";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import AmbientLayer from "./components/AmbientLayer/AmbientLayer";
@@ -11,16 +11,16 @@ import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 import { useNavigationScroll, type SettleRoute } from "./lib/useNavigationScroll";
 
 // Fixed route table (AD-5); every route page is its own lazy chunk (AD-6).
-const LandingPage = lazy(() => import("./pages/Landing/LandingPage.jsx"));
+const Landing = lazy(() => import("./pages/Landing/Landing"));
 const Engineering = lazy(() => import("./pages/Engineering/Engineering"));
 const Leadership = lazy(() => import("./pages/Leadership/Leadership"));
 const Beyond = lazy(() => import("./pages/Beyond/Beyond"));
 const WorkStory = lazy(() => import("./pages/WorkStory/WorkStory"));
 const Personal = lazy(() => import("./pages/Personal/Personal"));
 const NotFound = lazy(() => import("./pages/NotFound/NotFound"));
-// LEGACY, temporary: `/about` sits outside AD-5's route set and is kept only so
-// the Landing "Learn About Me" button keeps working; the header no longer links
-// to it (Story 1.4). Remove it with the AboutMe page in Story 1.6 or Epic 4.
+// LEGACY, temporary: `/about` sits outside AD-5's route set. Nothing links to it
+// any more (the header dropped it in Story 1.4, the Landing hero buttons in
+// Story 1.6); it stays reachable by URL only until Epic 4 replaces AboutMe.
 const AboutMe = lazy(() => import("./pages/AboutMe/AboutMe.jsx"));
 
 /**
@@ -43,7 +43,7 @@ function App() {
   const settle = useNavigationScroll(mainRef);
 
   return (
-    <ThemeProvider theme={aSprinkleOfCodeTheme}>
+    <ThemeProvider theme={aSprinkleOfCodeTheme} applyTheme={aSprinkleOfCodeApplyTheme}>
       <AmbientBoundary>
         {/* Keyed per navigation so every page gets a freshly shuffled field. */}
         <AmbientLayer key={location.key} />
@@ -60,7 +60,7 @@ function App() {
               }
             >
               <Routes>
-                <Route path="/" element={<LandingPage />} />
+                <Route path="/" element={<Landing />} />
                 <Route path="/engineering" element={<Engineering />} />
                 <Route path="/engineering/:slug" element={<WorkStory path="engineering" />} />
                 <Route path="/leadership" element={<Leadership />} />

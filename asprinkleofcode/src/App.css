@@ -2,9 +2,10 @@
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
 
+/* Page surface (AD-10, DESIGN §7 / UX-030): role tokens only. */
 body {
-  background: var(--color-dark-600);
-  color: var(--color-dark-50);
+  background: var(--background-primary);
+  color: var(--text-primary);
 }
 
 h1 {
@@ -26,11 +27,6 @@ p {
   margin-bottom: 2rem;
   line-height: 1.6;
   color: var(--color-primary-100);
-}
-
-.highlight {
-  color: var(--color-primary-300);
-  font-weight: 600;
 }
 
 @media (min-width: 768px) {

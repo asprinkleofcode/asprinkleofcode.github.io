@@ -39,7 +39,8 @@ const Header: FC = () => (
     <NavbarBrand as={HomeLink} className="navbar-brand">
       {/* Cupcake mark recoloured to brand.primary with a CSS mask (DESIGN §6). */}
       <span aria-hidden="true" className="navbar-logo" />
-      <span className="navbar-brand-text type-title">Alisha Korba</span>
+      {/* White ~1rem/700 wordmark (UX-030), deliberately independent of `type-title`. */}
+      <span className="navbar-brand-text text-base tracking-[0.02em]">Alisha Korba</span>
     </NavbarBrand>
     <NavbarToggle />
     <NavbarCollapse>

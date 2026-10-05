@@ -4,59 +4,105 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/cupcake.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alisha Sprinkle Korba | Sr. Software Engineer</title>
+    <!--
+      Identity wording (AD-14): this head owns it. The Landing page states the
+      same name, title and positioning from src/lib/identity.ts, and
+      App.test.tsx fails if the two drift apart.
+    -->
+    <title>Alisha Sprinkle Korba | Senior Software Engineer</title>
     <meta
       name="description"
-      content="Alisha Sprinkle Korba's personal portfolio showcasing her work as a Senior Software Engineer at Inmar Intelligence, including personal and professional projects, design philosophy, and technical skills."
+      content="Alisha Sprinkle Korba, Senior Software Engineer. Give me a business problem and I'll turn it into an engineering decision worth trusting."
+    />
+    <link rel="canonical" href="https://alishasprinklekorba.com/" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content="Alisha Sprinkle Korba | Senior Software Engineer" />
+    <meta
+      property="og:description"
+      content="Alisha Sprinkle Korba, Senior Software Engineer. Give me a business problem and I'll turn it into an engineering decision worth trusting."
+    />
+    <meta property="og:url" content="https://alishasprinklekorba.com/" />
+    <meta property="og:site_name" content="Alisha Sprinkle Korba" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Alisha Sprinkle Korba | Senior Software Engineer" />
+    <meta
+      name="twitter:description"
+      content="Alisha Sprinkle Korba, Senior Software Engineer. Give me a business problem and I'll turn it into an engineering decision worth trusting."
     />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org/",
-        "@type": "Person",
-        "name": "Alisha Sprinkle Korba",
-        "alternateName": "Alisha Sprinkle",
-        "url": "https://alishasprinklekorba.com/",
-        "image": "https://asprinkleofcode.github.io/assets/alisha-sprinkle-korba-headshot-BqFgpPGr.jpg",
-        "sameAs": [
-          "https://alishasprinklekorba.com/",
-          "https://asprinkleofcode.github.io",
-          "https://github.com/asprinkleofcode",
-          "https://www.linkedin.com/in/alishasprinklekorba",
-          "https://www.instagram.com/asprinkleofcode/"
-        ],
-        "jobTitle": "Sr. Software Engineer",
-        "worksFor": {
-          "@type": "Organization",
-          "name": "Inmar Intelligence"
-        },
-        "alumniOf": {
-          "@type": "CollegeOrUniversity",
-          "name": "Appalachian State University"
-        },
-        "knowsAbout": [
-          "Software Engineering",
-          "APIs",
-          "Backend Systems",
-          "Platform Architecture",
-          "User Experience Design"
-        ],
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Winston-Salem",
-          "addressRegion": "NC",
-          "addressCountry": "US"
-        },
-        "hasCredential": {
-          "@type": "EducationalOccupationalCredential",
-          "name": "Certified ScrumMaster (CSM)",
-          "credentialCategory": "Professional Certification",
-          "recognizedBy": {
-            "@type": "Organization",
-            "name": "ScrumAlliance",
-            "url": "https://www.scrumalliance.org"
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://alishasprinklekorba.com/#person",
+            "name": "Alisha Sprinkle Korba",
+            "alternateName": "Alisha Sprinkle",
+            "url": "https://alishasprinklekorba.com/",
+            "image": "https://asprinkleofcode.github.io/assets/alisha-sprinkle-korba-headshot-BqFgpPGr.jpg",
+            "sameAs": [
+              "https://alishasprinklekorba.com/",
+              "https://asprinkleofcode.github.io",
+              "https://github.com/asprinkleofcode",
+              "https://www.linkedin.com/in/alishasprinklekorba",
+              "https://www.instagram.com/asprinkleofcode/"
+            ],
+            "jobTitle": "Senior Software Engineer",
+            "description": "Give me a business problem and I'll turn it into an engineering decision worth trusting.",
+            "worksFor": {
+              "@type": "Organization",
+              "name": "Inmar Intelligence"
+            },
+            "alumniOf": {
+              "@type": "CollegeOrUniversity",
+              "name": "Appalachian State University"
+            },
+            "knowsAbout": [
+              "Software Engineering",
+              "APIs",
+              "Backend Systems",
+              "Platform Architecture",
+              "User Experience Design",
+              "Technical Leadership",
+              "Engineering Enablement",
+              "Mentoring",
+              "Scrum"
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Winston-Salem",
+              "addressRegion": "NC",
+              "addressCountry": "US"
+            },
+            "hasCredential": {
+              "@type": "EducationalOccupationalCredential",
+              "name": "Certified ScrumMaster (CSM)",
+              "credentialCategory": "Professional Certification",
+              "recognizedBy": {
+                "@type": "Organization",
+                "name": "ScrumAlliance",
+                "url": "https://www.scrumalliance.org"
+              },
+              "dateCreated": "2024-11-23"
+            }
           },
-          "dateCreated": "2024-11-23"
-        }
+          {
+            "@type": "WebSite",
+            "@id": "https://alishasprinklekorba.com/#website",
+            "url": "https://alishasprinklekorba.com/",
+            "name": "Alisha Sprinkle Korba",
+            "inLanguage": "en",
+            "author": { "@id": "https://alishasprinklekorba.com/#person" }
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://alishasprinklekorba.com/#profilepage",
+            "url": "https://alishasprinklekorba.com/",
+            "name": "Alisha Sprinkle Korba | Senior Software Engineer",
+            "isPartOf": { "@id": "https://alishasprinklekorba.com/#website" },
+            "mainEntity": { "@id": "https://alishasprinklekorba.com/#person" }
+          }
+        ]
       }
     </script>
   </head>

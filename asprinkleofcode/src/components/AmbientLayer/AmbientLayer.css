@@ -1,6 +1,7 @@
 /*
- * No fill of its own: the page background (body) shows through, so the
- * layer only adds soft bokeh that twinkles and drifts slowly ("breathing").
+ * No fill of its own: the page background (body, background.primary) shows
+ * through, so the layer only adds sparse stars that twinkle slowly in place
+ * (DESIGN §16 / UX-030). No drift and no glow.
  */
 .ambient-layer {
   position: fixed;
@@ -17,38 +18,38 @@
   }
 }
 
-.ambient-layer__dot {
+.ambient-layer__star {
   position: absolute;
   border-radius: 9999px;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--brand-primary) 100%, transparent) 0%,
-    color-mix(in srgb, var(--brand-primary) 60%, transparent) 40%,
-    transparent 70%
-  );
-  opacity: 0.4;
-  animation:
-    ambient-twinkle 5s ease-in-out var(--twinkle-delay, 0s) infinite alternate,
-    ambient-drift 14s ease-in-out var(--drift-delay, 0s) infinite;
+  opacity: 0.25;
+  animation: ambient-twinkle 5s ease-in-out var(--twinkle-delay, 0s) infinite alternate;
+}
+
+/* Tints (the only colour source): mostly text.primary, a few accent.secondary and brand.primary. */
+.ambient-layer__star--light {
+  background-color: var(--text-primary);
+}
+
+.ambient-layer__star--accent {
+  background-color: var(--accent-secondary);
+}
+
+.ambient-layer__star--brand {
+  background-color: var(--brand-primary);
 }
 
 @keyframes ambient-twinkle {
   from {
-    opacity: 0.4;
+    opacity: 0.25;
   }
   to {
-    opacity: 1;
+    opacity: 0.8;
   }
 }
 
-@keyframes ambient-drift {
-  50% {
-    transform: translate(10px, -16px);
-  }
-}
-
-.ambient-layer--static .ambient-layer__dot {
-  opacity: 0.75;
+/* Static path (usePrefersReducedMotion): same field at a fixed faint opacity. */
+.ambient-layer--static .ambient-layer__star {
+  opacity: 0.5;
 }
 
 .ambient-layer--static,
@@ -56,13 +57,14 @@
   animation: none;
 }
 
+/* CSS fallback in case the hook has not caught up (or JS is late). */
 @media (prefers-reduced-motion: reduce) {
   .ambient-layer,
-  .ambient-layer__dot {
+  .ambient-layer__star {
     animation: none;
   }
 
-  .ambient-layer__dot {
-    opacity: 0.75;
+  .ambient-layer__star {
+    opacity: 0.5;
   }
 }

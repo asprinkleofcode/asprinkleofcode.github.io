@@ -1,4 +1,5 @@
 import { createTheme } from "flowbite-react";
+import type { ApplyTheme, DeepPartialApplyTheme, FlowbiteTheme } from "flowbite-react/types";
 
 // Role-token utilities only (AD-10 / DESIGN §7): no primitive ramps, raw hex,
 // or raw Tailwind palette colours. Focus is a solid 2px ring with a 2px offset
@@ -18,7 +19,8 @@ export const aSprinkleOfCodeTheme = createTheme({
     },
 
     brand: {
-      base: `flex items-center space-x-3 text-brand-primary font-bold rounded-control ${focusRing}`,
+      // White wordmark (UX-030); the cupcake mark stays brand.primary via Header.css.
+      base: `flex items-center space-x-3 text-text-primary font-bold rounded-control ${focusRing}`,
     },
 
     link: {
@@ -27,7 +29,7 @@ export const aSprinkleOfCodeTheme = createTheme({
       active: {
         // Desktop non-colour cue for the current page: an underline.
         on: "bg-brand-primary text-text-inverse md:bg-transparent md:text-brand-primary md:underline",
-        off: "border-b border-border-default text-text-primary hover:bg-background-secondary md:border-0 md:hover:bg-transparent md:hover:text-brand-primary md:hover:underline",
+        off: "border-b border-border-default text-text-secondary hover:bg-background-secondary md:border-0 md:hover:bg-transparent md:hover:text-brand-primary md:hover:underline",
       },
     },
 
@@ -37,7 +39,8 @@ export const aSprinkleOfCodeTheme = createTheme({
   },
   footer: {
     root: {
-      base: "w-full rounded-none bg-background-primary shadow-inner md:flex md:items-center md:justify-between",
+      // Recessed surface with a 1px top edge and the one inset shadow (DESIGN §15 / UX-030).
+      base: "w-full rounded-none bg-background-recessed border-t border-border-default shadow-recessed-inset md:flex md:items-center md:justify-between",
       container: "w-full p-6 mx-auto",
     },
     icon: {
@@ -76,3 +79,31 @@ export const aSprinkleOfCodeTheme = createTheme({
     },
   },
 });
+
+type SlotApply = ApplyTheme | { [slot: string]: SlotApply };
+
+/** Mirrors a theme subtree, marking every slot it defines `"replace"`. */
+function replaceDefinedSlots(slots: object | undefined): SlotApply {
+  return Object.fromEntries(
+    Object.entries(slots ?? {}).map(([slot, value]) => [
+      slot,
+      typeof value === "object" && value !== null ? replaceDefinedSlots(value) : "replace",
+    ])
+  );
+}
+
+// `createTheme` slots are twMerged with flowbite's defaults, which carry
+// `dark:` and `gray-` classes; this build's `dark` variant follows
+// `prefers-color-scheme`, so OS dark mode would repaint the header and footer
+// in raw palette colours (AD-10). Replacing every navbar and footer slot this
+// theme defines renders only the role-token classes above; slots it leaves
+// undefined keep the flowbite default. Pass to `ThemeProvider` with the theme.
+// "replace" also drops flowbite's structural (layout/spacing) classes for a
+// slot: when you define a navbar or footer slot, copy in any structural
+// classes from the flowbite default that it still needs.
+// Focus offset: the footer keeps `ring-offset-background-primary` from
+// `focusRing` by design (a 2px navy gap before the ring on the recessed footer).
+export const aSprinkleOfCodeApplyTheme = {
+  navbar: replaceDefinedSlots(aSprinkleOfCodeTheme.navbar),
+  footer: replaceDefinedSlots(aSprinkleOfCodeTheme.footer),
+} as DeepPartialApplyTheme<FlowbiteTheme>;

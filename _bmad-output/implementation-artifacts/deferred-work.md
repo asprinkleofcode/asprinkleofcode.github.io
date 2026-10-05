@@ -27,3 +27,35 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-5-ambient-layer.md`
   summary: Add a browser-level test that the ambient layer's dots have no animation under prefers-reduced-motion.
   evidence: Unit tests only check class names; jsdom applies no stylesheet, so deleting the `animation: none` rules would not fail any test.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-6-homepage-recognition-discoverability.md`
+  summary: Add a browser-level check that the homepage Recognition h1 and paragraphs render at the `type-*` sizes and role colours, not the legacy unlayered `App.css` h1/p rules.
+  evidence: `Recognition.css` uses `revert-layer` to beat `App.css`; jsdom ignores cascade layers, so deleting the CSS import or a reset property would pass every test. Only the manual 375px/1280px check guards it.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-6-homepage-recognition-discoverability.md`
+  summary: When Epic 4 removes the AboutMe page, replace the Person JSON-LD `image` in `index.html` (a Vite-hashed `alisha-sprinkle-korba-headshot-BqFgpPGr.jpg` URL on asprinkleofcode.github.io) with a stable image URL, or drop it.
+  evidence: The hashed jpg is emitted only because `pages/AboutMe/Primary.jsx` imports the original headshot; once that import goes, the structured-data image 404s. It resolves today (pre-existing value kept by Story 1.6).
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-6-homepage-recognition-discoverability.md`
+  summary: Measure homepage LCP on a throttled mid-tier mobile profile; if it exceeds 2.5s, start the headshot fetch earlier (e.g. a preload of a fixed-name copy).
+  evidence: Unverified (maybe-false, would be medium). The headshot sits in the lazy Landing chunk, so the browser discovers it only after the main bundle and route chunk load; `fetchPriority="high"` cannot help before then.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-6-recognition-color-and-positioning.md`
+  summary: When Story 1.8 lands on this branch, check `/` in a browser at 375px and 1280px: Recognition name ~2.1rem/~3rem (700, line-height ~1.05), title ~1.1rem/~1.35rem (600, rose), and the 56/48 → 88/72px padding, 40px gap and left-aligned mobile layout.
+  evidence: Story 1.6's UX-030 AC includes level 1/2 sizes, which arrive only with Story 1.8's `theme.css` change. jsdom applies no CSS, so neither the sizes nor the Tailwind v4 dynamic spacing utilities (`pt-22`, `pb-18`, `mt-5.5`) can be caught by unit tests; only a manual or browser check verifies them.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-8-visual-alignment-to-homepage-mockup.md`
+  summary: Resolved by Story 1.8: the Story 1.4 item on flowbite `dark:` and `gray-` defaults leaking into the header and footer theme slots.
+  evidence: `aSprinkleOfCodeApplyTheme` (`asprinkleofcode/src/theme/aSprinkleOfCodeTheme.ts`) sets `"replace"` on every navbar and footer slot the theme defines and is passed to `ThemeProvider` in `App.tsx`. `Header.test.tsx` and `Footer.test.tsx` assert no rendered element carries a `dark:` or `gray-` class.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-8-visual-alignment-to-homepage-mockup.md`
+  summary: Stop flowbite `dark:` defaults leaking outside the header and footer (Avatar and Carousel on legacy `/about`, the error-fallback Button), ideally site-wide with `@custom-variant dark (&:where(.dark, .dark *));` in `index.css` instead of per-component `applyTheme`.
+  evidence: Story 1.8's `aSprinkleOfCodeApplyTheme` replaces only the navbar and footer slots; other flowbite components still merge defaults with `dark:` palette classes, which this build applies under OS dark mode.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-8-visual-alignment-to-homepage-mockup.md`
+  summary: Declare `:root { color-scheme: dark; }` so native scrollbars, form controls and autofill match the always-dark page for visitors in OS light mode.
+  evidence: Nothing in `index.html` or `src/` sets `color-scheme`; the page is dark navy (and was dark grey before Story 1.8), so light native controls can appear on it.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-8-visual-alignment-to-homepage-mockup.md`
+  summary: Resolved by Story 1.8: the Story 1.6 browser check of Recognition level 1/2 sizes and spacing (name 33.6px/48px, title 17.6px/21.6px at 600, padding 56/48 and 88/72, left-aligned mobile) passed on `vite preview`.
+  evidence: Measured computed styles at 375px and 1280px after Story 1.8's `theme.css` change; see the Implementation Notes in the Story 1.8 spec.

@@ -35,6 +35,9 @@
   --drop-shadow-glow: 0 0 6px var(--brand-primary);
   /* UX-028: the @orangecatwoodcraft footer icon only, on hover and keyboard focus. */
   --drop-shadow-glow-woodcraft: 0 0 6px var(--glow-woodcraft);
+
+  /* Footer only (DESIGN §15 / UX-030): the one inset shadow, on background.recessed. */
+  --shadow-recessed-inset: inset 0 2px 6px rgb(0 0 0 / 0.5);
 }
 
 @theme {
@@ -53,21 +56,34 @@
  * levels carry case, tracking, and colour as well as size.
  */
 
+/*
+ * Levels 1–2 (UX-030) are a mobile/desktop pair with one step at Tailwind's
+ * `md` breakpoint, where Recognition also switches layout, rather than a fluid clamp.
+ */
+
 /* 1 — Identity / name */
 @utility type-identity {
   font-family: var(--font-sans);
-  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.25rem);
-  line-height: 1.2;
+  font-size: 2.1rem;
+  line-height: 1.05;
   font-weight: 700;
   letter-spacing: 0.02em;
+
+  @variant md {
+    font-size: 3rem;
+  }
 }
 
 /* 2 — Professional title: directly below identity, sentence case */
 @utility type-title {
   font-family: var(--font-sans);
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   line-height: 1.4;
-  font-weight: 500;
+  font-weight: 600;
+
+  @variant md {
+    font-size: 1.35rem;
+  }
 }
 
 /* 3 — Section heading */
