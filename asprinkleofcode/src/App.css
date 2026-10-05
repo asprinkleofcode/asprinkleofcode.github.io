@@ -28,11 +28,6 @@ p {
   color: var(--color-primary-100);
 }
 
-.highlight {
-  color: var(--color-primary-300);
-  font-weight: 600;
-}
-
 @media (min-width: 768px) {
   h1 {
     font-size: 4rem;

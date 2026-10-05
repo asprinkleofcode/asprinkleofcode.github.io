@@ -27,3 +27,15 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-5-ambient-layer.md`
   summary: Add a browser-level test that the ambient layer's dots have no animation under prefers-reduced-motion.
   evidence: Unit tests only check class names; jsdom applies no stylesheet, so deleting the `animation: none` rules would not fail any test.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-6-homepage-recognition-discoverability.md`
+  summary: Add a browser-level check that the homepage Recognition h1 and paragraphs render at the `type-*` sizes and role colours, not the legacy unlayered `App.css` h1/p rules.
+  evidence: `Recognition.css` uses `revert-layer` to beat `App.css`; jsdom ignores cascade layers, so deleting the CSS import or a reset property would pass every test. Only the manual 375px/1280px check guards it.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-6-homepage-recognition-discoverability.md`
+  summary: When Epic 4 removes the AboutMe page, replace the Person JSON-LD `image` in `index.html` (a Vite-hashed `alisha-sprinkle-korba-headshot-BqFgpPGr.jpg` URL on asprinkleofcode.github.io) with a stable image URL, or drop it.
+  evidence: The hashed jpg is emitted only because `pages/AboutMe/Primary.jsx` imports the original headshot; once that import goes, the structured-data image 404s. It resolves today (pre-existing value kept by Story 1.6).
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-6-homepage-recognition-discoverability.md`
+  summary: Measure homepage LCP on a throttled mid-tier mobile profile; if it exceeds 2.5s, start the headshot fetch earlier (e.g. a preload of a fixed-name copy).
+  evidence: Unverified (maybe-false, would be medium). The headshot sits in the lazy Landing chunk, so the browser discovers it only after the main bundle and route chunk load; `fetchPriority="high"` cannot help before then.
