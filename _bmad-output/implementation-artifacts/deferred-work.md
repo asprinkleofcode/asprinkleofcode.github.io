@@ -63,3 +63,15 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-7-homepage-exploration-paths-path-indexes.md`
   summary: Move App.css's unlayered legacy `h1`/`h2`/`p` rules into a cascade layer (or retire them) so components stop copying the `revert-layer` reset.
   evidence: Recognition, ExplorationPaths, EvidenceHighlights and PathIndex each carry the same six-property `revert-layer` block because App.css's bare element rules beat Tailwind's layered `type-*` utilities; every new component needs another copy until the legacy pages that rely on them (AboutMe) are migrated.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-hardening.md`
+  summary: Resolved by the Epic 1 hardening: the Story 1.7 item on moving App.css's unlayered legacy `h1`/`h2`/`p` rules so components stop copying the `revert-layer` reset, and the Story 1.6 item on a browser check that Recognition renders at the `type-*` sizes rather than App.css's.
+  evidence: `src/App.css` is deleted. Its element rules live only in `src/pages/AboutMe/AboutMe.css` under `:where(.about-me)`, and the four `revert-layer` blocks are gone. `src/test/globalCss.test.ts` fails on a second Tailwind root or any rule not scoped to a class outside the index.css shell globals and legacy `/about`. A `vite preview` check measured Recognition, the path indexes, NotFound and `/about` (unchanged from the pre-change build).
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-hardening.md`
+  summary: Give MDX story bodies their own prose typography (paragraph and heading spacing, `type-*` levels, role colours) when Epic 2 builds the work-story detail page (Story 2.2), and Story 4.1 for personal pages.
+  evidence: With App.css gone, nothing styles bare `p`/`h2` inside `<Body />` in `WorkStory.tsx`/`Personal.tsx`, so Tailwind preflight leaves paragraphs with no margin and headings at inherited size. Before, App.css gave them spacing, but at 0.75rem in primitive `--color-primary-100`, which was the defect A-1 removed. No story body exists yet, so nothing renders this today.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-hardening.md`
+  summary: Add an App-level test that a route page whose own chunk fails to import is imported again after navigating away, beside the existing story-body and `lazyWithRetry` helper tests.
+  evidence: `App.tsx` wraps every route page in `lazyWithRetry`, but `App.test.tsx` makes only story-body imports fail. Reverting a page to plain `React.lazy` would pass every test. The helper is tested with the same boundary and `onReset` wiring App uses. Making a real page module's dynamic import reject inside the smoke test needs a loader seam the app does not have yet.

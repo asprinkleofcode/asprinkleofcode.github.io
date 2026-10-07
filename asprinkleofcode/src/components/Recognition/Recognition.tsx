@@ -1,5 +1,3 @@
-import "./Recognition.css";
-
 interface RecognitionProps {
   name: string;
   title: string;

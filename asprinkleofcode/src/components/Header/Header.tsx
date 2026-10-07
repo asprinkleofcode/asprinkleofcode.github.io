@@ -26,6 +26,15 @@ const CloseMenuOnNavigate: FC = () => {
   return null;
 };
 
+const MENU_ID = "main-menu";
+
+// flowbite's toggle exposes no open/closed state; tie it to the collapse so
+// assistive tech hears a disclosure (WCAG 4.1.2).
+const MenuToggle: FC = () => {
+  const { isOpen } = useNavbarContext();
+  return <NavbarToggle aria-expanded={isOpen ?? false} aria-controls={MENU_ID} />;
+};
+
 /** Flat, sticky top-level nav (EXPERIENCE §5.2): identical on every route. */
 const NAV_ITEMS = [{ to: "/", label: "Home" }, ...EXPLORATION_PATHS.map(({ to, label }) => ({ to, label }))];
 
@@ -38,8 +47,8 @@ const Header: FC = () => (
       {/* White ~1rem/700 wordmark (UX-030), deliberately independent of `type-title`. */}
       <span className="navbar-brand-text text-base tracking-[0.02em]">Alisha Korba</span>
     </NavbarBrand>
-    <NavbarToggle />
-    <NavbarCollapse>
+    <MenuToggle />
+    <NavbarCollapse id={MENU_ID}>
       {NAV_ITEMS.map(({ to, label }) => (
         <RouterNavbarLink key={to} to={to}>
           {label}

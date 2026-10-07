@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-13-2026 18:20
-last_updated: 10-05-2026 11:00
+last_updated: 10-07-2026 09:55
 project: asprinkleofcode.github.io
 project_key: NOKEY
 tracking_system: file-system
@@ -44,7 +44,7 @@ development_status:
   1-6-homepage-recognition-discoverability: done
   1-7-homepage-exploration-paths-path-indexes: done
   1-8-visual-alignment-to-homepage-mockup: done
-  epic-1-retrospective: optional
+  epic-1-retrospective: done
 
   epic-2: backlog
   2-1-work-story-presentation-components: backlog
@@ -67,3 +67,86 @@ development_status:
   4-4-author-powerlifting-birdhouses-dimension-stories: backlog
   4-5-homepage-personal-hint-teaser: backlog
   epic-4-retrospective: optional
+action_items:
+  - id: "epic-1-retro-item-1-retire-app-css-cascade"
+    epic: 1
+    action: "A-1: Retire legacy App.css cascade (drop its Tailwind re-import; layer/scope
+      bare h1/h2/p + avatar-pulse to /about; delete the 4 revert-layer resets); browser-verify
+      font stack and NotFound/error/story typography. Epic 1 follow-up, before Epic
+      2."
+    owner: "Dev (Amelia)"
+    status: done
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-1-retro-item-2-error-fallback-settles-ad19"
+    epic: 1
+    action: "A-2: Error-boundary fallback settles AD-19 on PUSH (scroll to main, focus
+      h1, un-pause recording) + App test navigating into /engineering/throws. Epic
+      1 follow-up."
+    owner: "Dev (Amelia)"
+    status: done
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-1-retro-item-3-lazy-chunk-retry"
+    epic: 1
+    action: "A-3: Evict rejected lazies from storyBody cache and retry route-page
+      lazies after a chunk failure. Epic 1 follow-up."
+    owner: "Dev (Amelia)"
+    status: done
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-1-retro-item-4-forced-colors-focus"
+    epic: 1
+    action: "A-4: focusRing uses focus:outline-hidden instead of focus:outline-none
+      so focus is visible in forced-colors mode. Epic 1 follow-up."
+    owner: "Dev (Amelia)"
+    status: done
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-1-retro-item-5-toggle-aria-copyright"
+    epic: 1
+    action: "A-5: NavbarToggle aria-expanded/aria-controls; fix copyright spacing
+      and Footer.test.tsx:98. Epic 1 follow-up."
+    owner: "Dev (Amelia)"
+    status: done
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-1-retro-item-6-ad10-gate"
+    epic: 1
+    action: "A-6: Add an AD-10 gate test (no --color-(primary|dark)-, raw hex or palette
+      utilities outside theme/ and legacy /about); extend expectNoFlowbiteDefaults."
+    owner: "Architect (Winston) + Dev"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-1-retro-item-7-assign-cssvar-usedocumentmeta"
+    epic: 1
+    action: "A-7: Reconcile spine/epics: assign useDocumentMeta to an Epic 2 story
+      (likely 2.2); record cssVar as built with first JS colour consumer; correct
+      Epic 1 AD-1..AD-19 coverage claim."
+    owner: "Architect (Winston) / PM (John)"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-1-retro-item-8-refresh-stale-doc-notes"
+    epic: 1
+    action: "A-8: Refresh stale notes: DESIGN.md:34 and :40, EXPERIENCE.md section
+      24 (1196-1199), colors.css:53 accent comment, AGENTS.md:17 test-location note."
+    owner: "UX (Sally) + bmad-project-context"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-1-retro-item-9-deferred-work-status"
+    epic: 1
+    action: "A-9: Add status to every deferred-work.md entry, close the 4 silently
+      resolved ones, and make status update part of story close-out."
+    owner: "SM / Dev"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-1-retro-item-10-epic2-content-pipeline-checks"
+    epic: 1
+    action: "A-10: Epic 2 first content story adds a real-glob registry test with
+      a fixture entry, hero path validation, and featured uniqueness per path."
+    owner: "PM (John)"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-1-retro-item-11-og-image-externallink-wrap"
+    epic: 1
+    action: "A-11: Add og:image/twitter:image from a stable public/ headshot and repoint
+      JSON-LD image; fix ExternalLink whole-label nowrap before first multi-word outbound
+      link."
+    owner: "PM (John)"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"

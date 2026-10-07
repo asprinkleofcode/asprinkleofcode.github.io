@@ -2,7 +2,6 @@ import { Link } from "react-router";
 import type { Entry } from "../../lib/registry";
 import { textLinkClasses } from "../../lib/linkClasses";
 import { entryHref } from "../../lib/paths";
-import "./PathIndex.css";
 
 interface PathIndexProps {
   /** The path's decided label, rendered as the page's only h1. */

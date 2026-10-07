@@ -37,13 +37,25 @@ const personal: Entry = {
   frontmatter: { type: "personal", title: "Garden", summary: "Garden summary.", listed: true } as PersonalFrontmatter,
 };
 
+const flakyPersonal: Entry = {
+  ...personal,
+  key: "personal/beyond/flaky",
+  slug: "flaky",
+  file: "../content/personal/flaky.mdx",
+  frontmatter: { ...personal.frontmatter, title: "Flaky Dimension" } as PersonalFrontmatter,
+};
+
 const fixtures: Entry[] = [
   work("foo", "Foo Story"),
   work("throws", "Throwing Story"),
   work("chunk-fails", "Chunk Failure Story"),
   work("pending", "Pending Story"),
+  work("flaky", "Flaky Story"),
   personal,
+  flakyPersonal,
 ];
+
+const flaky = { attempts: 0, personalAttempts: 0 };
 
 const bodies: Record<string, () => Promise<MDXModule>> = {
   "work/engineering/foo": () => Promise.resolve(bodyModule("Foo body text.")),
@@ -55,7 +67,16 @@ const bodies: Record<string, () => Promise<MDXModule>> = {
     } as unknown as MDXModule),
   "work/engineering/chunk-fails": () => Promise.reject(new Error("Failed to fetch dynamically imported module")),
   "work/engineering/pending": () => new Promise<MDXModule>(() => {}),
+  // Fails on the first import only, like a dropped chunk request.
+  "work/engineering/flaky": () =>
+    ++flaky.attempts === 1
+      ? Promise.reject(new Error("Failed to fetch dynamically imported module"))
+      : Promise.resolve(bodyModule("Flaky body text.")),
   "personal/beyond/garden": () => Promise.resolve(bodyModule("Garden body text.")),
+  "personal/beyond/flaky": () =>
+    ++flaky.personalAttempts === 1
+      ? Promise.reject(new Error("Failed to fetch dynamically imported module"))
+      : Promise.resolve(bodyModule("Flaky dimension body text.")),
 };
 
 // First loads of lazy page chunks (AboutMe pulls in images) can exceed the 1s
@@ -172,7 +193,10 @@ describe("App smoke test", () => {
     renderAt(route);
 
     expect(await h1("Something went wrong")).toBeDefined();
-    expect(screen.getByRole("button", { name: "Try again" })).toBeDefined();
+    const tryAgain = screen.getByRole("button", { name: "Try again" });
+    // The button slot merges with flowbite's own `focus:outline-none`; the theme's must win (forced colors).
+    expect(tryAgain.className.split(/\s+/)).toContain("focus:outline-hidden");
+    expect(tryAgain.className.split(/\s+/)).not.toContain("focus:outline-none");
     expect(screen.getByRole("link", { name: "Go to the homepage" })).toBeDefined();
     expect(screen.getByRole("link", { name: "Home" })).toBeDefined();
     expect(screen.getByRole("contentinfo")).toBeDefined();
@@ -182,6 +206,36 @@ describe("App smoke test", () => {
     expect(await h1("Engineering")).toBeDefined();
   });
 
+  it("imports a failed story body again on the next navigation to it, not in a loop", async () => {
+    consoleError.mockImplementation(() => {});
+    renderAt("/engineering/flaky");
+    expect(await h1("Something went wrong")).toBeDefined();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(flaky.attempts).toBe(1);
+
+    act(() => navigate("/engineering"));
+    await h1("Engineering");
+    act(() => navigate("/engineering/flaky"));
+    expect(await h1("Flaky Story")).toBeDefined();
+    expect(await screen.findByText("Flaky body text.")).toBeDefined();
+    expect(flaky.attempts).toBe(2);
+  });
+
+  it("imports a failed personal story body again after Back returns to it", async () => {
+    consoleError.mockImplementation(() => {});
+    renderAt("/beyond");
+    await h1("Beyond the Code");
+    act(() => navigate("/beyond/flaky"));
+    expect(await h1("Something went wrong")).toBeDefined();
+    expect(flaky.personalAttempts).toBe(1);
+
+    act(() => navigate("/beyond"));
+    await h1("Beyond the Code");
+    // Back is a POP to the failed entry, which keeps its old location key.
+    act(() => navigate(-1));
+    expect(await screen.findByText("Flaky dimension body text.")).toBeDefined();
+    expect(flaky.personalAttempts).toBe(2);
+  });
 
   it("reloads the page from the error fallback's Try again button", async () => {
     consoleError.mockImplementation(() => {});
@@ -505,6 +559,42 @@ describe("App smoke test", () => {
       expect(heading.getAttribute("tabindex")).toBe("-1");
       expect(scrollIntoView).toHaveBeenCalledTimes(1);
       expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByRole("main"));
+    });
+
+    it.each([
+      { route: "/engineering/throws", why: "throws" },
+      { route: "/engineering/chunk-fails", why: "fails to load" },
+    ])("scrolls to main and focuses the fallback h1 after navigating into a route that $why", async ({ route }) => {
+      consoleError.mockImplementation(() => {});
+      renderAt("/");
+      await h1(IDENTITY.name);
+
+      act(() => navigate(route));
+      const heading = await h1("Something went wrong");
+      await waitFor(() => expect(document.activeElement).toBe(heading));
+      expect(scrollIntoView).toHaveBeenCalledTimes(1);
+      expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByRole("main"));
+
+      // Recording resumed: a back navigation from the next page restores this position.
+      setScrollY(240);
+      act(() => navigate("/engineering"));
+      await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { level: 1, name: "Engineering" })));
+      act(() => navigate(-1));
+      await waitFor(() => expect(scrollTo).toHaveBeenLastCalledWith({ top: 240, behavior: "instant" }));
+    });
+
+    it("focuses the new fallback h1 when navigating from one failing route into another", async () => {
+      consoleError.mockImplementation(() => {});
+      renderAt("/engineering/throws");
+      const first = await h1("Something went wrong");
+
+      act(() => navigate("/engineering/chunk-fails"));
+      await waitFor(() => {
+        const heading = screen.getByRole("heading", { level: 1, name: "Something went wrong" });
+        expect(document.activeElement).toBe(heading);
+      });
+      expect(first.isConnected).toBe(false);
+      expect(scrollIntoView).toHaveBeenCalledTimes(1);
     });
 
     it("does not scroll or focus while a route is still loading", async () => {

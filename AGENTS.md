@@ -29,6 +29,6 @@ Personal portfolio site for Alisha Sprinkle Korba, deployed to GitHub Pages. The
 - New components and pages use `.tsx`. Existing `.jsx` files are from the repo's React-learning phase — don't add to them; migrate opportunistically.
 - Routing uses `HashRouter` because GitHub Pages has no SPA history fallback — do not switch to `BrowserRouter`.
 - Build UI from `flowbite-react` components and the shared `src/theme/` theme, following React and flowbite-react conventions, rather than hand-rolling equivalents.
-- Each component lives in its own folder under `src/components/` with a co-located `ComponentName.css`.
+- Each component lives in its own folder under `src/components/`. Add a co-located `ComponentName.css` only when the component has styles that utilities and the theme can't express; don't create comment-only or empty stylesheets (Vite still emits and preloads an empty CSS file for a lazy chunk).
 
 <!-- /bmad:context -->

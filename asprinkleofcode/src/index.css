@@ -5,6 +5,17 @@
 @source "../.flowbite-react/class-list.json";
 
 /*
+ * The app's only Tailwind root: no other stylesheet may `@import "tailwindcss"`,
+ * or its second theme layer resets tokens such as `--font-sans`.
+ */
+
+/* Page surface (AD-10, DESIGN §7 / UX-030): role tokens only. */
+body {
+  background: var(--background-primary);
+  color: var(--text-primary);
+}
+
+/*
  * `#root` is the sticky header's containing block, so it must grow with the
  * page: a fixed `height: 100%` would let the header scroll away after one
  * viewport.
