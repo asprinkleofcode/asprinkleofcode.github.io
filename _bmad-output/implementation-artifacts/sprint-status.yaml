@@ -119,28 +119,28 @@ action_items:
       (likely 2.2); record cssVar as built with first JS colour consumer; correct
       Epic 1 AD-1..AD-19 coverage claim."
     owner: "Architect (Winston) / PM (John)"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
   - id: "epic-1-retro-item-8-refresh-stale-doc-notes"
     epic: 1
     action: "A-8: Refresh stale notes: DESIGN.md:34 and :40, EXPERIENCE.md section
       24 (1196-1199), colors.css:53 accent comment, AGENTS.md:17 test-location note."
     owner: "UX (Sally) + bmad-project-context"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
   - id: "epic-1-retro-item-9-deferred-work-status"
     epic: 1
     action: "A-9: Add status to every deferred-work.md entry, close the 4 silently
       resolved ones, and make status update part of story close-out."
     owner: "SM / Dev"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
   - id: "epic-1-retro-item-10-epic2-content-pipeline-checks"
     epic: 1
     action: "A-10: Epic 2 first content story adds a real-glob registry test with
       a fixture entry, hero path validation, and featured uniqueness per path."
     owner: "PM (John)"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
   - id: "epic-1-retro-item-11-og-image-externallink-wrap"
     epic: 1

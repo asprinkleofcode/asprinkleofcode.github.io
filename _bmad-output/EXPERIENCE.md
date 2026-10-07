@@ -1193,10 +1193,10 @@ Resolved in v0.13 (DESIGN.md v0.9): the homepage look now matches the mockup the
 preferred (UX-030), and the DEFERRED ambient treatment is decided (UX-011, UX-019).
 This changes finished work: Story 1.4 (header brand and nav colors, footer surface),
 Story 1.5 (ambient layer and page background), and Story 1.6 (Recognition colors,
-sizes, spacing, mobile alignment). `PRD.md`, `SPEC.md`, `epics.md`, and
-`ARCHITECTURE-SPINE.md` (whose Deferred table still lists the ambient treatment) now cite
-`DESIGN.md` v0.8 / `EXPERIENCE.md` v0.12, one revision behind. These are flagged for
-`bmad-correct-course` and the owning skills, not edited here.
+sizes, spacing, mobile alignment). The UX-030 correct-course (2026-10-04) updated
+`PRD.md`, `SPEC.md`, `epics.md`, and `ARCHITECTURE-SPINE.md` to cite `DESIGN.md` v0.9 /
+`EXPERIENCE.md` v0.13, and the spine's Deferred table no longer lists the ambient
+treatment.
 
 **UX design work still to do:** the visual treatment of story photos and the Birdhouses
 sequence-or-gallery presentation (§22 Photography). Both are decided with the first real
