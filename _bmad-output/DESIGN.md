@@ -31,14 +31,14 @@ rounded: { default: "0.5rem", control: "0.375rem", pill: "9999px" }
 spacing:
   note: "Existing Tailwind spacing scale; exact values are implementation-level."
 components:
-  note: "flowbite-react + src/theme/aSprinkleOfCodeTheme.js; conceptual roles in body section 11."
+  note: "flowbite-react + src/theme/aSprinkleOfCodeTheme.ts; conceptual roles in body section 11."
 ---
 
 # DESIGN.md
 
 Name, description, status, version, and date live in the YAML frontmatter above — the single source for this document's metadata.
 
-**Consumed by:** `EXPERIENCE.md` v0.13 cites this document at v0.9. `PRD.md` v0.8, `SPEC.md`, and `epics.md` still cite v0.8, and `ARCHITECTURE-SPINE.md` binds v0.8. v0.9 (UX-030, homepage look matched to the mockup) leaves those one revision behind; see EXPERIENCE §24.
+**Consumed by:** `EXPERIENCE.md` v0.13, `PRD.md` v0.8, `SPEC.md`, and `epics.md` cite this document at v0.9, and `ARCHITECTURE-SPINE.md` binds v0.9. The UX-030 correct-course (2026-10-04) brought them all up to date.
 
 ---
 
@@ -270,7 +270,7 @@ not tied to `background.primary` and should not be forced into the page's accent
 **AUTHORITATIVE**
 
 Mode: **dark only**. Neutrals and the rose brand hue are adopted from the existing
-repository theme (`asprinkleofcode/src/theme/colors.css`, `aSprinkleOfCodeTheme.js`); the
+repository theme (`asprinkleofcode/src/theme/colors.css`, `aSprinkleOfCodeTheme.ts`); the
 three status colors and the secondary accent are additions tuned to the dark surface. The
 two fill tokens and the focus ring carry the **§18a-remediated** values, not the inherited
 ones — see §18a for what they replaced and why. Downstream must use these token roles —

@@ -50,7 +50,7 @@
   --brand-primary: #E48FB1;      /* primary-400 — identity, links, focus */
   --brand-primary-fill: #A73E6C; /* primary-600 — solid button background only (§18a A3) */
 
-  /* Secondary accent — functional emphasis only (§7a) */
+  /* Secondary accent — functional emphasis (§7a); also a decorative star tint in the ambient layer (§16) */
   --accent-secondary: #93A4F6;
   --accent-secondary-fill: #4F63D8; /* §18a A4 */
 
