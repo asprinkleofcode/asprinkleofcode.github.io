@@ -14,7 +14,6 @@ import {
   type FooterLink,
   type FooterPlatform,
 } from "../../lib/links";
-import "./Footer.css";
 
 const PLATFORM_ICONS: Record<FooterPlatform, IconType> = {
   LinkedIn: BsLinkedin,

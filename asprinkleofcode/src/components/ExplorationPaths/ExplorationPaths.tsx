@@ -2,7 +2,6 @@ import { useId } from "react";
 import { Link } from "react-router";
 import { EXPLORATION_PATHS } from "../../lib/paths";
 import { focusRing } from "../../theme/aSprinkleOfCodeTheme";
-import "./ExplorationPaths.css";
 
 /**
  * Homepage Exploration (EXPERIENCE §6.3): the three path entries, label-only,

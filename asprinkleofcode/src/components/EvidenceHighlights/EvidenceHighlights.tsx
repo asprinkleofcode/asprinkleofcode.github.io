@@ -3,7 +3,6 @@ import { Link } from "react-router";
 import type { Entry } from "../../lib/registry";
 import { textLinkClasses } from "../../lib/linkClasses";
 import { entryHref, pathLabel } from "../../lib/paths";
-import "./EvidenceHighlights.css";
 
 interface EvidenceHighlightsProps {
   engineering?: Entry;

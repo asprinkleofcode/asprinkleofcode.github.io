@@ -1,6 +1,0 @@
-/*
- * Footer layout and colour come from the flowbite theme (role tokens) and the
- * Tailwind utilities in Footer.tsx; nothing here overrides them. The footer is
- * the one surface with a shadow: it sits on background.recessed with a 1px
- * border.default top edge and an inset shadow (DESIGN §15 / UX-030).
- */

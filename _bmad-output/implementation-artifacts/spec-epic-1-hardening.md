@@ -104,6 +104,8 @@ context:
   - **What that gives:** no re-import inside a failing navigation, and one fresh import after leaving it by any means (link, Back, Forward). `getStoryBody(entry)` and the detail pages are back to their original signatures.
   - **Tests:** a Back case in `lazyWithRetry.test.tsx`, a Back case on `/beyond/flaky` in `App.test.tsx`, and `onReset` cases in `ErrorBoundary.test.tsx`.
 
+- **Walkthrough follow-up (owner decision, 2026-10-07; supersedes the "Accepted" 0-byte `Landing-*.css` note above).** Deleted the comment-only `Recognition.css`, `ExplorationPaths.css`, `EvidenceHighlights.css`, `PathIndex.css` and `Footer.css`, and their imports. `Footer.css`'s one-shadow note already lives on the theme's `footer.root` slot. The convention now reads "co-locate `ComponentName.css` only when the component has styles of its own" in `AGENTS.md`, `ARCHITECTURE-SPINE.md` (layer table and naming conventions) and `epic-1-context.md`.
+
 ## Spec Change Log
 
 ## Review Triage Log

@@ -70,7 +70,7 @@ This epic turns the existing Vite + React 19 portfolio (brownfield, GitHub Pages
   - Components use theme and lib, and receive data through props only. They never read the registry.
   - MDX bodies import only from the whitelist, explicitly, with no `MDXProvider`.
 - **File layout:**
-  - Components go in `src/components/<Name>/<Name>.tsx` with a co-located `<Name>.css`.
+  - Components go in `src/components/<Name>/<Name>.tsx`, with a co-located `<Name>.css` only when they have styles of their own (no empty or comment-only stylesheets).
   - Pages go in `src/pages/<Target>/<Target>.tsx`.
   - Helpers go in `src/lib/<camelCase>.ts`.
   - External URL literals live only in `src/lib/links.ts` or in frontmatter. Do not use `.env` or runtime config.

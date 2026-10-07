@@ -39,7 +39,7 @@ It augments **PRD.md v0.8** at feature altitude. `DESIGN.md v0.9` and `EXPERIENC
 | Content | `src/content/{work,personal}/*.mdx` | Portfolio stories as MDX (typed frontmatter + authored body) |
 | Registry + schema | `src/lib/registry.ts`, `src/lib/frontmatter.ts` | Build-time story index, frontmatter validation, derived summary lists |
 | Route pages | `src/pages/<Target>/` | One component per route target; owns data-loading from the registry |
-| Shared components | `src/components/<Name>/<Name>.tsx` + `<Name>.css` | Presentational only; props in, no registry access (existing repo convention) |
+| Shared components | `src/components/<Name>/<Name>.tsx` (+ `<Name>.css` only when it has its own styles) | Presentational only; props in, no registry access (existing repo convention) |
 | Theme | `src/theme/` (`colors.css`, `theme.css`, `aSprinkleOfCodeTheme.ts`) | CSS-variable design tokens + the flowbite theme object |
 
 Cross-cutting helpers (`usePrefersReducedMotion`, `useDocumentMeta`, `cssVar`, `links`) live in `src/lib/`. The MDX block whitelist is `src/mdx-components.tsx`.
@@ -193,7 +193,7 @@ graph LR
 
 | Concern | Convention |
 | --- | --- |
-| File / component naming | Component per folder: `src/components/<Name>/<Name>.tsx` + `<Name>.css`. Route targets: `src/pages/<Target>/<Target>.tsx`. Content files: kebab-case slug `.mdx`. Helpers: `src/lib/<camelCase>.ts`. |
+| File / component naming | Component per folder: `src/components/<Name>/<Name>.tsx`, plus a co-located `<Name>.css` only when the component has styles utilities and the theme can't express (no empty or comment-only stylesheets). Route targets: `src/pages/<Target>/<Target>.tsx`. Content files: kebab-case slug `.mdx`. Helpers: `src/lib/<camelCase>.ts`. |
 | Frontmatter keys | `work`: `type`, `title`, `path` (`engineering`\|`leadership`), `slug?`, `summary` (one-liner), `role`, `capabilities: Capability[]`, `date?`, `hero?: { src, alt }`, `featured?: number`, `draft?: boolean`. `personal`: `type`, `title`, `slug?`, `summary`, `date?`, `hero?: { src, alt }`, `links?: { label, href }[]`, `pdf?: string` (static asset path, AD-20), `featured?: number`, `draft?: boolean`, `listed?: boolean` (default `true`). Unknown keys rejected by the schema. |
 | Downloadable / viewable documents | Static assets only, under `public/downloads/<slug>.pdf`, referenced via `pdf` on a dedicated `listed: false` `personal` entry (AD-20, AD-2) — never merged onto the dimension's own entry, never a `personal.links` item. Plain `<a href>`, no `target`/`rel`/`download`; optional inline `<iframe>`/`<object>` preview with an accessible name (AD-15). Visible PDF marker in the link's accessible name (EXPERIENCE §13 Document Links). Build fails if a non-draft `pdf` path has no committed file. No server, no PDF-viewer dependency for MVP. |
 | Capability vocabulary | `capabilities` draws from one controlled union, aligned to PRD D-4 / the evidence model: `business-to-engineering`, `ownership`, `engineering-judgment`, `ambiguity`, `enablement`. Extending the list is a deliberate edit to `frontmatter.ts`, not an ad-hoc string. |
