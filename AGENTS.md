@@ -14,7 +14,7 @@ Personal portfolio site for Alisha Sprinkle Korba, deployed to GitHub Pages. The
 ## Where things are
 
 - All app code, configs, and `package.json` are under `asprinkleofcode/`.
-- Routes in `asprinkleofcode/src/App.tsx`; entry point `asprinkleofcode/src/main.tsx`. Tests live next to code (`*.test.tsx`); shared setup in `src/test/setup.ts`.
+- Routes in `asprinkleofcode/src/App.tsx`; entry point `asprinkleofcode/src/main.tsx`. Tests live next to the code they cover: `*.test.tsx` for components and pages, `*.test.ts(x)` in `src/lib/`, and `*.test.ts` in the top-level `plugins/` directory (build plugins, type-checked by `tsconfig.node.json`). Shared setup is in `src/test/setup.ts`.
 - Color tokens in `asprinkleofcode/src/theme/colors.css` (primitive ramps + semantic role tokens; UI uses roles only); Tailwind mapping, radius, and `type-*` scale in `src/theme/theme.css`; flowbite theme object in `asprinkleofcode/src/theme/aSprinkleOfCodeTheme.ts`.
 - Content: one `.mdx` story per file in `asprinkleofcode/src/content/work/` (Engineering, Leadership) or `src/content/personal/` (Beyond the Code); adding a story means adding one file. The frontmatter schema, capability vocabulary and key rules live only in `src/lib/frontmatter.ts`. `plugins/contentFrontmatter.ts` validates every file during test and build (bad frontmatter fails the build) and strips drafts. `src/lib/registry.ts` is the index pages read; components never read it. MDX blocks are whitelisted in `src/mdx-components.tsx` and imported explicitly per file (no `MDXProvider`).
 

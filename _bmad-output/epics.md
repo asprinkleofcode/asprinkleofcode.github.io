@@ -31,6 +31,8 @@ This document provides the complete epic and story breakdown for the Alisha Spri
 
 **Update note (2026-10-04, UX-030):** `DESIGN.md` v0.9 / `EXPERIENCE.md` v0.13 match the site's look to `mockups/key-homepage.html`: navy page, twinkling stars instead of bokeh, white name and rose title, larger global identity/title sizes, white header brand, recessed footer. UX-DR19, UX-DR20, UX-DR22, UX-DR27 and UX-DR28 are updated; Story 1.6 gains its Recognition deltas and new Story 1.8 carries the site-wide ones (`planning-artifacts/sprint-change-proposal-2026-10-04-ux030.md`). Stories 1.4 and 1.5 stay done.
 
+**Update note (2026-10-07, Epic 1 retrospective A-7 / A-10):** the retro (`implementation-artifacts/epic-1-retro-2026-10-05.md`, F-5, R-7, R-10) found two `ARCHITECTURE-SPINE.md` helpers that no story owned. Story 2.2 now builds `useDocumentMeta` (AD-14), and Story 4.1 uses it. `cssVar` (AD-10) is built along with the first JavaScript code that reads a colour, so no story owns it in advance. Epic 1's "AD-1–AD-19" coverage claim now names both exceptions. Story 2.4, the first story with a real content file, gains the content-pipeline checks: a registry test against the real globs, `hero` shape and path validation (moved from Story 4.1), and a check that no two stories in a path share the same `featured` value. Story 2.2 also picks up the MDX body typography left open by the Epic 1 hardening (`deferred-work.md`). No epics or stories were added, removed, or renumbered.
+
 ## Requirements Inventory
 
 ### Functional Requirements
@@ -110,11 +112,11 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 - **AD-7 (one-way dependencies):** content → registry; pages → registry/components; components → theme only (props in, no registry access); MDX bodies import only from the whitelist.
 - **AD-8 (MDX whitelist):** `src/mdx-components.tsx` exports the sanctioned block set (`DecisionBlock`, `OutcomeBlock`, `CapabilitySignal`, `StorySection`, etc.); MDX files import explicitly per file, no `MDXProvider` auto-injection.
 - **AD-9 (touch-to-migrate TypeScript):** New files are always `.ts`/`.tsx`. A substantively edited `.js`/`.jsx` file is migrated as a verified, typed rewrite (no implicit `any`), checked against `tsc --noEmit` + `eslint` + the smoke test.
-- **AD-10 (semantic tokens only):** UI references semantic role tokens only (`--background-*`, `--text-*`, `--border-*`, `--brand-*`, `--accent-secondary*`, `--focus-ring`, `--status-*`) — never primitive ramp variables, raw hex, or raw Tailwind palette colors. JS reads colors via the typed `cssVar(name: TokenName)` helper.
+- **AD-10 (semantic tokens only):** UI references semantic role tokens only (`--background-*`, `--text-*`, `--border-*`, `--brand-*`, `--accent-secondary*`, `--focus-ring`, `--status-*`) — never primitive ramp variables, raw hex, or raw Tailwind palette colors. JS reads colors via the typed `cssVar(name: TokenName)` helper, which is built along with the first JavaScript code that reads a colour (none exists after Epic 1).
 - **AD-11 (remediated color values):** New/touched components use the §18a-remediated values: `--focus-ring` solid 2px `--brand-primary` with 2px offset; `--brand-primary-fill` `#A73E6C`; `--accent-secondary-fill` `#4F63D8`. `--brand-primary-fill-hover` is OPEN — does not exist as a token; use the interim glow effect instead.
 - **AD-12 (single ambient layer):** One `<AmbientLayer>` component, mounted once in the app shell behind `<main>`. Contract: `aria-hidden`, `pointer-events: none`, fixed z-index below content, `prefers-reduced-motion` static render path, app must render correctly if the layer never mounts. Existing `StarBackground`, `GradientWaves`, and inline Hero sparkles fold into it or are removed when next touched.
 - **AD-13 (reduced motion resolved once):** Single `usePrefersReducedMotion` hook in `src/lib/` is the only source of that signal. Summary→deep-story transition: ~180ms cross-fade, instant under reduced motion.
-- **AD-14 (static discoverability):** FR-22/FR-23 met via static `index.html` — expanded `Person` JSON-LD (`knowsAbout`, `sameAs` for LinkedIn + GitHub), solid default `<title>`/description/canonical/OG/Twitter-card tags. Per-route head updates via `useDocumentMeta({ title, description, jsonLd? })` are progressive enhancement only (restores static defaults on unmount). No prerender/SSG.
+- **AD-14 (static discoverability):** FR-22/FR-23 met via static `index.html` — expanded `Person` JSON-LD (`knowsAbout`, `sameAs` for LinkedIn + GitHub), solid default `<title>`/description/canonical/OG/Twitter-card tags. Per-route head updates via `useDocumentMeta({ title, description, jsonLd? })` are progressive enhancement only (restores static defaults on unmount); Story 2.2 builds the hook. No prerender/SSG.
 - **AD-15 (semantic HTML baseline):** One `<h1>` per page, correct heading hierarchy, `<main>`/`<nav>`/`<article>`/`<section>` landmarks, meaningful link text, descriptive `alt` on every meaningful image. Enforced in part by `eslint-plugin-jsx-a11y`.
 - **AD-16 (never a blank page):** App-shell React error boundary wraps the routed area (below `<Header>`, above `<Footer>`), rendering a recovery fallback with navigation intact on render/chunk-load failure. `*` route renders a not-found page that keeps header/nav.
 - **AD-18 (self-sufficient entry surface):** The three exploration paths are fixed product structure and always render; story content inside them is registry-derived (AD-2's no-empty-shell rule applies to that). No route, nav entry, path card, or teaser slot may be conditional on content that doesn't exist yet (speaking/FR-18, a third Beyond-the-Code dimension, the care-guide destination) — such surfaces are purely additive later. The static `index.html` head + `Person` JSON-LD is the single canonical owner of entry-surface identity/capability wording; the Landing page must not state a different claim (smoke-tested).
@@ -204,13 +206,14 @@ A visitor arriving at the portfolio gets a fully upgraded entry experience — i
 
 **FRs covered:** FR-1, FR-2, FR-3, FR-15 (mechanism), FR-17, FR-22, FR-23, FR-24
 **NFRs covered:** NFR-1, NFR-2, NFR-3, NFR-4, NFR-5 (mechanism)
-**Architecture covered:** AD-17 (mandatory Story 1), AD-1–AD-16, AD-18, AD-19
+**Architecture covered:** AD-17 (mandatory Story 1), AD-1–AD-16, AD-18, AD-19, with two exceptions: AD-10's `cssVar` helper (built along with its first JavaScript colour consumer) and AD-14's per-route `useDocumentMeta` hook (Story 2.2)
 
 ### Epic 2: Engineering Path — Professional Evidence
 
 A visitor can browse the Engineering path, scan story summaries, and read two deep, evidence-rich stories — `Auth.RcmAppAccessWatcher` and the Azure IaC platform conversion — demonstrating business-to-engineering translation, ownership, judgment, and ambiguity handling. First epic to build the reusable work-story components (Story Card, Decision Block, Outcome Block, Capability Signal) against real content; Epic 3 reuses them unchanged.
 
 **FRs covered:** FR-4, FR-5, FR-6, FR-7, FR-8, FR-16, FR-20, FR-21
+**Architecture covered:** AD-14 per-route `useDocumentMeta` hook (Story 2.2)
 **Content status:** Ready — both stories fully sourced in `addendum.md` (ES-1, ES-2).
 
 ### Epic 3: Leadership & Enablement Path — Developing Others
@@ -238,7 +241,7 @@ A visitor arriving at the portfolio gets a fully upgraded entry experience — i
 
 **FRs covered:** FR-1, FR-2, FR-3, FR-15 (mechanism), FR-17, FR-22, FR-23, FR-24
 **NFRs covered:** NFR-1, NFR-2, NFR-3, NFR-4, NFR-5 (mechanism)
-**Architecture covered:** AD-1–AD-19
+**Architecture covered:** AD-1–AD-19, except AD-10's `cssVar` helper (built along with its first JavaScript colour consumer) and AD-14's per-route `useDocumentMeta` hook (Story 2.2)
 
 ### Story 1.1: Toolchain & Compliance Baseline
 
@@ -537,6 +540,7 @@ So that the site feels calm and polished, with personality that stays in the bac
 A visitor can browse the Engineering path, scan story summaries, and read two deep, evidence-rich stories — `Auth.RcmAppAccessWatcher` and the Azure IaC platform conversion — demonstrating business-to-engineering translation, ownership, judgment, and ambiguity handling. First epic to build the reusable work-story components against real content; Epic 3 reuses them unchanged.
 
 **FRs covered:** FR-4, FR-5, FR-6, FR-7, FR-8, FR-16, FR-20, FR-21
+**Architecture covered:** AD-14 per-route `useDocumentMeta` hook (Story 2.2)
 **Content status:** Ready — both stories fully sourced in `addendum.md` (ES-1, ES-2).
 
 ### Story 2.1: Work-Story Presentation Components
@@ -609,6 +613,14 @@ So that I understand how Alisha operated, not just what she worked on.
 **When** a deep story is read at a supported mobile width
 **Then** the full section content, Decision/Outcome/Capability blocks, and reading measure remain readable without loss of hierarchy
 
+**Given** AD-14 (per-route head updates are progressive enhancement)
+**When** this story is complete
+**Then** `src/lib/useDocumentMeta.ts` exists as the one `useDocumentMeta({ title, description, jsonLd? })` hook. A work story detail page uses it to set the tab title (the story `title` plus the site name), the description (frontmatter `summary`), and an `Article` JSON-LD block. On unmount the hook restores the static `index.html` title and description and removes the JSON-LD it added. A test navigates from a story to another route and asserts nothing from the story's metadata is left behind
+
+**Given** the Epic 1 hardening deleted `App.css` (`deferred-work.md`, MDX body typography)
+**When** a story's MDX body renders
+**Then** its paragraphs, headings and lists get their own prose styling from the `type-*` scale and role tokens: spacing between blocks, heading levels below the page `h1`, and `text.secondary` / `text.primary` colours. This styling is scoped to the story body and never comes from bare global element rules
+
 **And** FR-16 is satisfied structurally: the layout foregrounds Decision/Rationale/Tradeoffs/Outcome blocks over plain prose, so generic adjectives cannot substitute for the required evidence sections
 
 ### Story 2.3: Engineering Path Index — Summary Scan & Selection
@@ -660,6 +672,18 @@ So that I see concrete evidence of business-to-engineering translation, ownershi
 **Given** AD-2
 **When** frontmatter is written
 **Then** `capabilities` draws only from the controlled vocabulary, and `featured` is set so this story is eligible for the homepage teaser (Story 2.6)
+
+**Given** this story adds the first file under `src/content/` (Epic 1 retro A-10, R-7; if Story 2.5 lands first, this criterion and the next two move to it)
+**When** this story is complete
+**Then** a registry test runs the real `src/lib/registry.ts` globs, not the hand-copied fixture registry and not a mock. It asserts that this committed entry appears in the index with its frontmatter fields loaded and its body loader resolving, so dropping `import: "frontmatter"` or breaking a glob fails a test
+
+**Given** UX-DR31 and `ARCHITECTURE-SPINE.md` Conventions → Images (Epic 1 retro A-10, R-10; moved here from Story 4.1)
+**When** this story is complete
+**Then** frontmatter `hero` is `{ src, alt }` for both content types (replacing the bare string in `frontmatter.ts`), `src` names a file inside `src/assets/media/`, `alt` is required, and a non-draft entry whose `hero.src` does not resolve fails the build. Valid and invalid fixtures cover it
+
+**Given** `featured` picks each path's homepage highlight (Epic 1 retro A-10, R-10)
+**When** two non-draft entries in the same path share a `featured` value
+**Then** the build fails with a message naming both files, instead of the registry silently breaking the tie
 
 **And** Decision Block / Outcome Block (Story 2.1) are used for at least the CDC decision and the scale/impact outcome
 
@@ -825,8 +849,12 @@ So that the experience feels authentic rather than forced into the professional 
 **Then** media, body content, and any embedded links remain readable and reachable without loss of hierarchy
 
 **Given** UX-DR31 and `ARCHITECTURE-SPINE.md` Conventions → Images
-**When** this story is complete
-**Then** frontmatter `hero` is `{ src, alt }` for both content types (replacing the bare string in `frontmatter.ts`), `src` names a file inside `src/assets/media/`, and a non-draft entry whose `hero.src` does not resolve fails the build
+**When** a personal story sets a `hero`
+**Then** it uses the `{ src, alt }` shape and build-time path check that Story 2.4 added for both content types, and `PersonalPage` renders it with its `alt`
+
+**Given** AD-14
+**When** a personal story renders
+**Then** it sets its tab title and description through the `useDocumentMeta` hook from Story 2.2, with the same restore-on-unmount behavior
 
 **Given** in-body photos
 **When** a personal story's MDX shows a photo
