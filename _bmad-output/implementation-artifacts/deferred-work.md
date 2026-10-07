@@ -75,3 +75,18 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-hardening.md`
   summary: Add an App-level test that a route page whose own chunk fails to import is imported again after navigating away, beside the existing story-body and `lazyWithRetry` helper tests.
   evidence: `App.tsx` wraps every route page in `lazyWithRetry`, but `App.test.tsx` makes only story-body imports fail. Reverting a page to plain `React.lazy` would pass every test. The helper is tested with the same boundary and `onReset` wiring App uses. Making a real page module's dynamic import reject inside the smoke test needs a loader seam the app does not have yet.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-a6-ad10-gate.md`
+  status: open
+  summary: Extend the AD-10 source scan (`src/test/semanticTokens.test.ts`) to `.mdx` story bodies once the first one exists (Story 2.4), so a `className` palette class or inline colour in a story fails the build.
+  evidence: The gate globs only `css/ts/tsx/js/jsx`; `?raw` on `.mdx` would go through the MDX plugin, and no story file existed when A-6 landed, so there was nothing to test against.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-a6-ad10-gate.md`
+  status: open
+  summary: Detect named CSS colour keywords (`color: white`, `border-color: red`) in `.css` property values in the AD-10 gate.
+  evidence: `findColorViolations` catches hex, colour functions, palette variables and palette utilities, but not keywords; the TSX false-positive reason for skipping them does not apply to stylesheets. No current stylesheet outside legacy `/about` uses one (review of A-6).
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-a6-ad10-gate.md`
+  status: open
+  summary: Once flowbite `dark:` and palette defaults stop leaking outside the header and footer, run `expectNoFlowbiteDefaults` on the ErrorBoundary fallback (its `Button` is not in the `replace` map) and on every new flowbite-using component from Epic 2.
+  evidence: The rendered-DOM check only runs on the header, nav and footer, which already use `applyTheme: "replace"`. The fallback Button still merges flowbite defaults (tracked by the Story 1.8 entry above), so calling the check there today is expected to fail (not run).
