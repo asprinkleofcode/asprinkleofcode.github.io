@@ -1,6 +1,6 @@
 # Deferred Work
 
-Each entry has a `status`: `open`, or `resolved-by <commit>` once a change fixes it. When a story closes, it sets the status of every entry it resolves. Entries whose summary starts "Resolved by" record a resolution and carry the same commit as the entry they close.
+Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it, where `<ref>` is the commit on `main` or, before merge, the PR number (PRs are squash-merged, so branch commits never reach `main`). When a story closes, it sets the status of every entry it resolves. Entries whose summary starts "Resolved by" record a resolution and carry the same reference as the entry they close.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-1-toolchain-compliance-baseline.md`
   status: open (Epic 4 reworks Beyond the Code)
@@ -13,7 +13,7 @@ Each entry has a `status`: `open`, or `resolved-by <commit>` once a change fixes
   evidence: Found during the Story 1.1 walkthrough. (1) `asprinkleofcode/src/components/Header/Header.css:18` sets `.navbar-brand-text` to `var(--color-primary-100)`; unlayered CSS beats Tailwind utilities, so the theme's `text-brand-primary` never shows on the header name. (2) Raw primitive vars (`--color-primary-*`/`--color-dark-*`) remain in `App.css` (9), `Header.css` (5), `GradientWaves.css` (3), `BeyondTheCodePowerlifting.css` (7), and `StarBackground.tsx` (4); the last two belong to Story 1.5 / Epic 4. (3) `aSprinkleOfCodeTheme.ts` slots never rendered: `footer.brand`, `footer.groupLink`, `footer.title`, `footer.divider`, `footer.root.bgDark`, `navbar.link.disabled`, `navbar.root.rounded`/`bordered`. (4) Slots identical to flowbite defaults: `navbar.root.inner`, `navbar.collapse`, `navbar.link.base`, `navbar.toggle.icon`/`title`, `footer.brand.base`, `footer.icon.size`, `avatar.root.size.xl`. Story 1.4 rebuilds Header/Footer, so it should drop or start using these slots rather than pruning them separately.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-2-content-registry-frontmatter-schema.md`
-  status: resolved-by PENDING (Epic 1 follow-up A-8 updated the AGENTS.md test note)
+  status: resolved-by #31 (Epic 1 retro A-8 updated the AGENTS.md test note)
   summary: Update the AGENTS.md "Where things are" test note to mention `*.test.ts` files and the top-level `plugins/` directory (build plugins and their tests, type-checked by `tsconfig.node.json`).
   evidence: Story 1.2 added `src/lib/*.test.ts` and `plugins/contentFrontmatter{,.test}.ts`, but AGENTS.md still says tests are `*.test.tsx` next to code with setup in `src/test/`. Review routed this to defer because the fix edits an agent-context file; best handled at the next bmad-project-context refresh.
 
