@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-13-2026 18:20
-last_updated: 10-05-2026 11:09
+last_updated: 10-07-2026 09:55
 project: asprinkleofcode.github.io
 project_key: NOKEY
 tracking_system: file-system
@@ -75,7 +75,7 @@ action_items:
       font stack and NotFound/error/story typography. Epic 1 follow-up, before Epic
       2."
     owner: "Dev (Amelia)"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
   - id: "epic-1-retro-item-2-error-fallback-settles-ad19"
     epic: 1
@@ -83,28 +83,28 @@ action_items:
       h1, un-pause recording) + App test navigating into /engineering/throws. Epic
       1 follow-up."
     owner: "Dev (Amelia)"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
   - id: "epic-1-retro-item-3-lazy-chunk-retry"
     epic: 1
     action: "A-3: Evict rejected lazies from storyBody cache and retry route-page
       lazies after a chunk failure. Epic 1 follow-up."
     owner: "Dev (Amelia)"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
   - id: "epic-1-retro-item-4-forced-colors-focus"
     epic: 1
     action: "A-4: focusRing uses focus:outline-hidden instead of focus:outline-none
       so focus is visible in forced-colors mode. Epic 1 follow-up."
     owner: "Dev (Amelia)"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
   - id: "epic-1-retro-item-5-toggle-aria-copyright"
     epic: 1
     action: "A-5: NavbarToggle aria-expanded/aria-controls; fix copyright spacing
       and Footer.test.tsx:98. Epic 1 follow-up."
     owner: "Dev (Amelia)"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
   - id: "epic-1-retro-item-6-ad10-gate"
     epic: 1
