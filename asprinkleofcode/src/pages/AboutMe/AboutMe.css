@@ -1,0 +1,51 @@
+/*
+ * LEGACY, temporary: the element styles the pre-epic pages relied on, moved
+ * here from the old global App.css so they no longer reach the rest of the
+ * site. `:where()` keeps their specificity at (0,0,1) and they stay
+ * unlayered, so `/about` renders exactly as before (Primary.css and
+ * BeyondTheCodePowerlifting.css still win where they did). Primitive ramp
+ * colours are tolerated only here until Epic 4 replaces this page.
+ */
+:where(.about-me) h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 0 15px var(--color-dark-800);
+}
+
+:where(.about-me) h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 0 15px var(--color-dark-800);
+}
+
+:where(.about-me) p {
+  font-size: 0.75rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  color: var(--color-primary-100);
+}
+
+@media (min-width: 768px) {
+  :where(.about-me) h1 {
+    font-size: 4rem;
+  }
+
+  :where(.about-me) p {
+    font-size: 1.35rem;
+  }
+}
+
+/* Used by the flowbite Avatar on the legacy page (`avatar-pulse`, Primary.css). */
+@keyframes pinkPulse {
+  0% {
+    box-shadow: 0 0 15px var(--color-primary-300);
+  }
+  50% {
+    box-shadow: 0 0 28px var(--color-primary-400);
+  }
+  100% {
+    box-shadow: 0 0 15px var(--color-primary-500);
+  }
+}

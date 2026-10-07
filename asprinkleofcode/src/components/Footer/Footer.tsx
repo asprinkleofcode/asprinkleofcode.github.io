@@ -33,7 +33,8 @@ const glowClasses = (variant: FooterLink["variant"]) =>
 const Footer: FC = () => (
   <FlowbiteFooter container>
     <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:justify-between">
-      <FooterCopyright by="Alisha Korba" year={new Date().getFullYear()} />
+      {/* Leading space: flowbite renders "© ", the year, then this span with no separator. */}
+      <FooterCopyright by=" Alisha Korba" year={new Date().getFullYear()} />
       <nav aria-label="Social profiles">
         <ul className="flex items-center gap-4">
           {FOOTER_LINKS.map((link) => (

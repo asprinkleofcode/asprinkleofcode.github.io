@@ -95,7 +95,7 @@ describe("Footer", () => {
   it("shows a plain-text copyright with the current year and no link", () => {
     renderFooter();
     const copyright = screen.getByTestId("flowbite-footer-copyright");
-    expect(copyright.textContent).toBe(`© ${new Date().getFullYear()}Alisha Korba`);
+    expect(copyright.textContent).toBe(`© ${new Date().getFullYear()} Alisha Korba`);
     expect(copyright.querySelector("a")).toBeNull();
   });
 

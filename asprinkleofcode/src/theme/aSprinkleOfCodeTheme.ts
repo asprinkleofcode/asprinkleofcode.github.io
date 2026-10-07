@@ -5,8 +5,10 @@ import type { ApplyTheme, DeepPartialApplyTheme, FlowbiteTheme } from "flowbite-
 // or raw Tailwind palette colours. Focus is a solid 2px ring with a 2px offset
 // (§18a A1). Brand-fill hover is the brand glow — a darker hover value is OPEN.
 // Also used for text links outside flowbite components (e.g. "Go to the homepage").
+// `outline-hidden`, not `outline-none`: it keeps a transparent outline, which
+// forced-colors mode paints in place of the box-shadow ring it removes.
 export const focusRing =
-  "focus:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background-primary";
+  "focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background-primary";
 
 // Only slots that differ from the flowbite defaults (or that the defaults would
 // fill with raw palette colours); everything else falls back to the defaults.
@@ -50,7 +52,9 @@ export const aSprinkleOfCodeTheme = createTheme({
     },
     copyright: {
       base: "type-meta text-text-secondary",
-      span: "ml-1",
+      // No margin: Footer passes the name with a leading space, so the text reads
+      // "© 2026 Alisha Korba" to screen readers and copy-paste, not "2026Alisha".
+      span: "",
     },
   },
   button: {

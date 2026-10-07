@@ -1,13 +1,1 @@
-/*
- * App.css styles bare `h1`/`p` outside any cascade layer, so those legacy rules
- * beat Tailwind's layered `type-*` and colour utilities. Reverting them to the
- * layered values inside the index lets the utilities win (as in Recognition).
- */
-.path-index :is(h1, p) {
-  font-size: revert-layer;
-  line-height: revert-layer;
-  font-weight: revert-layer;
-  margin: revert-layer;
-  color: revert-layer;
-  text-shadow: revert-layer;
-}
+/* Layout, type and colour come from Tailwind utilities and role tokens in PathIndex.tsx. */

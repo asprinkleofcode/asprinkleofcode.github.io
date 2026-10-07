@@ -135,6 +135,35 @@ describe("Header", () => {
     expect(current()).toEqual(["Beyond the Code"]);
   });
 
+  it("exposes the mobile menu toggle as a disclosure of the nav collapse", () => {
+    renderAt("/");
+    const toggle = screen.getByRole("button", { name: "Open main menu" });
+    const collapse = screen.getByTestId("flowbite-navbar-collapse");
+    expect(collapse.id).not.toBe("");
+    expect(toggle.getAttribute("aria-controls")).toBe(collapse.id);
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(screen.getByRole("link", { name: "Beyond the Code" }));
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("uses a focus style that survives forced-colors mode", () => {
+    renderAt("/");
+    const controls = [
+      ...within(nav()).getAllByRole("link"),
+      screen.getByRole("button", { name: "Open main menu" }),
+    ];
+    for (const control of controls) {
+      const classes = control.className.split(/\s+/);
+      // outline-none removes the outline that forced colors would paint in place of the ring.
+      expect(classes).toContain("focus:outline-hidden");
+      expect(classes).not.toContain("focus:outline-none");
+    }
+  });
+
   it("closes the mobile menu after navigating from the brand link", () => {
     renderAt("/engineering");
     const collapse = screen.getByTestId("flowbite-navbar-collapse");
