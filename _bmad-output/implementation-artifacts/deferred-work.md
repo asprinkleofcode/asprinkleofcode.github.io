@@ -98,7 +98,7 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   evidence: `App.tsx` wraps every route page in `lazyWithRetry`, but `App.test.tsx` makes only story-body imports fail. Reverting a page to plain `React.lazy` would pass every test. The helper is tested with the same boundary and `onReset` wiring App uses. Making a real page module's dynamic import reject inside the smoke test needs a loader seam the app does not have yet.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-a6-ad10-gate.md`
-  status: open
+  status: resolved-by #37 (plugins/storyColors.test.ts scans story markup attributes read from disk)
   summary: Extend the AD-10 source scan (`src/test/semanticTokens.test.ts`) to `.mdx` story bodies once the first one exists (Story 2.4), so a `className` palette class or inline colour in a story fails the build.
   evidence: The gate globs only `css/ts/tsx/js/jsx`; `?raw` on `.mdx` would go through the MDX plugin, and no story file existed when A-6 landed, so there was nothing to test against.
 
@@ -113,7 +113,7 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   evidence: The rendered-DOM check only runs on the header, nav and footer, which already use `applyTheme: "replace"`. The fallback Button still merges flowbite defaults (tracked by the Story 1.8 entry above), so calling the check there today is expected to fail (not run).
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-1-work-story-presentation-components.md`
-  status: open
+  status: resolved-by #37 (capabilities rule rejects repeats; unit test and invalid-schema fixture)
   summary: Reject duplicate `capabilities` values in `frontmatter.ts` (and cover with a fixture), so a story can't show the same capability pill twice.
   evidence: The `capabilities` rule checks non-empty and vocabulary membership only; `[ownership, ownership]` passes the build, and `StoryCard` keys pills by capability, so React would warn on the duplicate key and render two identical pills (Story 2.1 review). Natural home: Story 2.4, which already extends the schema.
 
