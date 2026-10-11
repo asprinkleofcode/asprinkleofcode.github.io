@@ -31,6 +31,8 @@ This document provides the complete epic and story breakdown for the Alisha Spri
 
 **Update note (2026-10-04, UX-030):** `DESIGN.md` v0.9 / `EXPERIENCE.md` v0.13 match the site's look to `mockups/key-homepage.html`: navy page, twinkling stars instead of bokeh, white name and rose title, larger global identity/title sizes, white header brand, recessed footer. UX-DR19, UX-DR20, UX-DR22, UX-DR27 and UX-DR28 are updated; Story 1.6 gains its Recognition deltas and new Story 1.8 carries the site-wide ones (`planning-artifacts/sprint-change-proposal-2026-10-04-ux030.md`). Stories 1.4 and 1.5 stay done.
 
+**Update note (2026-10-11, UX-031):** `DESIGN.md` v0.10 / `EXPERIENCE.md` v0.14 replace the label-only Exploration section and the separate Evidence & Highlights section with one set of path cards (metric, action headline, highlights stepped by button, "Coming soon" for a path with no story). UX-DR28 is revised. Story 2.6 is rewritten as "Homepage Path Cards", Story 2.4 gains the `highlight` frontmatter block (AD-2), and Stories 3.1 and 4.5 are re-pointed at the cards. Stories 1.6 and 1.7 stay done; Story 2.6 replaces the components they built. Story 2.4's outcome wording is also corrected: the Watcher removed manual *app-access* provisioning, not user creation, and the 2,000→4,500 figure counts syncs, not users.
+
 **Update note (2026-10-07, Epic 1 retrospective A-7 / A-10):** the retro (`implementation-artifacts/epic-1-retro-2026-10-05.md`, F-5, R-7, R-10) found two `ARCHITECTURE-SPINE.md` helpers that no story owned. Story 2.2 now builds `useDocumentMeta` (AD-14), and Story 4.1 uses it. `cssVar` (AD-10) is built along with the first JavaScript code that reads a colour, so no story owns it in advance. Epic 1's "AD-1–AD-19" coverage claim now names both exceptions. Story 2.4, the first story with a real content file, gains the content-pipeline checks: a registry test against the real globs, `hero` shape and path validation (moved from Story 4.1), and a check that no two stories in a path share the same `featured` value. Story 2.2 also picks up the MDX body typography left open by the Epic 1 hardening (`deferred-work.md`). No epics or stories were added, removed, or renumbered.
 
 ## Requirements Inventory
@@ -178,7 +180,7 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 **Information architecture & state behavior (EXPERIENCE.md §5–6, §14):**
 
 - UX-DR27: Navigation structure — **RESOLVED (`EXPERIENCE.md` v0.13 §5.2, UX-015):** single, flat, top-level header row — identity (logo + name), then Home, Engineering, Leadership & Enablement, Beyond the Code — identical and sticky on every page including deep stories (no breadcrumb, no chrome change with depth); external/social links are footer-only; mobile collapses via the existing flowbite-react `NavbarToggle`/`NavbarCollapse` hamburger pattern.
-- UX-DR28: Homepage composition — **RESOLVED (`EXPERIENCE.md` v0.13 §6.1–§6.5, UX-025, UX-027):** three stacked sections in order — Recognition (identity, title, and the decided one-line positioning statement, D-25: *"Give me a business problem and I'll turn it into an engineering decision worth trusting."*, and the existing headshot as a rounded-rectangle portrait with a `border.default` edge — right of the text on desktop, stacked below it on mobile, with text and headshot left-aligned — with meaningful alt text) → Exploration (the three path entries, label-only, no teaser copy) → Evidence & Highlights (Engineering and Leadership & Enablement each get ≥1 dedicated evidence teaser; Beyond the Code gets exactly one personal-hint line, not evidence). All deeper content lives on path/story pages (C-6).
+- UX-DR28: Homepage composition — **RESOLVED (`EXPERIENCE.md` v0.13 §6.1–§6.5, UX-025, UX-027):** three stacked sections in order — Recognition (identity, title, and the decided one-line positioning statement, D-25: *"Give me a business problem and I'll turn it into an engineering decision worth trusting."*, and the existing headshot as a rounded-rectangle portrait with a `border.default` edge — right of the text on desktop, stacked below it on mobile, with text and headshot left-aligned — with meaningful alt text) → Exploration (the three path entries, label-only, no teaser copy) → Evidence & Highlights (Engineering and Leadership & Enablement each get ≥1 dedicated evidence teaser; Beyond the Code gets exactly one personal-hint line, not evidence). All deeper content lives on path/story pages (C-6). **Revised 2026-10-11 (`EXPERIENCE.md` v0.14 §6.3, UX-031):** the Exploration and Evidence & Highlights sections are replaced by one section of three path cards (label, optional metric and unit, action headline, one line, "Read the story →" stretched over the card, highlights stepped by button only, and a non-clickable "Coming soon" card for a path with no story). The order is now Recognition → Path cards.
 - UX-DR29: Implement the four state patterns: Cold Load (meaningful semantic content without waiting on decorative effects), Loading (never blocks identity recognition), Error (preserves navigation/recovery), Missing Content (no empty visual shells for content that doesn't exist — gracefully omit or simplify instead).
 - UX-DR30: Keyboard focus must remain visible (solid ring per UX-DR2) and logically ordered across all interactive flows.
 - UX-DR31: Photography — **DECIDED (`EXPERIENCE.md` v0.12 §22 Photography, UX-029; `ARCHITECTURE-SPINE.md` Conventions → Images):** content photos are web-ready exports under `src/assets/media/<folder>/` (`powerlifting/`, `birdhouses/`; `engineering/` or `leadership/` only if needed), referenced by their path inside `media/`. Per-page ceilings: homepage 1 (the existing headshot), work stories 0 by default with an optional, rare hero, `/beyond` up to 2, Powerlifting 1 hero + 4–6, Birdhouses 1 hero + 5–7 process + 3–6 finished. Every meaningful photo has descriptive alt text; above-the-fold photos load eagerly, the rest lazily, with no layout shift. No placeholder or stock photo ever renders (UX-DR29). Visual treatment (aspect ratio, radius, edge) and the Birdhouses sequence-or-gallery presentation are OPEN, decided with the first real photos.
@@ -213,7 +215,7 @@ A visitor arriving at the portfolio gets a fully upgraded entry experience — i
 A visitor can browse the Engineering path, scan story summaries, and read two deep, evidence-rich stories — `Auth.RcmAppAccessWatcher` and the Azure IaC platform conversion — demonstrating business-to-engineering translation, ownership, judgment, and ambiguity handling. First epic to build the reusable work-story components (Story Card, Decision Block, Outcome Block, Capability Signal) against real content; Epic 3 reuses them unchanged.
 
 **FRs covered:** FR-4, FR-5, FR-6, FR-7, FR-8, FR-16, FR-20, FR-21
-**Architecture covered:** AD-14 per-route `useDocumentMeta` hook (Story 2.2)
+**Architecture covered:** AD-14 per-route `useDocumentMeta` hook (Story 2.2); AD-2 `highlight` frontmatter block (Story 2.4)
 **Content status:** Ready — both stories fully sourced in `addendum.md` (ES-1, ES-2).
 
 ### Epic 3: Leadership & Enablement Path — Developing Others
@@ -497,6 +499,8 @@ So that I can choose where to go without reading the whole site, and the site ne
 **When** the homepage — Recognition, Exploration, and Evidence & Highlights — is viewed at supported mobile and desktop widths
 **Then** the same information hierarchy holds at both: professional identity, the three paths, and any teaser content all stay immediately understandable and reachable, with no critical information exposed only on desktop (DESIGN §17)
 
+**Superseded in part (2026-10-11, UX-031):** the criteria above that describe a label-only Exploration section, a separate Evidence & Highlights section, and homepage path entries that are always links are replaced by Story 2.6's path cards. The path index pages, their routes, and the "no stories published yet" state stand.
+
 ### Story 1.8: Visual Alignment to the Homepage Mockup (UX-030)
 
 **Sequencing:** built before Story 1.7, together with Story 1.6 on its branch, so the Exploration and Highlights sections are built on the final surface. Revises the look delivered by Stories 1.4 and 1.5; their behavior and contracts are unchanged (`planning-artifacts/sprint-change-proposal-2026-10-04-ux030.md`).
@@ -540,7 +544,7 @@ So that the site feels calm and polished, with personality that stays in the bac
 A visitor can browse the Engineering path, scan story summaries, and read two deep, evidence-rich stories — `Auth.RcmAppAccessWatcher` and the Azure IaC platform conversion — demonstrating business-to-engineering translation, ownership, judgment, and ambiguity handling. First epic to build the reusable work-story components against real content; Epic 3 reuses them unchanged.
 
 **FRs covered:** FR-4, FR-5, FR-6, FR-7, FR-8, FR-16, FR-20, FR-21
-**Architecture covered:** AD-14 per-route `useDocumentMeta` hook (Story 2.2)
+**Architecture covered:** AD-14 per-route `useDocumentMeta` hook (Story 2.2); AD-2 `highlight` frontmatter block (Story 2.4)
 **Content status:** Ready — both stories fully sourced in `addendum.md` (ES-1, ES-2).
 
 ### Story 2.1: Work-Story Presentation Components
@@ -565,7 +569,7 @@ So that every deep story and every path index renders reasoning and evidence con
 
 **Given** UX-DR9 (Story Card)
 **When** a path index or homepage teaser renders a story
-**Then** the Story Card shows title, one-liner/problem class, role, and capability tags — generated entirely from frontmatter, never separately authored prose (AD-2). Story Card, together with the homepage Evidence & Highlights section (Story 1.7), is what satisfies DESIGN §11's "Evidence Summary" component role (UX-DR8) — no separate component is built for it.
+**Then** the Story Card shows title, one-liner/problem class, role, and capability tags — generated entirely from frontmatter, never separately authored prose (AD-2). Story Card, together with the homepage path cards (Story 2.6), is what satisfies DESIGN §11's "Evidence Summary" component role (UX-DR8) — no separate component is built for it.
 
 **Given** UX-DR1/UX-DR2 tokens
 **When** any of these components render
@@ -659,7 +663,11 @@ So that I see concrete evidence of business-to-engineering translation, ownershi
 
 **Given** `addendum.md` ES-1
 **When** the `.mdx` file is authored
-**Then** it covers Context (InmarOne/RCM authorization gap), Ambiguity (first integrator, no prior pattern), Ownership (solo, end-to-end), Decision (CDC via Debezium, event-driven pub/sub), Rationale/Tradeoffs (at minimum the CDC-vs-polling and event-driven-vs-synchronous decisions with their stated tradeoffs), Collaboration (cross-team with the InmarOne platform team), Outcome (2,000→4,500 users/day, eliminated manual provisioning), and Reflection (at least the deployment-strategy and upstream-data-model hindsight points) (AD-3, FR-5–8)
+**Then** it covers Context (InmarOne/RCM authorization gap), Ambiguity (first integrator, no prior pattern), Ownership (solo, end-to-end), Decision (CDC via Debezium, event-driven pub/sub), Rationale/Tradeoffs (at minimum the CDC-vs-polling and event-driven-vs-synchronous decisions with their stated tradeoffs), Collaboration (cross-team with the InmarOne platform team), Outcome (2,000→4,500 user syncs/day, eliminated manual app-access provisioning; users are still created by hand in RCM, and RCM is the only system that can grant or remove access to RCM applications), and Reflection (at least the deployment-strategy and upstream-data-model hindsight points) (AD-3, FR-5–8)
+
+**Given** the Decision Block for the sync design
+**When** the story is authored
+**Then** it names the three triggers that force a sync (an RCM admin changes an active user's permissions, a user logs in to RCM, an RCM user is marked inactive), says that the same user is expected to be processed several times a day, and never describes the 4,500 figure as users. Where the story explains InmarOne, it uses the example that InmarOne shows a tile for an application RCM says the user has (Audit Management) and lists an application the user does not have (Contract Management) under Other Inmar Applications
 
 **Given** Alisha's verbal confirmation that ES-1 is fully public-safe (2026-09-12)
 **When** the story is authored
@@ -671,7 +679,7 @@ So that I see concrete evidence of business-to-engineering translation, ownershi
 
 **Given** AD-2
 **When** frontmatter is written
-**Then** `capabilities` draws only from the controlled vocabulary, and `featured` is set so this story is eligible for the homepage teaser (Story 2.6)
+**Then** `capabilities` draws only from the controlled vocabulary, and `featured` is set together with a `highlight` block (Story 2.4) so this story is eligible for the homepage path card (Story 2.6)
 
 **Given** this story adds the first file under `src/content/` (Epic 1 retro A-10, R-7; if Story 2.5 lands first, this criterion and the next two move to it)
 **When** this story is complete
@@ -684,6 +692,18 @@ So that I see concrete evidence of business-to-engineering translation, ownershi
 **Given** `featured` picks each path's homepage highlight (Epic 1 retro A-10, R-10)
 **When** two non-draft entries in the same path share a `featured` value
 **Then** the build fails with a message naming both files, instead of the registry silently breaking the tie
+
+**Given** `EXPERIENCE.md` §6.3 (UX-031) and AD-2
+**When** this story is complete
+**Then** the `work` and `personal` schemas in `frontmatter.ts` accept an optional `highlight: { headline, metric?, unit? }` block. `headline` is a non-empty string; `metric` and `unit` are non-empty strings when present; `unit` without `metric` is rejected; unknown keys inside the block are rejected. A non-draft entry that has `featured` and no `highlight` fails the build with a message naming the file. Valid and invalid fixtures cover it, and `plugins/contentFrontmatter.ts` enforces it at build time
+
+**Given** this story is the first to feed a path card
+**When** its frontmatter is written
+**Then** `highlight` carries a headline that names RCM as the single authority on which RCM applications a user can open in InmarOne, a `metric` of `4,500`, and a `unit` of `syncs a day, up from 2,000` (final wording settled at authoring; the unit says syncs, never users). `summary` is the one supporting line and reads without internal names
+
+**Given** the confidentiality rule for product names
+**When** the story and its frontmatter are written, and again at review
+**Then** only external product names appear (for example Audit Management and Contract Management). every company, product, system or application name used is listed with its external form in the story spec or PR description, and Alisha has confirmed each one (`EXPERIENCE.md` §12, Name confirmation). A name that is not on the confirmed list does not appear in the `.mdx`, its frontmatter, or any committed document. The list holds only confirmed names, and no list of names to avoid is ever committed. She may also search the repository against a private list kept outside it before the PR is opened. CI cannot enforce this and is not expected to
 
 **And** Decision Block / Outcome Block (Story 2.1) are used for at least the CDC decision and the scale/impact outcome
 
@@ -713,31 +733,55 @@ So that I see evidence of architecture/infrastructure judgment, ownership of a m
 
 **Given** AD-2
 **When** frontmatter is written
-**Then** `capabilities` draws only from the controlled vocabulary, and `featured` is set so this story is eligible for the homepage teaser (Story 2.6)
+**Then** `capabilities` draws only from the controlled vocabulary, and `featured` is set together with a `highlight` block (Story 2.4) so this story is eligible for the homepage path card (Story 2.6)
+
+**Given** the name-confirmation rule (`EXPERIENCE.md` §12)
+**When** the story is authored
+**Then** every third-party or company name used is on a confirmed list in the story spec or PR description, each confirmed by Alisha
 
 **And** before this story is marked done, a reviewer (Alisha) confirms the masking holds — no proprietary name leaked — since this is a hard confidentiality constraint, not a style preference
 
-### Story 2.6: Homepage Engineering Evidence Teaser
+### Story 2.6: Homepage Path Cards
 
-As a time-boxed visitor scanning the homepage,
-I want to see at least one concise, high-signal Engineering evidence teaser without leaving the homepage,
-So that I can judge Alisha's technical credibility within my ~90-second budget.
+As a time-boxed visitor on the homepage,
+I want each path to show a concrete, high-signal reason to open it,
+So that I can judge Alisha's technical credibility and choose where to go within my ~90-second budget, without the page repeating the header's navigation.
 
 **Acceptance Criteria:**
 
-**Given** UX-DR28 (Evidence & Highlights)
+**Given** UX-DR28 as revised (`EXPERIENCE.md` v0.14 §6.3, UX-031)
 **When** the homepage renders
-**Then** the Engineering slot (built empty in Epic 1 Story 1.7) now shows at least one teaser drawn from a `featured` Engineering story (FR-15, SM-1)
+**Then** Recognition is followed by one section of three path cards labeled exactly "Engineering", "Leadership & Enablement", and "Beyond the Code". It replaces the `ExplorationPaths` and `EvidenceHighlights` components, which are removed together with their tests
 
-**Given** Architecture's index-ordering convention
-**When** more than one Engineering story is `featured`
-**Then** the lowest `featured` value appears first
+**Given** a path has at least one non-draft `featured` story
+**When** its card renders
+**Then** it shows the path label, the story's optional `metric` and `unit`, its `highlight.headline`, its `summary`, and a "Read the story →" link, all from frontmatter (AD-2). No homepage-only copy exists (FR-15, SM-1)
 
-**Given** the teaser is frontmatter-derived (AD-2)
-**When** it renders
-**Then** it shows only fields already defined in frontmatter — no separately authored homepage-only copy
+**Given** a path has more than one `featured` story
+**When** its card renders
+**Then** the first slide is the lowest `featured` value under Architecture's index-ordering convention, and previous and next buttons with an "N of M" count step through the rest. Nothing advances on its own. A change cross-fades in about 180ms, instant under reduced motion (AD-13). Non-active slides are hidden from keyboard and assistive technology, and a change made by a visitor is announced politely. Buttons are at least 24 × 24 CSS px and have accessible names that include the path (for example "Next Engineering highlight"). A path with one story shows no buttons and no count
 
-**And** clicking the teaser navigates to that story's detail page directly (not via the Engineering index first)
+**Given** a live card
+**When** a visitor clicks anywhere on it
+**Then** "Read the story →" is the only link in the card, its hit area is stretched over the whole card, and a code comment states this is intentional so the card can be clickable without nesting interactive elements. The click opens the currently shown story's detail page directly, not the index. Tab order is the link and then the buttons, and the buttons sit above the stretched area. On hover the border steps up one level and the link label underlines; focus shows one ring around the card (AD-11); the card never takes button styling
+
+**Given** a path has no non-draft entry
+**When** its card renders
+**Then** it is a non-clickable element (not an anchor, and no `aria-disabled` on a non-interactive element) with the visible text "Coming soon" (a text cue, never colour alone, AD-10) and a one-line description of the path kept beside the path labels in `src/lib/paths.ts`. The state is derived from the registry, with no flag, and publishing the first story turns the card live with no code change. At release Engineering is live, and Leadership & Enablement and Beyond the Code are Coming soon
+
+**Given** the Coming soon cards are not links
+**When** a visitor wants those paths
+**Then** `/leadership` and `/beyond` stay reachable through the header navigation (UX-015), and their index pages keep the "no stories published yet" state from Story 1.7
+
+**Given** UX-DR25/NFR-2 (mobile is a first-class experience)
+**When** the homepage is viewed at supported mobile and desktop widths
+**Then** cards stack on mobile and sit in three columns from `md`, and every control stays reachable and at least 24 × 24 CSS px, with nothing that works only on hover
+
+**Given** AD-10 and DESIGN §15
+**When** a card renders
+**Then** it uses semantic role tokens only (the `semanticTokens` gate passes), shows hierarchy through borders and background steps with no stacked shadows, and the link is `brand.primary`
+
+**And** `mockups/key-homepage.html` is updated in the same change so it shows path cards instead of the two earlier sections (`EXPERIENCE.md` §6.1)
 
 ---
 
@@ -764,13 +808,13 @@ So that I can scan and select leadership stories the same way I can Engineering 
 **When** a visitor lands on `/leadership`
 **Then** it lists Story Cards for every non-draft `work` story with `path: leadership`, ordered by `featured` ascending then `date` descending then `title` — verified with fixture content since no real story exists yet
 
-**Given** UX-DR28
-**When** the homepage renders
-**Then** the Leadership & Enablement slot in Evidence & Highlights (built empty in Epic 1 Story 1.7) is wired to show a `featured` Leadership story's teaser once one exists, using the same mechanism as Story 2.6
+**Given** the path card from Story 2.6
+**When** the first non-draft Leadership story with `featured` and a `highlight` block is published
+**Then** the Leadership & Enablement card switches from Coming soon to live with no code change, using the same mechanism as Story 2.6
 
 **Given** zero real Leadership content exists at the time this story ships
-**When** `/leadership` and the homepage teaser slot render
-**Then** both show the graceful "no stories yet" state from Story 1.7 — this story delivers the mechanism, not the content
+**When** `/leadership` and the homepage card render
+**Then** `/leadership` shows the graceful "no stories yet" state from Story 1.7 and the homepage card stays Coming soon (Story 2.6) — this story delivers the mechanism, not the content
 
 **And** this story requires no changes to the registry, routing, or shared components — verification only, given AD-5/AD-1's design already generalizes to any `work` path value
 
@@ -804,7 +848,7 @@ So that I see concrete evidence of mentorship, onboarding, knowledge sharing, or
 **When** stories are authored
 **Then** they follow the same public-safe boundary rules established in Epic 2 (Stories 2.4/2.5) — generalized problem classes, no internal system names or confidential specifics
 
-**And** frontmatter `capabilities` draws only from the controlled vocabulary and at least one story is `featured` so Story 3.1's homepage teaser has real content to show
+**And** frontmatter `capabilities` draws only from the controlled vocabulary and at least one story is `featured` with a `highlight` block so Story 3.1's homepage card has real content to show
 
 ---
 
@@ -958,24 +1002,28 @@ So that I come away seeing a whole person, not a résumé.
 
 **And** personal stories avoid exposing anyone else's private information without consent
 
-### Story 4.5: Homepage Personal-Hint Teaser
+### Story 4.5: Homepage Beyond the Code Card
 
 As a visitor scanning the homepage,
-I want a one-line hint that Alisha has a personal side worth exploring,
-So that I notice Beyond the Code without it competing with the professional evidence.
+I want the Beyond the Code card to hint that Alisha has a personal side worth exploring,
+So that I notice it without it competing with the professional evidence.
 
 **Acceptance Criteria:**
 
-**Given** UX-DR28 (§6.4/§6.5)
-**When** the homepage renders
-**Then** the Beyond the Code slot in Evidence & Highlights shows exactly one personal-hint line, sharing the same visual treatment as the Engineering/Leadership teasers but not styled or labeled as "evidence" (UX-007)
+**Given** the path card from Story 2.6 and UX-007
+**When** a non-draft personal entry is `featured` and has a `highlight` block
+**Then** the Beyond the Code card switches from Coming soon to live, showing the `highlight.headline` and `summary` with no metric, and it is not styled or labeled as "evidence"
 
-**Given** the hint is frontmatter-derived
+**Given** the card is frontmatter-derived
 **When** it renders
-**Then** it draws from a `featured` personal entry's `summary`, not separately authored homepage copy (AD-2)
+**Then** it draws only from featured personal entries, never separately authored homepage copy (AD-2), and an entry with `listed: false` (the care guide) never appears
+
+**Given** both Beyond the Code dimensions (powerlifting, Birdhouses) are `featured`
+**When** the card renders
+**Then** they step as highlights under the Story 2.6 rules
 
 **Given** no personal content is `featured` yet
 **When** the homepage renders
-**Then** the slot gracefully omits rather than showing an empty card (AD-2, EXPERIENCE §14)
+**Then** the card stays Coming soon, as shipped by Story 2.6
 
-**And** clicking the hint navigates to that dimension's detail page directly
+**And** clicking the live card navigates to that dimension's detail page directly

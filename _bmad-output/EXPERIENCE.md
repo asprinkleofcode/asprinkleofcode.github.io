@@ -3,9 +3,9 @@
 **Name:** Alisha Sprinkle Korba Portfolio  
 **Description:** Experience contract defining the information architecture, journeys, interaction patterns, and accessibility behavior for the portfolio.  
 **Status:** Final  
-**Version:** 0.13  
-**Updated:** 2026-10-04  
-**Peer document:** `DESIGN.md` v0.9 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
+**Version:** 0.14  
+**Updated:** 2026-10-11  
+**Peer document:** `DESIGN.md` v0.10 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
 **Upstream:** `PRD.md` v0.8 — path labels (D-15), destinations (D-16/D-17), the Birdhouses naming (D-18), speaking status (A-13), the care guide (A-12), the audience re-ordering (D-21/D-22), the entry-context requirement (FR-24 / D-23), and the positioning statement (D-25) are consumed below.
 
 ---
@@ -247,15 +247,18 @@ It must help a visitor:
 6. discover enough personality to recognize the person
 7. continue to an appropriate next destination
 
-**Section order — DECIDED:** top to bottom, the homepage stacks **Recognition (§6.2) →
-Exploration (§6.3) → Evidence & Highlights (§6.4)** as three separate sections, in that
-order — not interleaved. A visitor is recognized, then offered the choice of where to
-go, then shown proof, in that sequence. §6.5's personality composition is resolved into
-§6.4 rather than forming its own stacked section.
+**Section order — DECIDED (UX-031, supersedes the three-section order of UX-025):** top to
+bottom, the homepage stacks **Recognition (§6.2) → Path cards (§6.3)** as two sections.
+Each path card carries its own highlight, so there is no separate Evidence & Highlights
+section (§6.4 is kept only to record what it used to require). A visitor is recognized,
+then offered the choice of where to go, with proof already on the choices. §6.5's
+personality composition is resolved into the Beyond the Code card (§6.3).
 
 Reference: [`mockups/key-homepage.html`](mockups/key-homepage.html) shows the desktop and
 mobile homepage on the DESIGN.md dark palette: header, Recognition with the D-25
-positioning statement, label-only Exploration, Evidence & Highlights, and footer. Content
+positioning statement, label-only Exploration, Evidence & Highlights, and footer. That
+is the v0.13 layout; UX-031 replaces the last two homepage sections with path cards, and
+the mockup is synced in the story that builds them. Content
 that is still open (§24 items 1–4) is drawn as dashed placeholders rather than invented.
 It is a visual reference only, and this section wins on conflict. As of v0.13 (UX-030)
 the mockup is kept in step with the spines: when a spine changes the homepage's look,
@@ -291,11 +294,13 @@ implementation-level.
 
 ---
 
-### 6.3 Exploration Surface
+### 6.3 Path Cards
 
-**AUTHORITATIVE**
+**DECIDED (UX-031)**
 
-The homepage should expose the major ways to understand Alisha.
+The homepage should expose the major ways to understand Alisha, and give a reason to
+pick each one. This is one section of three cards. It is not a navigation row and not a
+list of labels.
 
 The three paths, using their decided labels (PRD D-15):
 
@@ -303,31 +308,57 @@ The three paths, using their decided labels (PRD D-15):
 - Leadership & Enablement
 - Beyond the Code
 
-**Structure — DECIDED:** this surface is **label-only** — the three path entries, no
-teaser copy attached here. Each path's one-line highlight lives in Evidence &
-Highlights (§6.4), which follows as its own section rather than being interleaved with
-the entries here.
+**What a card contains:** the path label; an optional **metric** with its **unit**; a
+**headline** that leads with an action; one supporting line; and a "Read the story →"
+link. The copy comes from the featured story's frontmatter (`highlight` plus `summary`,
+AD-2), never from separately authored homepage text.
+
+**Not a second navigation bar — DECIDED:** the header already holds navigation (§5.2).
+Cards lead with a number and an action so they read as a pitch for specifics. A card that
+is only a label and an arrow is what this decision rules out.
+
+**Metrics are claims — DECIDED:** a metric is printed only when the story can say exactly
+what it counts. The Auth.RcmAppAccessWatcher card says *syncs a day*, never *users a
+day*, because the same user is processed several times a day.
+
+**Rotating highlights — DECIDED:** where a path has more than one featured story, the
+card steps through them with previous and next buttons and an "N of M" count. The first
+slide (lowest `featured`) must carry the pitch alone, since most visitors never press a
+button. Nothing advances on its own. Slides change only on a visitor's action, with a
+~180ms cross-fade, instant under reduced motion (§14). A path with one story shows no
+buttons. Button targets are at least 24 × 24 CSS px and have accessible names that
+include the path ("Next Engineering highlight").
+
+**Whole-card click — DECIDED:** the visible "Read the story →" is the one link in the card
+and its hit area is stretched over the whole card, so the card is clickable without
+nesting links or buttons. This is intentional, and the code carries a comment saying so.
+At rest the card looks the same; on hover the border steps up one level and the link
+label underlines. It never takes button styling. Focus shows one ring around the whole
+card. The rotation buttons sit above the stretched area.
+
+**Coming soon — DECIDED:** a path with no published story renders a non-clickable card
+with a visible "Coming soon" label (text, never colour alone) and a one-line description
+of the path. The state is derived from the registry having no entry for that path, so
+there is no flag to maintain, and the card goes live when the first story is published.
+This is a path-level status for a fixed product path (AD-18), not placeholder story
+content, so it does not breach Missing Content (§14). At the time of this decision
+Engineering is live, and Leadership & Enablement and Beyond the Code ship as Coming soon.
 
 ---
 
 ### 6.4 Evidence & Highlights Surface
 
-**DECIDED**
+**SUPERSEDED by §6.3 (UX-031)**
 
-Follows Exploration (§6.3) as its own stacked section. Each of the three paths gets
-**exactly one highlight line here, at minimum**:
+This was a separate stacked section with one highlight line per path. It no longer
+exists as its own surface. What carries over into the path cards:
 
-- **Engineering** — at least one concise, high-signal evidence teaser.
-- **Leadership & Enablement** — at least one concise, high-signal evidence teaser of
-  its own, dedicated rather than pooled away in favor of Engineering having more. Both
-  professional paths must be visibly represented before a visitor picks one.
-- **Beyond the Code** — one one-line personal-dimension hint. This is **not**
-  professional evidence (UX-007) — it shares the same one-line, same-position visual
-  treatment as the other two for consistency, but its content is a personality signal,
-  not a capability claim.
-
-Professional evidence should appear as concise, high-signal summaries. The homepage
-should not require complete case studies for every story.
+- Professional evidence appears as concise, high-signal summaries. The homepage does not
+  require complete case studies for every story.
+- Beyond the Code is a personality signal, **not** professional evidence (UX-007). Its
+  card never uses capability or evidence framing, and it carries no metric.
+- UX-025's rule that Leadership & Enablement gets its own dedicated evidence teaser is
+  **deferred** until Epic 3 content exists. Until then it is a Coming soon card.
 
 ---
 
@@ -338,7 +369,7 @@ should not require complete case studies for every story.
 Personality should be visible without interrupting the professional story.
 
 **Composition — DECIDED:** on the homepage itself, personality surfaces exactly as the
-Beyond the Code one-line hint in §6.4 — there is no separate, additional homepage
+Beyond the Code card in §6.3 — there is no separate, additional homepage
 personality section. Full material (powerlifting, Birdhouses — PRD D-18's two
 Beyond the Code dimensions) lives only once a visitor enters the Beyond the Code path.
 The ambient star layer is unaffected by this decision — it is a persistent, site-wide
@@ -595,6 +626,8 @@ Do not expose:
 - sensitive operational details
 
 This is an explicit product requirement.
+
+**Name confirmation — DECIDED:** any company, product, system or application name that appears in published content or in a committed document needs Alisha's explicit confirmation of that name first. Each story records the names it uses, with the external form of each, in a short list in its spec or PR description, and Alisha confirms the list before the story is done. The list holds only confirmed, public-safe names. Nothing is ever recorded as a list of names to avoid, since that would publish them. A name without a confirmation is left out, or described generically ("the platform").
 
 ---
 
@@ -1129,6 +1162,7 @@ gallery is also open (§9.3). Both are decided with the first real photos, in St
 | UX-024 | The entry surface must be legible to someone arriving from a talk, without requiring a speaking surface to exist (PRD FR-24 / D-23) | DECIDED — surface treatment UX-owned |
 | UX-027 | Homepage headshot: existing headshot in Recognition as a portrait right of the text on desktop, stacked below the text on mobile (§6.2) | DECIDED |
 | UX-025 | Homepage allocation (PRD A-10 / C-6): section order Recognition → Exploration → Evidence & Highlights (§6.1); positioning statement folded into Recognition (§6.2); Exploration stays label-only (§6.3); each of the 3 paths gets ≥1 highlight line in §6.4 (Engineering + Leadership & Enablement each get their own evidence teaser, Beyond the Code gets a personal-hint teaser, not evidence); homepage personality composition = exactly that one hint, nothing more (§6.5) | DECIDED |
+| UX-031 | Homepage path cards replace label-only Exploration and the separate Evidence & Highlights section (§6.3): metric and unit, action headline, one line, "Read the story →" stretched over the card; rotating highlights by button only, never auto-advancing; non-clickable "Coming soon" card for a path with no story. Supersedes UX-025's section order, label-only Exploration, and the dedicated Leadership teaser until Epic 3 content exists | DECIDED |
 | UX-030 | Homepage look matched to [`mockups/key-homepage.html`](mockups/key-homepage.html); spines stay authoritative and the mockup is synced to them. Navy page, twinkling stars, white name and rose title, larger global identity and title sizes, white header brand, recessed footer (DESIGN.md v0.9 §6–§16; here §6.1, §6.2, §14) | DECIDED |
 | UX-029 | Photography: web-ready exports live in `asprinkleofcode/src/assets/media/<folder>/`; per-page counts (about 15–22 for launch); work stories have no photo by default, with an optional, rare hero; capture guidance, public-safety rules, alt text, and loading (§22 Photography) | DECIDED — photos pending; visual treatment OPEN |
 
