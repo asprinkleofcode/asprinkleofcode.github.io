@@ -10,6 +10,13 @@ import type { ApplyTheme, DeepPartialApplyTheme, FlowbiteTheme } from "flowbite-
 export const focusRing =
   "focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background-primary";
 
+// The same ring, drawn on a container while its link has keyboard focus: a
+// card whose one link is stretched over it (`stretchedLinkClasses`) shows one
+// ring around the whole card, not around the link text. Scoped to `a` so other
+// focusable children (e.g. buttons) keep their own ring and don't ring the card.
+export const focusWithinRing =
+  "has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-focus-ring has-[a:focus-visible]:ring-offset-2 has-[a:focus-visible]:ring-offset-background-primary";
+
 // Only slots that differ from the flowbite defaults (or that the defaults would
 // fill with raw palette colours); everything else falls back to the defaults.
 export const aSprinkleOfCodeTheme = createTheme({
@@ -71,6 +78,34 @@ export const aSprinkleOfCodeTheme = createTheme({
       lg: "px-5 py-3 text-lg",
     },
   },
+  card: {
+    root: {
+      // `relative` anchors a stretched link's overlay. Hierarchy by a border
+      // step, never a shadow; the card never takes button styling.
+      base: `relative flex rounded-default border border-border-default bg-background-primary hover:border-border-essential motion-safe:transition-colors ${focusWithinRing}`,
+      children: "flex h-full flex-col gap-3 p-5",
+      // Unused (StoryCard links its title, not the card); replaced so the
+      // flowbite default's palette hover can never apply.
+      href: "",
+    },
+  },
+  // Supports only `color="capability"` at the default (`xs`) size; other colours and sizes are unstyled.
+  badge: {
+    root: {
+      base: "flex h-fit w-fit items-center gap-1 border font-semibold",
+      color: {
+        // Capability signals (DESIGN §7a): periwinkle carries functional emphasis.
+        capability: "border-accent-secondary bg-background-primary text-accent-secondary",
+      },
+      size: {
+        xs: "text-sm",
+      },
+    },
+    icon: {
+      // Full pill for capability signals (DESIGN §15); no icon is used.
+      off: "rounded-pill px-2.5 py-0.5",
+    },
+  },
   avatar: {
     root: {
       base: "flex items-center justify-center space-x-4 rounded-full",
@@ -99,15 +134,17 @@ function replaceDefinedSlots(slots: object | undefined): SlotApply {
 // `createTheme` slots are twMerged with flowbite's defaults, which carry
 // `dark:` and `gray-` classes; this build's `dark` variant follows
 // `prefers-color-scheme`, so OS dark mode would repaint the header and footer
-// in raw palette colours (AD-10). Replacing every navbar and footer slot this
-// theme defines renders only the role-token classes above; slots it leaves
-// undefined keep the flowbite default. Pass to `ThemeProvider` with the theme.
+// in raw palette colours (AD-10). Replacing every navbar, footer, card and badge
+// slot this theme defines renders only the role-token classes above; slots it
+// leaves undefined keep the flowbite default. Pass to `ThemeProvider` with the theme.
 // "replace" also drops flowbite's structural (layout/spacing) classes for a
-// slot: when you define a navbar or footer slot, copy in any structural
+// slot: when you define a slot for one of these components, copy in any structural
 // classes from the flowbite default that it still needs.
 // Focus offset: the footer keeps `ring-offset-background-primary` from
 // `focusRing` by design (a 2px navy gap before the ring on the recessed footer).
 export const aSprinkleOfCodeApplyTheme = {
   navbar: replaceDefinedSlots(aSprinkleOfCodeTheme.navbar),
   footer: replaceDefinedSlots(aSprinkleOfCodeTheme.footer),
+  card: replaceDefinedSlots(aSprinkleOfCodeTheme.card),
+  badge: replaceDefinedSlots(aSprinkleOfCodeTheme.badge),
 } as DeepPartialApplyTheme<FlowbiteTheme>;

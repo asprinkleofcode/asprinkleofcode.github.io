@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Epic 2 party keepsake</title>
+<style>
+:root{--bg:#1E1E2F;--bg2:#2B2B3B;--bg0:#0F0F15;--tx:#F8F8FA;--tx2:#9C9CBA;--bd:#3A3A4D;--bd2:#85879D;--rose:#E58AAE;--john:#7FB4E8;--sally:#E58AAE;--win:#9BD3A6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6}
+.sky{position:fixed;inset:0;pointer-events:none;z-index:0}
+.sky i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:tw 4s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:.8}}
+@media (prefers-reduced-motion:reduce){.sky i{animation:none}.s{transition:none}}
+main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:40px 16px 64px}
+h1{font-size:30px;font-weight:600;margin:0 0 4px}
+h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--tx2);margin:44px 0 14px;font-weight:600}
+.sub{color:var(--tx2);margin:0}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.p{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:14px}
+.p .ic{font-size:26px}
+.p b{display:block;font-size:16px}
+.p span{font-size:13px;color:var(--tx2)}
+.p.john{border-top:3px solid var(--john)}.p.sally{border-top:3px solid var(--sally)}.p.win{border-top:3px solid var(--win)}
+.t{display:flex;flex-direction:column;gap:12px}
+.beat{display:flex;gap:12px}
+.av{flex:0 0 36px;height:36px;border-radius:50%;background:var(--bg2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:18px}
+.bub{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;flex:1}
+.bub small{display:block;color:var(--tx2);font-size:12px}
+.bub p{margin:2px 0 0}
+.stage{text-align:center;color:var(--tx2);font-size:13px;font-style:italic;margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--bd);vertical-align:top}
+th{color:var(--tx2);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.card{position:relative;background:var(--bg);border:1px solid var(--bd2);border-radius:12px;padding:14px;min-height:230px;display:flex;flex-direction:column}
+.card.off{background:#14141F;border-style:dashed;border-color:var(--bd)}
+.path{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--tx2)}
+.soon{float:right;font-size:11px;border:1px solid var(--bd2);border-radius:6px;padding:1px 7px}
+.m{font-size:26px;font-weight:600;margin:10px 0 0;line-height:1.2}
+.u{font-size:12px;color:var(--tx2);margin:0 0 8px}
+.h{font-size:14px;font-weight:600;margin:8px 0 4px}
+.b{font-size:13px;color:var(--tx2);margin:0}
+.cta{margin-top:auto;padding-top:10px;color:var(--rose);font-size:13px}
+.s{transition:opacity .18s}
+.card.flip .s{opacity:0}
+.note{font-size:13px;color:var(--tx2)}
+footer{margin-top:48px;color:var(--tx2);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true" id="sky"></div>
+<main>
+<h1>Epic 2: the path cards</h1>
+<p class="sub">Party keepsake · 2026-10-11 · for Sprinkle</p>
+
+<h2>The room</h2>
+<div class="cast">
+  <div class="p john"><div class="ic">📋</div><b>John</b><span>Product manager. Interrogates every claim until it can be defended.</span></div>
+  <div class="p sally"><div class="ic">🎨</div><b>Sally</b><span>UX designer. Pitches the scene before the code exists.</span></div>
+  <div class="p win"><div class="ic">🏗️</div><b>Winston</b><span>Architect. Joined late, lays out trade-offs and flags what he hasn't verified.</span></div>
+</div>
+
+<h2>How it went</h2>
+<div class="t">
+  <div class="beat"><div class="av">📋</div><div class="bub"><small>John</small><p>Which tabs? There are two candidates in the docs. Which one did you mean?</p></div></div>
+  <div class="beat"><div class="av">🎨</div><div class="bub"><small>Sally</small><p>I pitched tabs inside a story. Ten of them don't fit in 375px. Three do.</p></div></div>
+  <p class="stage">Sprinkle clarifies: the tabs are the three path cards on the landing page.</p>
+  <div class="beat"><div class="av">🎨</div><div class="bub"><small>Sally</small><p>Ha. We spent a whole round designing tabs inside a story, and you meant the landing page.</p></div></div>
+  <div class="beat"><div class="av">📋</div><div class="bub"><small>John</small><p>"Users a day" would have been wrong in exactly the way you said. It's syncs. The same person gets processed several times a day.</p></div></div>
+  <div class="beat"><div class="av">🏗️</div><div class="bub"><small>Winston</small><p>I put <code>aria-disabled</code> on a plain div in my mockup. That's wrong. It's a non-link with a visible "Coming soon" label.</p></div></div>
+  <p class="stage">A catch-22 is found in the name audit, and a confirmation rule replaces the denylist.</p>
+  <div class="beat"><div class="av">📋</div><div class="bub"><small>John</small><p>A committed list of names to avoid would publish the names it exists to keep out.</p></div></div>
+</div>
+
+<h2>What was decided</h2>
+<table>
+<tr><th>Topic</th><th>Decision</th></tr>
+<tr><td>Layout</td><td>One section of three path cards replaces label-only Exploration and the separate Highlights. It must not look like a second nav bar.</td></tr>
+<tr><td>Card content</td><td>Optional metric and unit, an action headline, one supporting line, and "Read the story →".</td></tr>
+<tr><td>Rotation</td><td>Previous and next buttons with "N of M". Nothing advances on its own. Slide one must carry the pitch alone.</td></tr>
+<tr><td>Click target</td><td>Stretched link over the whole card, with an intentional-purpose comment in the code.</td></tr>
+<tr><td>Leadership and Beyond</td><td>Non-clickable "Coming soon" cards, derived from the registry with no flag. The path pages stay reachable from the header.</td></tr>
+<tr><td>Fields</td><td>Optional <code>highlight { headline, metric?, unit? }</code> on frontmatter; required when <code>featured</code> is set.</td></tr>
+<tr><td>Accuracy</td><td>The Watcher figure is syncs, not users. It removed manual app-access provisioning; users are still created by hand.</td></tr>
+<tr><td>Names</td><td>Every company, product, or system name needs Sprinkle's confirmation first. Only confirmed names are ever written down.</td></tr>
+<tr><td>Process</td><td>Story 2.6 rewritten, 2.4 extended, 3.1 and 4.5 re-pointed. Shipped as PR 33, docs only.</td></tr>
+</table>
+
+<h2>The finished landing section</h2>
+<div class="grid">
+  <div class="card" id="eng">
+    <span class="path">Engineering</span>
+    <div class="s" data-s>
+      <p class="m">4,500</p><p class="u">syncs a day, up from 2,000</p>
+      <p class="h">Made RCM the single authority on who can open which RCM app in InmarOne</p>
+      <p class="b">A permission change, a login, or a deactivation in RCM now reaches InmarOne on its own.</p>
+    </div>
+    <div class="cta">Read the story →&nbsp;&nbsp;<span class="note" id="cnt">1 of 2</span> <button id="nx" style="background:none;color:#F8F8FA;border:1px solid #85879D;border-radius:6px;cursor:pointer;margin-left:6px" aria-label="Next Engineering highlight">›</button></div>
+  </div>
+  <div class="card off"><span class="path">Leadership &amp; Enablement</span><span class="soon">Coming soon</span><p class="h" style="margin-top:14px">How I help the people around me grow</p><p class="b">Onboarding, teaching, and making knowledge repeatable.</p></div>
+  <div class="card off"><span class="path">Beyond the Code</span><span class="soon">Coming soon</span><p class="h" style="margin-top:14px">Wow, she powerlifts</p><p class="b">Powerlifting and birdhouses, and what each taught me.</p></div>
+</div>
+
+<h2>Still open</h2>
+<p class="note">The final card copy is settled when each story is authored. <code>mockups/key-homepage.html</code> still shows the old layout, and Story 2.6 carries that update. Whether flowbite-react's Carousel can drop auto-advance is unverified, so Story 2.6 should start with a short spike.</p>
+
+<footer>Closed with the room still arguing about whether a card is a button. It isn't.</footer>
+</main>
+<script>
+(function(){
+var sky=document.getElementById('sky');
+for(var i=0;i<60;i++){var d=document.createElement('i');d.style.left=(Math.random()*100)+'%';d.style.top=(Math.random()*100)+'%';d.style.animationDelay=(Math.random()*4)+'s';sky.appendChild(d)}
+var slides=[
+ ['4,500','syncs a day, up from 2,000','Made RCM the single authority on who can open which RCM app in InmarOne','A permission change, a login, or a deactivation in RCM now reaches InmarOne on its own.'],
+ ['~3 months','from hand-built to Dev, QA, and UAT','Rebuilt a manually provisioned platform as code','Sole architect, no team Terraform experience, GCP patterns translated to Azure.']
+],k=0,card=document.getElementById('eng'),s=card.querySelector('[data-s]'),cnt=document.getElementById('cnt');
+document.getElementById('nx').onclick=function(){
+ card.classList.add('flip');
+ setTimeout(function(){k=(k+1)%slides.length;var v=slides[k];
+  s.innerHTML='<p class="m"></p><p class="u"></p><p class="h"></p><p class="b"></p>';
+  var e=s.children;for(var j=0;j<4;j++)e[j].textContent=v[j];
+  cnt.textContent=(k+1)+' of '+slides.length;card.classList.remove('flip')},180)};
+})();
+</script>
+</body>
+</html>
