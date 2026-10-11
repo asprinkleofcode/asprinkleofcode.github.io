@@ -20,7 +20,6 @@ const fixtures = path.join(path.dirname(fileURLToPath(import.meta.url)), "__fixt
 interface FixtureRegistry {
   frontmatters: Record<string, Frontmatter | null>;
   bodies: Record<string, () => Promise<MDXModule>>;
-  raw?: Record<string, string>;
 }
 
 let server: ViteDevServer | undefined;
@@ -81,11 +80,6 @@ describe("content pipeline through Vite", () => {
     expect(html).toContain("WORKBODYMARKER");
     expect(html).not.toContain("type: work");
     expect(await render(registry, "../content/personal/valid-personal.mdx")).toContain("PERSONALBODYMARKER");
-
-    // `?raw` skips both the content plugin and MDX: the AD-10 scan gets the source, frontmatter included.
-    const rawWork = registry.raw?.["../content/work/valid-work.mdx"];
-    expect(typeof rawWork).toBe("string");
-    expect(rawWork).toMatch(/^\s*---\s*type: work[\s\S]*featured: 1[\s\S]*WORKBODYMARKER/);
 
     expect(await render(registry, "../content/work/draft-work.mdx")).toBe("");
     const draftCode = (await server!.transformRequest("/src/content/work/draft-work.mdx", { ssr: true }))?.code ?? "";

@@ -13,17 +13,7 @@ const sources = import.meta.glob<string>("../**/*.{css,ts,tsx,js,jsx}", {
   eager: true,
 });
 
-// Story bodies can carry className and inline styles too. Read raw, before the content and MDX plugins.
-const stories = import.meta.glob<string>("../content/**/*.mdx", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
-// Prose can say "PR #123" or "ticket #4500", so a story is scanned only where colour can live:
-// className/class/style and SVG colour attribute values.
-const STORY_COLOR_ATTRIBUTE =
-  /(?<![\w-])(?:className|class|style|fill|stroke|color)=(?:"[^"]*"|'[^']*'|\{\{[\s\S]*?\}\}|\{[^{}]*\})/g;
-const storyMarkup = (source: string) => [...source.matchAll(STORY_COLOR_ATTRIBUTE)].map((m) => m[0]).join("\n");
+// Story bodies (`src/content/**/*.mdx`) are scanned by plugins/storyColors.test.ts, which reads them from disk.
 
 // The one file allowed to name primitives and raw values: it defines them.
 const TOKEN_SOURCE = "../theme/colors.css";
@@ -93,20 +83,6 @@ describe("AD-10 semantic tokens", () => {
       findColorViolations(sources[path], { allowLiterals: path === THEME_LAYER }).map((violation) => `${path}: ${violation}`)
     );
     expect(offenders).toEqual([]);
-  });
-
-  it("finds no primitive, raw colour or palette utility in story bodies", () => {
-    const offenders = Object.entries(stories).flatMap(([path, source]) =>
-      findColorViolations(storyMarkup(source)).map((violation) => `${path}: ${violation}`)
-    );
-    expect(offenders).toEqual([]);
-  });
-
-  it("scans story markup, not prose", () => {
-    for (const source of Object.values(stories)) expect(source).toMatch(/^\s*---/);
-    const story =
-      'summary: Shipped in PR #123.\n\nTicket #4500 and #add.\n\n<span className="text-red-500" style={{ color: "#fff" }} />\n<path fill="#E48FB1" />';
-    expect(findColorViolations(storyMarkup(story))).toEqual(["text-red-500", "#fff", "#E48FB1"]);
   });
 
   it.each(LEGACY_ABOUT)("still needs the legacy /about exemption for %s", (path) => {

@@ -90,7 +90,8 @@ context:
   - The content plugin's `transform` now skips `?raw`/`?url`.
   - `vite.config.ts` wraps `mdx()`'s transform to do the same. Its `exclude` option can't be used, because the plugin strips the query before filtering.
   - With these two changes, the AD-10 gate reads stories with `import.meta.glob(..., { query: "?raw" })`, instead of `node:fs`, which the `src/` tsconfig has no types for. Frontmatter validation is unaffected: the registry's `?frontmatter` glob still validates every file.
-- Manual check: a temporary `src/content/work/tmp-check.mdx` with `className="text-red-500"` failed the gate with `../content/work/tmp-check.mdx: text-red-500`. The file was then deleted, and the gate passes with an empty `src/content/`.
+- **Superseded after walkthrough (Alisha, 2026-10-11):** the `?raw` approach was replaced. `vite.config.ts` and the content plugin's `?raw`/`?url` skip are back to their baseline form, and the fixture `raw` glob and its integration assertion are gone (triage #1's patch is no longer needed). The story scan now lives in `plugins/storyColors.test.ts`. It runs under `tsconfig.node.json`, so it has Node types, reads `src/content/**/*.mdx` with `node:fs`, and still scans markup attributes only (triage #2). The build pipeline is unchanged by this story apart from the schema checks. A temporary story containing `PR #123` and a `text-red-500` class failed the test on the class only, and was then deleted.
+- Manual check (original approach): a temporary `src/content/work/tmp-check.mdx` with `className="text-red-500"` failed the gate with `../content/work/tmp-check.mdx: text-red-500`. The file was then deleted, and the gate passes with an empty `src/content/`.
 
 ## Spec Change Log
 

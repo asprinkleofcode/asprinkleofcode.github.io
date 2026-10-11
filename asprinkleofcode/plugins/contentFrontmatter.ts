@@ -271,11 +271,8 @@ export default function contentFrontmatter(): Plugin {
     },
 
     transform(code, id) {
-      const [file, query = ""] = id.split("?");
+      const file = id.split("?")[0];
       if (id.startsWith("\0") || !isContentFile(file)) return null;
-      // `?raw` (the AD-10 source scan) and `?url` imports want the file as it is, not a compiled body.
-      const params = new URLSearchParams(query);
-      if (params.has("raw") || params.has("url")) return null;
       return { code: processFile(file, code).body, map: null };
     },
   };

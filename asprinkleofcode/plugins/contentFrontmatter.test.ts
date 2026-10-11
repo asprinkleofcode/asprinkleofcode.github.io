@@ -285,9 +285,6 @@ describe("contentFrontmatter plugin hooks", () => {
     const id = file("work/foo.mdx").split(path.sep).join("/");
     expect(transform.call({}, WORK, id)).toMatchObject({ code: expect.stringContaining("Foo body") });
     expect(transform.call({}, WORK, path.join(root, "src", "other.mdx"))).toBeNull();
-    // Raw and URL imports (the AD-10 scan) get the file untouched, even when it is invalid.
-    expect(transform.call({}, "not frontmatter", `${id}?raw`)).toBeNull();
-    expect(transform.call({}, "not frontmatter", `${id}?import&url`)).toBeNull();
     expect(transform.call({}, "x", path.join(root, "src", "App.tsx"))).toBeNull();
     expect(() => transform.call({}, WORK.replace("type: work", "type: work\ntags: [a]"), id)).toThrow(
       /src\/content\/work\/foo\.mdx[\s\S]*unknown key "tags"/
