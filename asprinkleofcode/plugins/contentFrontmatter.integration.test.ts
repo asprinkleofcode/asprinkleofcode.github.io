@@ -20,6 +20,7 @@ const fixtures = path.join(path.dirname(fileURLToPath(import.meta.url)), "__fixt
 interface FixtureRegistry {
   frontmatters: Record<string, Frontmatter | null>;
   bodies: Record<string, () => Promise<MDXModule>>;
+  raw?: Record<string, string>;
 }
 
 let server: ViteDevServer | undefined;
@@ -60,11 +61,17 @@ describe("content pipeline through Vite", () => {
       role: "Tech lead",
       capabilities: ["ownership", "enablement"],
       date: "2026-01-15",
+      featured: 1,
+      highlight: { headline: "A valid highlight headline.", metric: "4,500", unit: "fixture syncs a day" },
+      hero: { src: "engineering/fixture-hero.webp", alt: "A fixture hero image." },
     });
+    // The same featured value in another path is allowed, as is a metric-free highlight.
     expect(registry.frontmatters["../content/personal/valid-personal.mdx"]).toMatchObject({
       type: "personal",
       title: "Valid Personal",
       listed: true,
+      featured: 1,
+      highlight: { headline: "A personal highlight with no metric." },
     });
     expect(registry.frontmatters["../content/work/draft-work.mdx"]).toBeNull();
 
@@ -74,6 +81,11 @@ describe("content pipeline through Vite", () => {
     expect(html).toContain("WORKBODYMARKER");
     expect(html).not.toContain("type: work");
     expect(await render(registry, "../content/personal/valid-personal.mdx")).toContain("PERSONALBODYMARKER");
+
+    // `?raw` skips both the content plugin and MDX: the AD-10 scan gets the source, frontmatter included.
+    const rawWork = registry.raw?.["../content/work/valid-work.mdx"];
+    expect(typeof rawWork).toBe("string");
+    expect(rawWork).toMatch(/^\s*---\s*type: work[\s\S]*featured: 1[\s\S]*WORKBODYMARKER/);
 
     expect(await render(registry, "../content/work/draft-work.mdx")).toBe("");
     const draftCode = (await server!.transformRequest("/src/content/work/draft-work.mdx", { ssr: true }))?.code ?? "";
@@ -89,6 +101,48 @@ describe("content pipeline through Vite", () => {
     expect((error as Error).name).toBe("FrontmatterError");
     expect((error as Error).message).toContain("src/content/work/bad-key.mdx");
     expect((error as Error).message).toContain('unknown key "tags"');
+    expect((error as Error).message).toContain('"highlight.unit" needs a "highlight.metric"');
+  });
+
+  it("fails a featured entry without a highlight, a bare-string hero and a repeated capability, naming the file", async () => {
+    const error: unknown = await loadFixture("invalid-schema").then(
+      () => undefined,
+      (e: unknown) => e
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).name).toBe("FrontmatterError");
+    const { message } = error as Error;
+    expect(message).toContain("src/content/work/bad-schema.mdx");
+    expect(message).toContain('"featured" needs a "highlight" block for the path card');
+    expect(message).toContain('"hero" must be a { src, alt } object');
+    expect(message).toContain('"capabilities" lists "ownership" more than once');
+  });
+
+  it("fails when two entries in one path share a featured value, naming both files", async () => {
+    const error: unknown = await loadFixture("invalid-featured").then(
+      () => undefined,
+      (e: unknown) => e
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).name).toBe("FrontmatterError");
+    expect((error as Error).message).toMatch(
+      /src\/content\/work\/(first|second)-featured\.mdx[\s\S]*"featured: 1" is already used by src\/content\/work\/(first|second)-featured\.mdx in the engineering path/
+    );
+    expect((error as Error).message).toContain("first-featured.mdx");
+    expect((error as Error).message).toContain("second-featured.mdx");
+  });
+
+  it("fails when a hero file is missing, naming the file and path", async () => {
+    const error: unknown = await loadFixture("invalid-hero").then(
+      () => undefined,
+      (e: unknown) => e
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).name).toBe("FrontmatterError");
+    expect((error as Error).message).toContain("src/content/work/missing-hero.mdx");
+    expect((error as Error).message).toContain(
+      '"hero.src" file src/assets/media/engineering/no-such-photo.webp does not exist'
+    );
   });
 
   it("fails a work story whose body breaks the section rules, naming the file", async () => {

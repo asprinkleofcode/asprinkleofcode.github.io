@@ -26,8 +26,43 @@ function problemsOf(fn: () => unknown): string[] {
 
 describe("parseFrontmatter", () => {
   it("accepts a valid work file with every optional key", () => {
-    const data = { ...work, slug: "bar", date: "2026-02-28", hero: "/hero.png", featured: 1, draft: false };
+    const data = {
+      ...work,
+      slug: "bar",
+      date: "2026-02-28",
+      hero: { src: "engineering/pipeline.webp", alt: "The sync pipeline." },
+      featured: 1,
+      highlight: { headline: "A headline.", metric: "4,500", unit: "syncs a day" },
+      draft: false,
+    };
     expect(parseFrontmatter("work", data, FILE)).toEqual(data);
+  });
+
+  it("accepts a highlight on both types, with a metric alone or no metric", () => {
+    const headlineOnly = { ...personal, featured: 1, highlight: { headline: "H." } };
+    expect(parseFrontmatter("personal", headlineOnly, FILE)).toMatchObject({ highlight: { headline: "H." } });
+    expect(() =>
+      parseFrontmatter("work", { ...work, highlight: { headline: "H.", metric: "4,500" } }, FILE)
+    ).not.toThrow();
+  });
+
+  it("requires a highlight on a featured entry unless it is a draft", () => {
+    expect(problemsOf(() => parseFrontmatter("work", { ...work, featured: 1 }, FILE))).toEqual([
+      '"featured" needs a "highlight" block for the path card',
+    ]);
+    expect(problemsOf(() => parseFrontmatter("personal", { ...personal, featured: 2 }, FILE))).toHaveLength(1);
+    expect(() => parseFrontmatter("work", { ...work, featured: 1, draft: true }, FILE)).not.toThrow();
+  });
+
+  it("accepts a hero on both types", () => {
+    const heroImage = { src: "birdhouses/01-raw-gourd.avif", alt: "A raw gourd." };
+    expect(parseFrontmatter("personal", { ...personal, hero: heroImage }, FILE)).toMatchObject({ hero: heroImage });
+  });
+
+  it("names a repeated capability", () => {
+    expect(
+      problemsOf(() => parseFrontmatter("work", { ...work, capabilities: ["ownership", "ambiguity", "ownership"] }, FILE))
+    ).toEqual(['"capabilities" lists "ownership" more than once']);
   });
 
   it("accepts every capability in the vocabulary", () => {
@@ -105,6 +140,28 @@ describe("parseFrontmatter", () => {
     ["capabilities", []],
     ["draft", "yes"],
     ["title", ""],
+    ["highlight", "A headline."],
+    ["highlight", {}],
+    ["highlight", { headline: "" }],
+    ["highlight", { headline: "H.", unit: "syncs a day" }],
+    ["highlight", { headline: "H.", metric: "" }],
+    ["highlight", { headline: "H.", metric: 4500 }],
+    ["highlight", { headline: "H.", kicker: "x" }],
+    ["hero", "engineering/pipeline.webp"],
+    ["hero", { src: "engineering/pipeline.webp" }],
+    ["hero", { src: "engineering/pipeline.webp", alt: "" }],
+    ["hero", { src: "engineering/pipeline.webp", alt: "A.", width: 10 }],
+    ["hero", { src: "../pipeline.webp", alt: "A." }],
+    ["hero", { src: "engineering/../../x.webp", alt: "A." }],
+    ["hero", { src: "/engineering/pipeline.webp", alt: "A." }],
+    ["hero", { src: "engineering\\pipeline.webp", alt: "A." }],
+    ["hero", { src: "engineering/pipeline.jpg", alt: "A." }],
+    ["hero", { src: "engineering/my pipeline.webp", alt: "A." }],
+    ["hero", { src: "Engineering/Pipeline.webp", alt: "A." }],
+    ["hero", { src: "./engineering/pipeline.webp", alt: "A." }],
+    ["hero", { src: "engineering//pipeline.webp", alt: "A." }],
+    ["hero", { src: "engineering/x?raw.webp", alt: "A." }],
+    ["hero", { src: "C:/engineering/pipeline.webp", alt: "A." }],
   ])("rejects work %s = %j", (key, value) => {
     expect(problemsOf(() => parseFrontmatter("work", { ...work, [key]: value }, FILE))).toHaveLength(1);
   });
