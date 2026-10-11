@@ -2,8 +2,8 @@
 name: Alisha Sprinkle Korba Portfolio
 description: Visual and interaction design contract for the Alisha Sprinkle Korba professional portfolio.
 status: final
-version: 0.9
-updated: 2026-10-04
+version: 0.10
+updated: 2026-10-11
 mode: dark-only
 colors:
   background: { primary: "#1E1E2F", secondary: "#2B2B3B", recessed: "#0F0F15" }
@@ -430,8 +430,9 @@ The following are **conceptual component roles**, not mandatory implementation n
 |---|---|---|
 | Header | Global orientation and navigation | DECIDED |
 | Hero | Identity and initial professional recognition | AUTHORITATIVE |
-| Exploration Path | Helps visitors choose how to understand Alisha | AUTHORITATIVE |
+| Exploration Path | Helps visitors choose how to understand Alisha. Realised as the Path Card below | AUTHORITATIVE |
 | Evidence Summary | Makes professional proof scannable | AUTHORITATIVE |
+| Path Card | One homepage card per path: label, optional metric and unit, action headline, one line, and a "Read the story →" link whose hit area covers the card; steps through featured stories with previous and next buttons, never on a timer; a path with no story renders a non-link card with a text "Coming soon" label. Hierarchy by border and background step, no stacked shadows; link is brand.primary and underlines on hover/focus (EXPERIENCE §6.3, UX-031) | DECIDED |
 | Story Card | Concise story representation | DECIDED |
 | Story Detail | Deep evidence and reasoning | AUTHORITATIVE |
 | Capability Signal | Connects evidence to demonstrated behavior | HYPOTHESIS |
