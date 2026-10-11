@@ -17,3 +17,9 @@ export const STORY_SECTION_HEADINGS = {
 } as const;
 
 export type StorySectionName = keyof typeof STORY_SECTION_HEADINGS;
+
+/** Every section, in canonical order. */
+export const STORY_SECTION_ORDER = Object.keys(STORY_SECTION_HEADINGS) as StorySectionName[];
+
+/** Sections every work story has (AD-3); the content plugin fails the build without them. */
+export const REQUIRED_STORY_SECTIONS: readonly StorySectionName[] = ["context", "decision", "outcome"];

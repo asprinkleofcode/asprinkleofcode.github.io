@@ -9,3 +9,10 @@ export const IDENTITY = {
   title: "Senior Software Engineer",
   positioning: "Give me a business problem and I'll turn it into an engineering decision worth trusting.",
 } as const;
+
+/**
+ * The site's canonical URL, as `index.html`'s `<link rel="canonical">` states
+ * it; the App smoke test fails if the two drift apart. Per-story JSON-LD
+ * builds its `url` and author `@id` from it.
+ */
+export const SITE_URL = "https://alishasprinklekorba.com/";

@@ -49,6 +49,20 @@
   /* System sans stack (DESIGN §8); no web font. Emoji fallbacks kept from Tailwind's default. */
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /*
+   * Index → story transition (UX-018): the ~180ms fade-in of an arriving story.
+   * Only opacity animates and the end state is the element's own, so content
+   * is usable even if the animation never runs. Components apply `animate-story-in`
+   * only when `usePrefersReducedMotion` is false (AD-13).
+   */
+  --animate-story-in: story-in 180ms ease-out;
+
+  @keyframes story-in {
+    from {
+      opacity: 0;
+    }
+  }
 }
 
 /*

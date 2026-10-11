@@ -9,6 +9,7 @@ import {
   parseFrontmatter,
   type Frontmatter,
 } from "../src/lib/frontmatter";
+import { REQUIRED_STORY_SECTIONS, STORY_SECTION_ORDER, type StorySectionName } from "../src/lib/storySections";
 
 /**
  * Validates and splits frontmatter for `src/content/<type>/*.mdx` (AD-1, 2, 5, 6).
@@ -19,6 +20,8 @@ import {
  *   and the `\0` prefix keeps MDX and React plugins off it.
  * - `<file>.mdx` has its frontmatter blanked (line numbers kept) before MDX
  *   compiles it; a draft's body is emptied so none of it ships.
+ * - A non-draft work story's body must follow the AD-3 section rules
+ *   (`storyBodyProblems`), or the build fails naming the file.
  */
 
 const QUERY = "frontmatter";
@@ -46,6 +49,59 @@ function splitFrontmatter(source: string): { yaml: string | null; body: string }
   if (!match || match.index !== 0) return { yaml: null, body: source };
   const blank = match[0].replace(/[^\n]/g, "");
   return { yaml: match[1], body: blank + source.slice(match[0].length) };
+}
+
+// A closing fence repeats the opening run (or a longer one) with nothing after it.
+const CODE_FENCE = /^ {0,3}(`{3,}|~{3,})[^\n]*\n[\s\S]*?^ {0,3}\1[`~]*[ \t]*$/gm;
+const INLINE_CODE = /`[^`\n]*`/g;
+const MDX_COMMENT = /\{\/\*[\s\S]*?\*\/\}/g;
+// An ATX heading, optionally behind blockquote or list markers.
+const ATX_H1 = /^ {0,3}(?:(?:>|[*+-]|\d+[.)])[ \t]*)*#(?:[ \t]|$)/m;
+const ATX_H2 = /^ {0,3}(?:(?:>|[*+-]|\d+[.)])[ \t]*)*##(?:[ \t]|$)/m;
+// A paragraph line underlined with `=`.
+const SETEXT_H1 = /^ {0,3}\S[^\n]*\n {0,3}=+[ \t]*$/m;
+const STORY_SECTION_TAG = /<StorySection\b([^>]*)>/g;
+const LITERAL_SECTION = /^\s*section=(?:"([^"]*)"|'([^']*)')\s*\/?\s*$/;
+
+/**
+ * A work story's body structure (AD-3, AD-15): every `<StorySection>` names a
+ * literal section, sections follow the canonical order without repeats,
+ * Context, Decision and Outcome are present, and nothing competes with the
+ * page's one `<h1>` (the story title) or the section `<h2>`s. Code fences,
+ * inline code and MDX comments are ignored.
+ */
+export function storyBodyProblems(body: string): string[] {
+  const source = body.replace(CODE_FENCE, "").replace(MDX_COMMENT, "").replace(INLINE_CODE, "");
+  const problems: string[] = [];
+  const seen: StorySectionName[] = [];
+
+  for (const [, attributes] of source.matchAll(STORY_SECTION_TAG)) {
+    const literal = LITERAL_SECTION.exec(attributes);
+    const name = literal ? (literal[1] ?? literal[2]) : undefined;
+    if (name === undefined) {
+      problems.push(`<StorySection${attributes}> must have exactly one literal section="…" attribute`);
+    } else if (!(STORY_SECTION_ORDER as readonly string[]).includes(name)) {
+      problems.push(`unknown story section "${name}"; allowed: ${STORY_SECTION_ORDER.join(", ")}`);
+    } else {
+      seen.push(name as StorySectionName);
+    }
+  }
+
+  const duplicates = [...new Set(seen.filter((name, i) => seen.indexOf(name) !== i))];
+  for (const name of duplicates) problems.push(`story section "${name}" appears more than once`);
+  const order = seen.map((name) => STORY_SECTION_ORDER.indexOf(name));
+  if (duplicates.length === 0 && order.some((index, i) => i > 0 && index < order[i - 1])) {
+    problems.push(`story sections must follow the order ${STORY_SECTION_ORDER.join(", ")} (got ${seen.join(", ")})`);
+  }
+  const missing = REQUIRED_STORY_SECTIONS.filter((name) => !seen.includes(name));
+  if (missing.length > 0) problems.push(`missing required story section(s): ${missing.join(", ")}`);
+  if (ATX_H1.test(source) || SETEXT_H1.test(source) || /<h1\b/.test(source)) {
+    problems.push("the body must not contain an h1; the story title is the page's only h1 (use ### for subheadings)");
+  }
+  if (ATX_H2.test(source) || /<h2\b/.test(source)) {
+    problems.push("the body must not contain its own h2; section headings come from <StorySection> (use ### for subheadings)");
+  }
+  return problems;
 }
 
 /** Validates one content file. Throws `FrontmatterError` naming the file and every problem. */
@@ -95,6 +151,9 @@ export function processContentFile(file: string, source: string, options: Proces
     if (!exists(path.join(options.publicDir, frontmatter.pdf))) {
       problems.push(`"pdf" file public${frontmatter.pdf} does not exist`);
     }
+  }
+  if (problems.length === 0 && !draft && frontmatter.type === "work") {
+    problems.push(...storyBodyProblems(body));
   }
   if (problems.length > 0) throw new FrontmatterError(display, problems);
 

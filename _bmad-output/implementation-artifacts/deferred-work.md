@@ -88,7 +88,7 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   evidence: `src/App.css` is deleted. Its element rules live only in `src/pages/AboutMe/AboutMe.css` under `:where(.about-me)`, and the four `revert-layer` blocks are gone. `src/test/globalCss.test.ts` fails on a second Tailwind root or any rule not scoped to a class outside the index.css shell globals and legacy `/about`. A `vite preview` check measured Recognition, the path indexes, NotFound and `/about` (unchanged from the pre-change build).
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-hardening.md`
-  status: open (Story 2.2 and Story 4.1)
+  status: open (Story 4.1 only; work-story bodies resolved-by #35 via `storyProseClasses`)
   summary: Give MDX story bodies their own prose typography (paragraph and heading spacing, `type-*` levels, role colours) when Epic 2 builds the work-story detail page (Story 2.2), and Story 4.1 for personal pages.
   evidence: With App.css gone, nothing styles bare `p`/`h2` inside `<Body />` in `WorkStory.tsx`/`Personal.tsx`, so Tailwind preflight leaves paragraphs with no margin and headings at inherited size. Before, App.css gave them spacing, but at 0.75rem in primitive `--color-primary-100`, which was the defect A-1 removed. No story body exists yet, so nothing renders this today.
 
@@ -118,7 +118,7 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   evidence: The `capabilities` rule checks non-empty and vocabulary membership only; `[ownership, ownership]` passes the build, and `StoryCard` keys pills by capability, so React would warn on the duplicate key and render two identical pills (Story 2.1 review). Natural home: Story 2.4, which already extends the schema.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-1-work-story-presentation-components.md`
-  status: open
+  status: resolved-by #35 (blocks sit inside their sections; REQUIRED_STORY_SECTIONS and the build-time section rules)
   summary: Story 2.2 decides how `DecisionBlock`/`OutcomeBlock` compose with `StorySection` (e.g. a `DecisionBlock` under the "Decision" `h2` repeats "Decision" as its first `dt`; Rationale/Tradeoffs can be either sections or block parts) and exports the required Context/Decision/Outcome subset next to `STORY_SECTION_HEADINGS`.
   evidence: Both are real once a story body exists, but the layout and required-section check belong to the detail page; Story 2.1 only ships the blocks (Story 2.1 review, Blind Hunter).
 

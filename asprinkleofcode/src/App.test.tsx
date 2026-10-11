@@ -4,7 +4,8 @@ import type { MDXModule } from "mdx/types";
 import { MemoryRouter, useNavigate, type NavigateFunction } from "react-router";
 import indexHtml from "../index.html?raw";
 import App from "./App";
-import { IDENTITY } from "./lib/identity";
+import { IDENTITY, SITE_URL } from "./lib/identity";
+import { DOCUMENT_META_ATTRIBUTE } from "./lib/useDocumentMeta";
 import { expectNoFlowbiteDefaults } from "./test/expectNoFlowbiteDefaults";
 import type { Entry } from "./lib/registry";
 import type { PersonalFrontmatter, WorkFrontmatter } from "./lib/frontmatter";
@@ -415,7 +416,7 @@ describe("App smoke test", () => {
   describe("homepage identity matches the static head (AD-14)", () => {
     const head = new DOMParser().parseFromString(indexHtml, "text/html");
     const jsonLd = JSON.parse(head.querySelector('script[type="application/ld+json"]')?.textContent ?? "{}") as {
-      "@graph"?: { "@type": string; name?: string; jobTitle?: string; description?: string }[];
+      "@graph"?: { "@type": string; "@id"?: string; name?: string; jobTitle?: string; description?: string }[];
     };
     const person = jsonLd["@graph"]?.find((node) => node["@type"] === "Person");
     const profilePage = jsonLd["@graph"]?.find((node) => node["@type"] === "ProfilePage");
@@ -451,6 +452,47 @@ describe("App smoke test", () => {
       expect(person?.jobTitle).toBe(title);
       expect(person?.description).toBe(positioning);
       expect({ name: person?.name, title: person?.jobTitle, positioning: person?.description }).toEqual(IDENTITY);
+    });
+
+    it("builds story URLs from the canonical URL and the Person @id (SITE_URL)", () => {
+      expect(head.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(SITE_URL);
+      expect(person?.["@id"]).toBe(`${SITE_URL}#person`);
+    });
+
+    it("leaves no story metadata behind after navigating from a story to another route", async () => {
+      const description = () => document.head.querySelector<HTMLMetaElement>('meta[name="description"]');
+      const staticDescription = head.querySelector('meta[name="description"]')?.getAttribute("content") ?? "";
+      const staticJsonLd = head.querySelector('script[type="application/ld+json"]')?.textContent ?? "";
+      const meta = document.createElement("meta");
+      meta.name = "description";
+      meta.content = staticDescription;
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.textContent = staticJsonLd;
+      document.head.append(meta, script);
+      const previousTitle = document.title;
+      document.title = head.title;
+      try {
+        renderAt("/engineering/foo");
+        await h1("Foo Story");
+        expect(document.title).toBe(`Foo Story | ${IDENTITY.name}`);
+        expect(description()?.content).toBe("Foo Story summary.");
+        expect(document.head.querySelector(`[${DOCUMENT_META_ATTRIBUTE}]`)).not.toBeNull();
+
+        act(() => navigate("/"));
+        await h1(IDENTITY.name);
+        expect(document.title).toBe(head.title);
+        expect(description()?.content).toBe(staticDescription);
+        expect(document.head.querySelector(`[${DOCUMENT_META_ATTRIBUTE}]`)).toBeNull();
+        expect(
+          [...document.head.querySelectorAll('script[type="application/ld+json"]')].map((s) => s.textContent)
+        ).toEqual([staticJsonLd]);
+        expect(document.head.innerHTML).not.toContain("Foo Story");
+      } finally {
+        meta.remove();
+        script.remove();
+        document.title = previousTitle;
+      }
     });
 
     it("carries the identity in every title and description tag", () => {
