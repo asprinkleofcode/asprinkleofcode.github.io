@@ -111,3 +111,18 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   status: open
   summary: Once flowbite `dark:` and palette defaults stop leaking outside the header and footer, run `expectNoFlowbiteDefaults` on the ErrorBoundary fallback (its `Button` is not in the `replace` map) and on every new flowbite-using component from Epic 2.
   evidence: The rendered-DOM check only runs on the header, nav and footer, which already use `applyTheme: "replace"`. The fallback Button still merges flowbite defaults (tracked by the Story 1.8 entry above), so calling the check there today is expected to fail (not run).
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-1-work-story-presentation-components.md`
+  status: open
+  summary: Reject duplicate `capabilities` values in `frontmatter.ts` (and cover with a fixture), so a story can't show the same capability pill twice.
+  evidence: The `capabilities` rule checks non-empty and vocabulary membership only; `[ownership, ownership]` passes the build, and `StoryCard` keys pills by capability, so React would warn on the duplicate key and render two identical pills (Story 2.1 review). Natural home: Story 2.4, which already extends the schema.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-1-work-story-presentation-components.md`
+  status: open
+  summary: Story 2.2 decides how `DecisionBlock`/`OutcomeBlock` compose with `StorySection` (e.g. a `DecisionBlock` under the "Decision" `h2` repeats "Decision" as its first `dt`; Rationale/Tradeoffs can be either sections or block parts) and exports the required Context/Decision/Outcome subset next to `STORY_SECTION_HEADINGS`.
+  evidence: Both are real once a story body exists, but the layout and required-section check belong to the detail page; Story 2.1 only ships the blocks (Story 2.1 review, Blind Hunter).
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-1-work-story-presentation-components.md`
+  status: open
+  summary: Browser-check `StoryCard`'s whole-card click (the `::after` overlay) and the single focus ring around the card once Story 2.3 renders cards; Story 2.6 extracts the `OutcomeBlock` metric/unit classes into a shared constant when the Path Card needs them.
+  evidence: jsdom applies no stylesheet and can't hit-test pseudo-elements, so both are covered only by class assertions; the built CSS was checked to contain the utilities. The metric/unit strings live only in `OutcomeBlock.tsx` today, with no second consumer yet.
