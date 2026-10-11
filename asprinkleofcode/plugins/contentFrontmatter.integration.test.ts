@@ -69,7 +69,8 @@ describe("content pipeline through Vite", () => {
     expect(registry.frontmatters["../content/work/draft-work.mdx"]).toBeNull();
 
     const html = await render(registry, "../content/work/valid-work.mdx");
-    expect(html).toContain("<h1>Valid work heading</h1>");
+    expect(html).toMatch(/<h2 [^>]*>Context<\/h2>/);
+    expect(html).toContain("<h3>Valid work subheading</h3>");
     expect(html).toContain("WORKBODYMARKER");
     expect(html).not.toContain("type: work");
     expect(await render(registry, "../content/personal/valid-personal.mdx")).toContain("PERSONALBODYMARKER");
@@ -88,5 +89,16 @@ describe("content pipeline through Vite", () => {
     expect((error as Error).name).toBe("FrontmatterError");
     expect((error as Error).message).toContain("src/content/work/bad-key.mdx");
     expect((error as Error).message).toContain('unknown key "tags"');
+  });
+
+  it("fails a work story whose body breaks the section rules, naming the file", async () => {
+    const error: unknown = await loadFixture("invalid-body").then(
+      () => undefined,
+      (e: unknown) => e
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).name).toBe("FrontmatterError");
+    expect((error as Error).message).toContain("src/content/work/missing-outcome.mdx");
+    expect((error as Error).message).toContain("missing required story section(s): outcome");
   });
 });

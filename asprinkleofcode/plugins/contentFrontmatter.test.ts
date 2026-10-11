@@ -20,7 +20,9 @@ role: Tech lead
 capabilities: [ownership]
 ---
 
-# Foo body
+<StorySection section="context">Foo body</StorySection>
+<StorySection section="decision">D</StorySection>
+<StorySection section="outcome">O</StorySection>
 `;
 
 function problemsOf(relative: string, source: string): string[] {
@@ -39,7 +41,7 @@ describe("processContentFile", () => {
     const result = processContentFile(file("work/foo.mdx"), WORK, options);
     expect(result.frontmatter).toMatchObject({ type: "work", path: "engineering", title: "Foo" });
     expect(result.draft).toBe(false);
-    expect(result.body).toBe("\n".repeat(8) + "\n# Foo body\n");
+    expect(result.body).toBe("\n".repeat(8) + WORK.slice(WORK.indexOf("\n<StorySection")));
     expect(result.body.split("\n")).toHaveLength(WORK.split("\n").length);
   });
 
@@ -47,7 +49,7 @@ describe("processContentFile", () => {
     const result = processContentFile(file("work/foo.mdx"), "\uFEFF" + WORK.replace(/\n/g, "\r\n"), options);
     expect(result.frontmatter).toMatchObject({ title: "Foo" });
     expect(result.body).not.toContain("type: work");
-    expect(result.body).toContain("# Foo body");
+    expect(result.body).toContain("Foo body");
   });
 
   it("accepts a kebab-case slug override and rejects a non-kebab one", () => {
@@ -121,6 +123,95 @@ describe("processContentFile", () => {
   });
 });
 
+describe("work story body structure (AD-3)", () => {
+  const FRONTMATTER = WORK.slice(0, WORK.indexOf("\n<StorySection") + 1);
+  const section = (name: string, quote = '"') => `<StorySection section=${quote}${name}${quote}>Text</StorySection>\n`;
+  const withBody = (body: string) => FRONTMATTER + body;
+
+  it("accepts the required sections with optional ones in canonical order, either quote style", () => {
+    const body = ["context", "problem", "decision", "tradeoffs", "outcome", "reflection"]
+      .map((name, i) => section(name, i % 2 ? "'" : '"'))
+      .join("\n### A subheading\n\n");
+    expect(processContentFile(file("work/foo.mdx"), withBody(body), options).frontmatter).not.toBeNull();
+  });
+
+  it("names every missing required section", () => {
+    expect(problemsOf("work/foo.mdx", withBody(section("context")))).toEqual([
+      "missing required story section(s): decision, outcome",
+    ]);
+  });
+
+  it("rejects sections out of canonical order", () => {
+    const problems = problemsOf("work/foo.mdx", withBody(section("decision") + section("context") + section("outcome")));
+    expect(problems).toEqual([expect.stringContaining("must follow the order")]);
+    expect(problems[0]).toContain("(got decision, context, outcome)");
+  });
+
+  it("rejects a repeated section", () => {
+    expect(
+      problemsOf("work/foo.mdx", withBody(section("context") + section("context") + section("decision") + section("outcome")))
+    ).toEqual(['story section "context" appears more than once']);
+  });
+
+  it.each([
+    ["an expression", "<StorySection section={name}>"],
+    ["no section", "<StorySection>"],
+    ["an extra attribute", '<StorySection section="context" id="x">'],
+  ])("requires a literal section attribute, not %s", (_, tag) => {
+    expect(problemsOf("work/foo.mdx", withBody(`${tag}T</StorySection>\n` + WORK.slice(FRONTMATTER.length)))).toEqual([
+      expect.stringContaining('must have exactly one literal section="…" attribute'),
+    ]);
+  });
+
+  it("rejects an unknown section name", () => {
+    expect(problemsOf("work/foo.mdx", WORK + section("summary"))).toEqual([
+      expect.stringContaining('unknown story section "summary"'),
+    ]);
+  });
+
+  it.each([
+    ["a markdown h1", "# Heading\n"],
+    ["an indented markdown h1", "   # Heading\n"],
+    ["an empty markdown h1", "\n#\n"],
+    ["a setext h1", "\nHeading\n===\n"],
+    ["an h1 in a blockquote", "\n> # Heading\n"],
+    ["an h1 in a list item", "\n- # Heading\n"],
+    ["a JSX h1", "<h1>Heading</h1>\n"],
+  ])("rejects %s in the body", (_, h1) => {
+    expect(problemsOf("work/foo.mdx", WORK + h1)).toEqual([expect.stringContaining("must not contain an h1")]);
+  });
+
+  it.each([
+    ["a markdown h2", "\n## Heading\n"],
+    ["a JSX h2", "<h2>Heading</h2>\n"],
+  ])("rejects %s beside the section headings", (_, h2) => {
+    expect(problemsOf("work/foo.mdx", WORK + h2)).toEqual([expect.stringContaining("must not contain its own h2")]);
+  });
+
+  it("accepts a self-closing section tag", () => {
+    const body = WORK.slice(FRONTMATTER.length).replace("<StorySection section=\"decision\">D</StorySection>", '<StorySection section="decision" />');
+    expect(processContentFile(file("work/foo.mdx"), withBody(body), options).frontmatter).not.toBeNull();
+  });
+
+  it("ignores sections and headings inside code fences, inline code and MDX comments", () => {
+    const ignored = [
+      '\n```mdx\n# Not a heading\n<StorySection section="context">x</StorySection>\n```\n',
+      // A line that starts like the fence but carries an info string does not close it.
+      "\n```md\n```js\n# Still code\n```\n",
+      '\nMentions `<h1>` and `<StorySection section="context">` in prose.\n',
+      "\n{/* # not a heading <StorySection section=\"outcome\"> */}\n",
+    ].join("");
+    expect(processContentFile(file("work/foo.mdx"), WORK + ignored, options).frontmatter).not.toBeNull();
+  });
+
+  it("skips body checks for drafts and personal entries", () => {
+    const draft = FRONTMATTER.replace("type: work", "type: work\ndraft: true") + "# Draft\n";
+    expect(processContentFile(file("work/foo.mdx"), draft, options).frontmatter).toBeNull();
+    const personal = "---\ntype: personal\ntitle: P\nsummary: S.\n---\n\n# Heading\n";
+    expect(processContentFile(file("personal/p.mdx"), personal, options).frontmatter).toMatchObject({ title: "P" });
+  });
+});
+
 describe("contentFrontmatter plugin hooks", () => {
   type Hook = (this: unknown, ...args: unknown[]) => unknown;
 
@@ -138,7 +229,7 @@ describe("contentFrontmatter plugin hooks", () => {
     const plugin = setup();
     const transform = plugin.transform as Hook;
     const id = file("work/foo.mdx").split(path.sep).join("/");
-    expect(transform.call({}, WORK, id)).toMatchObject({ code: expect.stringContaining("# Foo body") });
+    expect(transform.call({}, WORK, id)).toMatchObject({ code: expect.stringContaining("Foo body") });
     expect(transform.call({}, WORK, path.join(root, "src", "other.mdx"))).toBeNull();
     expect(transform.call({}, "x", path.join(root, "src", "App.tsx"))).toBeNull();
     expect(() => transform.call({}, WORK.replace("type: work", "type: work\ntags: [a]"), id)).toThrow(
