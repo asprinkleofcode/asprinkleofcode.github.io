@@ -31,6 +31,19 @@ export interface ContentLink {
   href: string;
 }
 
+/** The path-card highlight (AD-2, UX-031). A `unit` never appears without a `metric`. */
+export interface Highlight {
+  headline: string;
+  metric?: string;
+  unit?: string;
+}
+
+/** A content photo: `src` is a path inside `src/assets/media/` (Conventions → Images). */
+export interface HeroImage {
+  src: string;
+  alt: string;
+}
+
 export interface WorkFrontmatter {
   type: "work";
   title: string;
@@ -40,8 +53,9 @@ export interface WorkFrontmatter {
   role: string;
   capabilities: Capability[];
   date?: string;
-  hero?: string;
+  hero?: HeroImage;
   featured?: number;
+  highlight?: Highlight;
   draft?: boolean;
 }
 
@@ -51,10 +65,11 @@ export interface PersonalFrontmatter {
   slug?: string;
   summary: string;
   date?: string;
-  hero?: string;
+  hero?: HeroImage;
   links?: ContentLink[];
   pdf?: string;
   featured?: number;
+  highlight?: Highlight;
   draft?: boolean;
   /** Normalized: defaults to `true` when the file omits it. */
   listed: boolean;
@@ -77,6 +92,9 @@ export class FrontmatterError extends Error {
 export const KEBAB_CASE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 const PDF = /^\/downloads\/[a-z0-9]+(?:-[a-z0-9]+)*\.pdf$/;
+// Relative to src/assets/media/, lowercase kebab-case segments (media/README.md): no `..`, no
+// leading slash, and no case that only a case-insensitive file system would resolve.
+const MEDIA_SRC = /^(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)*[a-z0-9]+(?:-[a-z0-9]+)*\.(?:webp|avif)$/;
 
 type KeyRule = (value: unknown, key: string) => string | null;
 
@@ -115,9 +133,62 @@ const featured: KeyRule = (v, k) =>
 const capabilities: KeyRule = (v, k) => {
   if (!Array.isArray(v) || v.length === 0) return `"${k}" must be a non-empty list`;
   const bad = v.filter((c) => typeof c !== "string" || !(CAPABILITIES as readonly string[]).includes(c));
-  return bad.length === 0
+  if (bad.length > 0) {
+    return `"${k}" has unknown value(s) ${bad.map((c) => JSON.stringify(c)).join(", ")}; allowed: ${CAPABILITIES.join(", ")}`;
+  }
+  const repeated = [...new Set(v.filter((c, i) => v.indexOf(c) !== i))];
+  return repeated.length === 0
     ? null
-    : `"${k}" has unknown value(s) ${bad.map((c) => JSON.stringify(c)).join(", ")}; allowed: ${CAPABILITIES.join(", ")}`;
+    : `"${k}" lists ${repeated.map((c) => JSON.stringify(c)).join(", ")} more than once`;
+};
+
+/** Problems in a `{ … }` block: not an object, unknown keys, missing required fields, each field's rule. */
+function blockProblems(
+  v: unknown,
+  k: string,
+  shape: string,
+  fields: Record<string, { rule: KeyRule; required: boolean }>
+): string[] {
+  if (typeof v !== "object" || v === null || Array.isArray(v)) return [`"${k}" must be a ${shape} object`];
+  const entry = v as Record<string, unknown>;
+  const problems = Object.keys(entry)
+    .filter((key) => !Object.hasOwn(fields, key))
+    .map((extra) => `"${k}" has unknown key "${extra}"`);
+  for (const [key, { rule, required }] of Object.entries(fields)) {
+    if (entry[key] === undefined) {
+      if (required) problems.push(`"${k}.${key}" is required`);
+      continue;
+    }
+    const problem = rule(entry[key], `${k}.${key}`);
+    if (problem) problems.push(problem);
+  }
+  return problems;
+}
+
+const highlight: KeyRule = (v, k) => {
+  const problems = blockProblems(v, k, "{ headline, metric?, unit? }", {
+    headline: { rule: nonEmptyString, required: true },
+    metric: { rule: nonEmptyString, required: false },
+    unit: { rule: nonEmptyString, required: false },
+  });
+  const entry = v as Record<string, unknown>;
+  if (problems.length === 0 && entry.unit !== undefined && entry.metric === undefined) {
+    problems.push(`"${k}.unit" needs a "${k}.metric"`);
+  }
+  return problems.length === 0 ? null : problems.join("; ");
+};
+
+const mediaSrc: KeyRule = (v, k) =>
+  typeof v === "string" && MEDIA_SRC.test(v)
+    ? null
+    : `"${k}" must be a lowercase kebab-case .webp or .avif path inside src/assets/media/, like engineering/diagram.webp (got ${JSON.stringify(v)})`;
+
+const hero: KeyRule = (v, k) => {
+  const problems = blockProblems(v, k, "{ src, alt }", {
+    src: { rule: mediaSrc, required: true },
+    alt: { rule: nonEmptyString, required: true },
+  });
+  return problems.length === 0 ? null : problems.join("; ");
 };
 
 const links: KeyRule = (v, k) => {
@@ -162,7 +233,7 @@ const SCHEMAS: Record<ContentType, Schema> = {
       role: nonEmptyString,
       capabilities,
     },
-    optional: { slug, date, hero: nonEmptyString, featured, draft: boolean },
+    optional: { slug, date, hero, featured, highlight, draft: boolean },
   },
   personal: {
     required: {
@@ -173,10 +244,11 @@ const SCHEMAS: Record<ContentType, Schema> = {
     optional: {
       slug,
       date,
-      hero: nonEmptyString,
+      hero,
       links,
       pdf,
       featured,
+      highlight,
       draft: boolean,
       listed: boolean,
     },
@@ -222,6 +294,15 @@ export function parseFrontmatter(type: ContentType, data: unknown, file: string)
     if (record[key] === undefined) continue;
     const problem = rule(record[key], key);
     if (problem) problems.push(problem);
+  }
+  // A featured entry feeds its path card, which needs a highlight (AD-2). Drafts never reach a card.
+  if (
+    record.featured !== undefined &&
+    featured(record.featured, "featured") === null &&
+    record.highlight === undefined &&
+    record.draft !== true
+  ) {
+    problems.push('"featured" needs a "highlight" block for the path card');
   }
 
   if (problems.length > 0) throw new FrontmatterError(file, problems);

@@ -13,6 +13,8 @@ const sources = import.meta.glob<string>("../**/*.{css,ts,tsx,js,jsx}", {
   eager: true,
 });
 
+// Story bodies (`src/content/**/*.mdx`) are scanned by plugins/storyColors.test.ts, which reads them from disk.
+
 // The one file allowed to name primitives and raw values: it defines them.
 const TOKEN_SOURCE = "../theme/colors.css";
 // The theme layer may give a token a raw value DESIGN names (the recessed inset shadow), but

@@ -98,7 +98,7 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   evidence: `App.tsx` wraps every route page in `lazyWithRetry`, but `App.test.tsx` makes only story-body imports fail. Reverting a page to plain `React.lazy` would pass every test. The helper is tested with the same boundary and `onReset` wiring App uses. Making a real page module's dynamic import reject inside the smoke test needs a loader seam the app does not have yet.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-a6-ad10-gate.md`
-  status: open
+  status: resolved-by #37 (plugins/storyColors.test.ts scans story markup attributes read from disk)
   summary: Extend the AD-10 source scan (`src/test/semanticTokens.test.ts`) to `.mdx` story bodies once the first one exists (Story 2.4), so a `className` palette class or inline colour in a story fails the build.
   evidence: The gate globs only `css/ts/tsx/js/jsx`; `?raw` on `.mdx` would go through the MDX plugin, and no story file existed when A-6 landed, so there was nothing to test against.
 
@@ -113,7 +113,7 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   evidence: The rendered-DOM check only runs on the header, nav and footer, which already use `applyTheme: "replace"`. The fallback Button still merges flowbite defaults (tracked by the Story 1.8 entry above), so calling the check there today is expected to fail (not run).
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-1-work-story-presentation-components.md`
-  status: open
+  status: resolved-by #37 (capabilities rule rejects repeats; unit test and invalid-schema fixture)
   summary: Reject duplicate `capabilities` values in `frontmatter.ts` (and cover with a fixture), so a story can't show the same capability pill twice.
   evidence: The `capabilities` rule checks non-empty and vocabulary membership only; `[ownership, ownership]` passes the build, and `StoryCard` keys pills by capability, so React would warn on the duplicate key and render two identical pills (Story 2.1 review). Natural home: Story 2.4, which already extends the schema.
 
@@ -126,3 +126,13 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   status: open (Story 2.6 only; the StoryCard browser check resolved-by #36: whole-card click and single focus ring confirmed on `/engineering`)
   summary: Browser-check `StoryCard`'s whole-card click (the `::after` overlay) and the single focus ring around the card once Story 2.3 renders cards; Story 2.6 extracts the `OutcomeBlock` metric/unit classes into a shared constant when the Path Card needs them.
   evidence: jsdom applies no stylesheet and can't hit-test pseudo-elements, so both are covered only by class assertions; the built CSS was checked to contain the utilities. The metric/unit strings live only in `OutcomeBlock.tsx` today, with no second consumer yet.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-4a-content-schema-hardening.md`
+  status: open
+  summary: Story 2.4 part B — author the ES-1 story as `src/content/work/rcm-app-access-watcher.mdx` and add the real-glob registry test against it (and assert the AD-10 `.mdx` scan finds at least one file). Decisions already made (2026-10-11): plain title (e.g. "Keeping InmarOne app access in step with RCM", system name in the body); `featured: 1` (Story 2.5 takes 2); one line on the leadership thread (shared library, org-wide presentation, pattern adopted by other teams); confirmed names: Inmar, InmarOne, RCM, `Auth.RcmAppAccessWatcher`, Audit Management, Contract Management, SQL Server, Debezium, Google Cloud (Pub/Sub, BigQuery, Cloud Run), Python, Terraform, Grafana, with the per-table service names and the two systems' application identifiers described generically. The Audit Management / Contract Management InmarOne example is optional; Alisha says the story doesn't need it.
+  evidence: Alisha split Story 2.4 at the step-02 size gate: part A (schema and pipeline checks) ships first because the story's frontmatter needs the `highlight` block to validate. Story 2.4 is `done` in sprint-status only when part B merges.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-4a-content-schema-hardening.md`
+  status: open
+  summary: Add a hook-level test for the content plugin's `watchChange` delete cleanup. Load featured file A, delete it, then load B with the same path and `featured` value, and expect no clash.
+  evidence: Nothing calls `watchChange` in tests, and the integration server sets `watch: null`. If the hook is removed or keyed differently from `load`'s display path, a renamed featured story fails with "already used by <deleted file>" until the dev server restarts. This affects dev only (Story 2.4A review, verification gap).

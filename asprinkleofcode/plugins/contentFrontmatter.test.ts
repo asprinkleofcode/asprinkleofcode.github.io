@@ -1,13 +1,17 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { FrontmatterError } from "../src/lib/frontmatter";
-import contentFrontmatter, { processContentFile } from "./contentFrontmatter";
+import contentFrontmatter, { featuredClash, featuredSlot, processContentFile, type FeaturedSlot } from "./contentFrontmatter";
 
 const root = path.resolve("/project");
 const contentDir = path.join(root, "src", "content");
 const publicDir = path.join(root, "public");
-const existing = new Set([path.join(publicDir, "downloads", "care-guide.pdf")]);
-const options = { contentDir, publicDir, fileExists: (file: string) => existing.has(file) };
+const mediaDir = path.join(root, "src", "assets", "media");
+const existing = new Set([
+  path.join(publicDir, "downloads", "care-guide.pdf"),
+  path.join(mediaDir, "engineering", "pipeline.webp"),
+]);
+const options = { contentDir, publicDir, mediaDir, fileExists: (file: string) => existing.has(file) };
 
 const file = (relative: string) => path.join(contentDir, ...relative.split("/"));
 
@@ -112,6 +116,19 @@ describe("processContentFile", () => {
     ).toBeNull();
   });
 
+  it("requires a non-draft hero to exist under src/assets/media/", () => {
+    const withHero = (src: string, extra = "") =>
+      WORK.replace("type: work", `type: work\nhero:\n  src: ${src}\n  alt: The pipeline.\n${extra}`);
+    expect(processContentFile(file("work/foo.mdx"), withHero("engineering/pipeline.webp"), options).frontmatter)
+      .toMatchObject({ hero: { src: "engineering/pipeline.webp", alt: "The pipeline." } });
+    expect(problemsOf("work/foo.mdx", withHero("engineering/missing.webp"))).toEqual([
+      '"hero.src" file src/assets/media/engineering/missing.webp does not exist',
+    ]);
+    expect(
+      processContentFile(file("work/foo.mdx"), withHero("engineering/missing.webp", "draft: true"), options).frontmatter
+    ).toBeNull();
+  });
+
   it.each(["other/x.mdx", "x.mdx"])("rejects a file outside a known type directory: %s", (relative) => {
     expect(problemsOf(relative, WORK)[0]).toMatch(/unknown content type/);
   });
@@ -209,6 +226,43 @@ describe("work story body structure (AD-3)", () => {
     expect(processContentFile(file("work/foo.mdx"), draft, options).frontmatter).toBeNull();
     const personal = "---\ntype: personal\ntitle: P\nsummary: S.\n---\n\n# Heading\n";
     expect(processContentFile(file("personal/p.mdx"), personal, options).frontmatter).toMatchObject({ title: "P" });
+  });
+});
+
+describe("featured uniqueness per path", () => {
+  const highlight = { headline: "H." };
+  const work = (path: "engineering" | "leadership", featured?: number) => ({
+    type: "work" as const,
+    title: "T",
+    path,
+    summary: "S.",
+    role: "R",
+    capabilities: ["ownership" as const],
+    featured,
+    highlight,
+  });
+  const seen = new Map<string, FeaturedSlot>([["src/content/work/a.mdx", { path: "engineering", featured: 1 }]]);
+
+  it("maps an entry to its path and featured value, or null", () => {
+    expect(featuredSlot(work("leadership", 2))).toEqual({ path: "leadership", featured: 2 });
+    expect(featuredSlot({ type: "personal", title: "P", summary: "S.", listed: true, featured: 1, highlight })).toEqual(
+      { path: "beyond", featured: 1 }
+    );
+    expect(featuredSlot(work("engineering"))).toBeNull();
+    expect(featuredSlot(null)).toBeNull();
+  });
+
+  it("names the other file holding the same featured value in the same path", () => {
+    expect(featuredClash(seen, "src/content/work/b.mdx", { path: "engineering", featured: 1 })).toBe(
+      "src/content/work/a.mdx"
+    );
+  });
+
+  it("allows another path, another value, no slot, or the same file reloading", () => {
+    expect(featuredClash(seen, "src/content/work/b.mdx", { path: "leadership", featured: 1 })).toBeNull();
+    expect(featuredClash(seen, "src/content/work/b.mdx", { path: "engineering", featured: 2 })).toBeNull();
+    expect(featuredClash(seen, "src/content/work/b.mdx", null)).toBeNull();
+    expect(featuredClash(seen, "src/content/work/a.mdx", { path: "engineering", featured: 1 })).toBeNull();
   });
 });
 
