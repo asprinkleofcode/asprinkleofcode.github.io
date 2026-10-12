@@ -54,8 +54,6 @@ As developers began using and extending the modules on their own, my role became
 
 <DecisionBlock
   decision="Build the reusable platform first (shared architecture, modules, pipelines and conventions) before converting services at scale, and give every environment its own isolated Terraform backend."
-  rationale="Translating each hand-built resource straight into Terraform would have codified the inconsistencies already there. One environment, one backend (its own resource group, storage account and state container) keeps boundaries clear, keeps RBAC simple and lowers the risk of applying to the wrong state."
-  tradeoffs="More architectural work up front, in exchange for fewer repeated decisions and less drift later. Isolated backends mean more Azure resources than one shared backend; I judged the operational clarity worth more."
 />
 
 The platform separates infrastructure by lifecycle, ownership and reuse:
@@ -78,14 +76,24 @@ I didn't cut over in one step. I designed a four-phase migration so the hand-bui
 ### Protecting data from Terraform itself
 
 <DecisionBlock
-  decision="Treat destructive operations on stateful resources as a defense-in-depth problem: prevention, detection, authorization and recovery, each addressed separately."
-  rationale="During an infrastructure change, renaming a Cosmos DB account made Terraform replace it, because Azure can't rename an account in place, and replacing it deleted the existing account and its data. I led the investigation and found no single safeguard was enough. prevent_destroy only blocks a replacement while the resource stays in configuration, and removing the block bypasses it. Azure resource locks add a layer, especially when managed outside Terraform's own identity, but neither one recovers data."
-  tradeoffs="Four controls instead of one: prevent_destroy on critical resources, detection of destructive changes in Terraform plans, extra approval before a destructive operation runs, and backup and restore automation so data is recoverable if prevention fails. The platform stopped relying on safe definitions alone."
+  decision="Treat destructive operations on stateful resources as a defense-in-depth problem, with one control for each dimension: prevent_destroy on critical resources (prevention), detection of destructive changes in Terraform plans (detection), extra approval before a destructive operation runs (authorization), and backup and restore automation (recovery)."
 />
 
 </StorySection>
 
 <StorySection section="rationale">
+
+### Why build the platform before converting services
+
+Translating each hand-built resource straight into Terraform would have codified the inconsistencies already there.
+
+### Why one backend per environment
+
+One environment, one backend (its own resource group, storage account and state container) keeps boundaries clear, keeps RBAC simple and lowers the risk of applying to the wrong state.
+
+### Why defense in depth for stateful resources
+
+During an infrastructure change, renaming a Cosmos DB account made Terraform replace it, because Azure can't rename an account in place, and replacing it deleted the existing account and its data. I led the investigation and found no single safeguard was enough. prevent_destroy only blocks a replacement while the resource stays in configuration, and removing the block bypasses it. Azure resource locks add a layer, especially when managed outside Terraform's own identity, but neither one recovers data.
 
 ### Why one opinionated baseline module
 
@@ -107,8 +115,9 @@ Identity is a separate security concern from the workload it serves, and it carr
 
 <StorySection section="tradeoffs">
 
-- **Platform first over service-by-service:** more upfront design, fewer repeated decisions and less drift.
-- **Isolated backends over a shared one:** more Azure resources, clearer boundaries and less risk of targeting the wrong state.
+- **Platform first over service-by-service:** more architectural work up front, in exchange for fewer repeated decisions and less drift later.
+- **Isolated backends over a shared one:** more Azure resources than one shared backend, in exchange for clearer boundaries and less risk of targeting the wrong state; I judged the operational clarity worth more.
+- **Four controls instead of one safeguard:** prevent_destroy on critical resources, detection of destructive changes in Terraform plans, extra approval before a destructive operation runs, and backup and restore automation so data is recoverable if prevention fails. The platform stopped relying on safe definitions alone.
 - **Repositories split by concern:** clear ownership, at the cost of more repositories to maintain and document.
 - **One baseline module over one per primitive:** simple adoption and fast migration, at the cost of composability.
 - **Identity separate from workload:** services compose several modules instead of one all-in-one module.

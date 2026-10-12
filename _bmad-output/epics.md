@@ -845,7 +845,7 @@ So that I'm not reading the same labels and reasoning twice.
 
 **Given** `storyBodyProblems`
 **When** a `<DecisionBlock>` has `rationale=` or `tradeoffs=` and the story has a matching Rationale or Tradeoffs section, or the body has a setext `h2` (a paragraph line underlined with `---`)
-**Then** the build fails naming the file and the rule, with valid and invalid fixtures for each
+**Then** the build fails naming the file and the rule, with valid and invalid fixtures for each *(Amended 2026-10-12, Story 2.8: the ban is unconditional, as AD-3 requires; a conditional ban would let MDX drop reasoning silently once the block stopped rendering those props.)*
 
 **And** the Story 2.7 render test stays green throughout
 

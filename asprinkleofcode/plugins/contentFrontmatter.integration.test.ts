@@ -164,6 +164,29 @@ describe("content pipeline through Vite", () => {
     expect((error as Error).message).toContain("use frontmatter highlight");
   });
 
+  it("fails a work story whose Decision Block carries its rationale, naming the file", async () => {
+    const error: unknown = await loadFixture("invalid-body", "/src/content/work/decision-rationale.mdx?frontmatter").then(
+      () => undefined,
+      (e: unknown) => e
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).name).toBe("FrontmatterError");
+    expect((error as Error).message).toContain("src/content/work/decision-rationale.mdx");
+    expect((error as Error).message).toContain("must not set rationale=/tradeoffs= (found rationale=, tradeoffs=)");
+    expect((error as Error).message).toContain("write them in the Rationale/Tradeoffs sections");
+  });
+
+  it("fails a work story with a setext h2, naming the file", async () => {
+    const error: unknown = await loadFixture("invalid-body", "/src/content/work/setext-h2.mdx?frontmatter").then(
+      () => undefined,
+      (e: unknown) => e
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).name).toBe("FrontmatterError");
+    expect((error as Error).message).toContain("src/content/work/setext-h2.mdx");
+    expect((error as Error).message).toContain("must not contain its own h2");
+  });
+
   it("fails a work story with more than one Outcome Block, naming the file", async () => {
     const error: unknown = await loadFixture("invalid-body", "/src/content/work/two-outcomes.mdx?frontmatter").then(
       () => undefined,

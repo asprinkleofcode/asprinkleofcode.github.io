@@ -4,54 +4,54 @@ import DecisionBlock from "./DecisionBlock";
 import { expectNoFlowbiteDefaults } from "../../test/expectNoFlowbiteDefaults";
 
 const DECISION = "Fixture decision: choose option A over option B.";
-const RATIONALE = "Fixture rationale: option A fits the stated constraint.";
-const TRADEOFFS = "Fixture tradeoff: option A costs more up front.";
 
-const terms = () => screen.getAllByRole("term").map((dt) => dt.textContent);
 const classes = (el: Element) => el.className.split(/\s+/);
 
 describe("DecisionBlock", () => {
-  it("shows the decision, rationale and tradeoffs as a labelled description list", () => {
-    const { container } = render(<DecisionBlock decision={DECISION} rationale={RATIONALE} tradeoffs={TRADEOFFS} />);
+  it("shows only the decision, under a single Decision label", () => {
+    const { container } = render(<DecisionBlock decision={DECISION} />);
     expect(container.querySelectorAll("dl")).toHaveLength(1);
-    expect(terms()).toEqual(["Decision", "Rationale", "Tradeoffs"]);
-    const values = screen.getAllByRole("definition").map((dd) => dd.textContent);
-    expect(values).toEqual([DECISION, RATIONALE, TRADEOFFS]);
-  });
-
-  it("makes the decision visually dominant", () => {
-    render(<DecisionBlock decision={DECISION} rationale={RATIONALE} tradeoffs={TRADEOFFS} />);
-    const [decision, rationale, tradeoffs] = screen.getAllByRole("definition");
-    expect(classes(decision)).toEqual(expect.arrayContaining(["type-story", "text-text-primary"]));
-    expect(classes(rationale)).toContain("type-body");
-    expect(classes(tradeoffs)).toContain("type-body");
-    for (const dt of screen.getAllByRole("term")) expect(classes(dt)).toContain("type-supporting");
-  });
-
-  it("omits the Tradeoffs label when there are none", () => {
-    render(<DecisionBlock decision={DECISION} rationale={RATIONALE} />);
-    expect(terms()).toEqual(["Decision", "Rationale"]);
+    expect(screen.getAllByRole("term").map((dt) => dt.textContent)).toEqual(["Decision"]);
+    expect(screen.getAllByRole("definition").map((dd) => dd.textContent)).toEqual([DECISION]);
+    expect(screen.queryByText("Rationale")).toBeNull();
     expect(screen.queryByText("Tradeoffs")).toBeNull();
   });
 
-  it("renders rich-text props as given", () => {
+  it("makes the decision visually dominant", () => {
+    render(<DecisionBlock decision={DECISION} />);
+    expect(classes(screen.getByRole("definition"))).toEqual(
+      expect.arrayContaining(["type-story", "text-text-primary"])
+    );
+    expect(classes(screen.getByRole("term"))).toContain("type-supporting");
+  });
+
+  it("renders a rich-text decision as given", () => {
     render(
       <DecisionBlock
-        decision={DECISION}
-        rationale={
+        decision={
           <>
-            Fixture rationale naming <code>Example.Service</code> inline.
+            Fixture decision naming <code>Example.Service</code> inline.
           </>
         }
       />
     );
     const code = screen.getByText("Example.Service");
     expect(code.tagName).toBe("CODE");
-    expect(screen.getAllByRole("definition")[1].contains(code)).toBe(true);
+    expect(screen.getByRole("definition").contains(code)).toBe(true);
   });
 
   it("is a bordered panel on a background step, with role tokens only", () => {
-    const { container } = render(<DecisionBlock decision={DECISION} rationale={RATIONALE} tradeoffs={TRADEOFFS} />);
+    // A rich decision, so the token scan covers MDX-rendered children too
+    // (and clears expectNoFlowbiteDefaults' non-vacuous element floor).
+    const { container } = render(
+      <DecisionBlock
+        decision={
+          <>
+            Fixture <strong>decision</strong> naming <code>Example.Service</code>.
+          </>
+        }
+      />
+    );
     const panel = container.firstElementChild!;
     expect(classes(panel)).toEqual(
       expect.arrayContaining(["rounded-default", "border", "border-border-default", "bg-background-secondary"])
