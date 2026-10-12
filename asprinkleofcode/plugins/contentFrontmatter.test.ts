@@ -228,6 +228,49 @@ describe("work story body structure (AD-3)", () => {
     expect(processContentFile(file("work/foo.mdx"), WORK + ignored, options).frontmatter).not.toBeNull();
   });
 
+  describe("Outcome Block metric comes only from frontmatter highlight (retro F-6)", () => {
+    const accepts = (extra: string) =>
+      expect(processContentFile(file("work/foo.mdx"), WORK + extra, options).frontmatter).not.toBeNull();
+
+    it.each([
+      ["an outcome-only block", '<OutcomeBlock outcome="It worked." />\n'],
+      ["a multi-line block", '<OutcomeBlock\n  outcome="It worked."\n/>\n'],
+      ["a JSX outcome holding > and metric= text", "<OutcomeBlock outcome={<>a > b, metric=1 unit=2</>} />\n"],
+      ["nested braces", "<OutcomeBlock outcome={<>Count {items.length} {`{x}`}</>} />\n"],
+      ["metric= inside the outcome string", "<OutcomeBlock outcome='raised metric=\"1\" > 0' />\n"],
+      ["metric= inside a code fence", '\n```mdx\n<OutcomeBlock metric="1" outcome="x" />\n```\n'],
+      ["metric= inside inline code", '\nWrite `<OutcomeBlock metric="1" />` never.\n'],
+      ["metric= inside an MDX comment", '\n{/* <OutcomeBlock metric="1" outcome="x" /> */}\n'],
+      ["metric= on another tag", '<DecisionBlock decision="d" metric="1" unit="u" />\n'],
+      ["a differently named component", '<OutcomeBlockList metric="1" />\n'],
+    ])("accepts %s", (_, extra) => accepts(extra));
+
+    it.each([
+      ["metric=", '<OutcomeBlock metric="4,500" outcome="x" />\n', "metric="],
+      ["unit=", "<OutcomeBlock outcome='x' unit='syncs' />\n", "unit="],
+      ["metric={…}", "<OutcomeBlock\n  metric={\"4,500\"}\n  outcome={<>a > b</>}\n/>\n", "metric="],
+      ["both, after a JSX outcome", '<OutcomeBlock outcome={<>a > b</>} metric="1" unit="u" />\n', "metric=, unit="],
+    ])("rejects %s, pointing at frontmatter highlight", (_, extra, found) => {
+      expect(problemsOf("work/foo.mdx", WORK + extra)).toEqual([
+        `<OutcomeBlock> must not set metric=/unit= (found ${found}); use frontmatter highlight { metric, unit }, which the Outcome Block and the homepage path card both show`,
+      ]);
+    });
+
+    it("accepts one Outcome Block", () => accepts('<OutcomeBlock outcome="x" />\n'));
+
+    it("rejects more than one Outcome Block", () => {
+      expect(problemsOf("work/foo.mdx", WORK + '<OutcomeBlock outcome="a" />\n<OutcomeBlock outcome="b" />\n')).toEqual([
+        "a story body may have at most one <OutcomeBlock> (found 2)",
+      ]);
+    });
+
+    it("doesn't count an Outcome Block in a code fence, inline code or a comment", () => {
+      accepts(
+        '<OutcomeBlock outcome="a" />\n\n```mdx\n<OutcomeBlock outcome="b" />\n```\n\n`<OutcomeBlock />`\n\n{/* <OutcomeBlock /> */}\n'
+      );
+    });
+  });
+
   it("skips body checks for drafts and personal entries", () => {
     const draft = FRONTMATTER.replace("type: work", "type: work\ndraft: true") + "# Draft\n";
     expect(processContentFile(file("work/foo.mdx"), draft, options).frontmatter).toBeNull();

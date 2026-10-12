@@ -24,7 +24,8 @@ interface FixtureRegistry {
 
 let server: ViteDevServer | undefined;
 
-async function loadFixture(name: string) {
+/** Loads the fixture registry, or just `module` (e.g. one file's frontmatter) when a root holds several failures. */
+async function loadFixture(name: string, module = "/src/lib/fixtureRegistry.ts") {
   server = await createServer({
     configFile: false,
     root: path.join(fixtures, name),
@@ -34,7 +35,7 @@ async function loadFixture(name: string) {
     server: { middlewareMode: true, hmr: false, ws: false, watch: null },
     optimizeDeps: { noDiscovery: true, include: [] },
   });
-  return (await server.ssrLoadModule("/src/lib/fixtureRegistry.ts")) as FixtureRegistry;
+  return (await server.ssrLoadModule(module)) as FixtureRegistry;
 }
 
 async function render(registry: FixtureRegistry, file: string): Promise<string> {
@@ -140,7 +141,7 @@ describe("content pipeline through Vite", () => {
   });
 
   it("fails a work story whose body breaks the section rules, naming the file", async () => {
-    const error: unknown = await loadFixture("invalid-body").then(
+    const error: unknown = await loadFixture("invalid-body", "/src/content/work/missing-outcome.mdx?frontmatter").then(
       () => undefined,
       (e: unknown) => e
     );
@@ -148,5 +149,16 @@ describe("content pipeline through Vite", () => {
     expect((error as Error).name).toBe("FrontmatterError");
     expect((error as Error).message).toContain("src/content/work/missing-outcome.mdx");
     expect((error as Error).message).toContain("missing required story section(s): outcome");
+  });
+
+  it("fails a work story whose Outcome Block types its own metric, naming the file", async () => {
+    const error: unknown = await loadFixture("invalid-body", "/src/content/work/literal-metric.mdx?frontmatter").then(
+      () => undefined,
+      (e: unknown) => e
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).name).toBe("FrontmatterError");
+    expect((error as Error).message).toContain("src/content/work/literal-metric.mdx");
+    expect((error as Error).message).toContain("use frontmatter highlight");
   });
 });
