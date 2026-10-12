@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-13-2026 18:20
-last_updated: 10-12-2026 12:16
+last_updated: 10-12-2026 13:57
 project: asprinkleofcode.github.io
 project_key: NOKEY
 tracking_system: file-system
@@ -53,7 +53,7 @@ development_status:
   2-4-author-the-auth-rcmappaccesswatcher-story: done
   2-5-author-the-azure-infrastructure-as-code-platform-story: done
   2-6-homepage-engineering-evidence-teaser: done
-  epic-2-retrospective: optional
+  epic-2-retrospective: done
 
   epic-3: backlog
   3-1-leadership-enablement-path-index-homepage-teaser: backlog
@@ -150,3 +150,69 @@ action_items:
     owner: "PM (John)"
     status: open
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
+  - id: "epic-2-retro-item-12-a-1-add-one-live-registry-test-rendering"
+    epic: 2
+    action: "A-1: Add one live-registry test rendering every work entry (Context/Decision/Outcome
+      h2s, highlight metric+unit). Land before A-2 and A-3."
+    owner: "Dev (Amelia)"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
+  - id: "epic-2-retro-item-13-a-2-single-source-metric-metric-only-in"
+    epic: 2
+    action: "A-2: Single-source metric: metric only in frontmatter highlight; OutcomeBlock
+      reads it via context from WorkStory; build rule bans literal metric=/unit= and
+      allows at most one OutcomeBlock; remove duplicates from both stories; record
+      the props-only amendment."
+    owner: "Dev (Amelia) + Architect (Winston)"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
+  - id: "epic-2-retro-item-14-a-3-move-decisionblock-rationale-tradeof"
+    epic: 2
+    action: "A-3: Move DecisionBlock rationale/tradeoffs into the Rationale/Tradeoffs
+      sections (heading plus details), keeping content quality, with Alisha review;
+      build rules against block rationale=/tradeoffs= with a matching section and
+      against setext h2."
+    owner: "Dev (Amelia) + Alisha"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
+  - id: "epic-2-retro-item-15-a-4-reconcile-epics-md-story-2-4-to-as-b"
+    epic: 2
+    action: "A-4: Reconcile epics.md Story 2.4 to as-built: highlight headline wording,
+      summary internal-names clause, waived InmarOne tile example."
+    owner: "PM (John)"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
+  - id: "epic-2-retro-item-16-a-5-record-the-block-composition-and-met"
+    epic: 2
+    action: "A-5: Record the block-composition and metric single-source decisions
+      in the AD-3 spine and Epic 3 context; spec decisions also update epic-N-context.md."
+    owner: "Architect (Winston) / SM"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
+  - id: "epic-2-retro-item-17-a-6-story-specs-trace-each-epic-ac-claus"
+    epic: 2
+    action: "A-6: Story specs trace each epic AC clause; deviations go in the Spec
+      Change Log (bmad-build customization)."
+    owner: "SM"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
+  - id: "epic-2-retro-item-18-a-7-set-a-vitest-worker-limit-in-config"
+    epic: 2
+    action: "A-7: Set a Vitest worker limit in config or document it in AGENTS.md."
+    owner: "Dev (Amelia)"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
+  - id: "epic-2-retro-item-19-a-8-story-3-1-criterion-unique-accessibl"
+    epic: 2
+    action: "A-8: Story 3.1 criterion: unique accessible names for path-card links
+      once more than one path is live."
+    owner: "PM (John)"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
+  - id: "epic-2-retro-item-20-a-9-epic-4-planning-reject-highlight-met"
+    epic: 2
+    action: "A-9: Epic 4 planning: reject highlight.metric/unit on personal entries;
+      land Story 4.1 before 4.4/4.5 publish content."
+    owner: "PM (John)"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
