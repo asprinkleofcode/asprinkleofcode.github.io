@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-13-2026 18:20
-last_updated: 10-12-2026 11:59
+last_updated: 10-12-2026 12:16
 project: asprinkleofcode.github.io
 project_key: NOKEY
 tracking_system: file-system
@@ -52,7 +52,7 @@ development_status:
   2-3-engineering-path-index-summary-scan-selection: done
   2-4-author-the-auth-rcmappaccesswatcher-story: done
   2-5-author-the-azure-infrastructure-as-code-platform-story: done
-  2-6-homepage-engineering-evidence-teaser: review
+  2-6-homepage-engineering-evidence-teaser: done
   epic-2-retrospective: optional
 
   epic-3: backlog
