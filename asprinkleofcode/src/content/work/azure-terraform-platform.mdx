@@ -117,7 +117,7 @@ Identity is a separate security concern from the workload it serves, and it carr
 
 - **Platform first over service-by-service:** more architectural work up front, in exchange for fewer repeated decisions and less drift later.
 - **Isolated backends over a shared one:** more Azure resources than one shared backend, in exchange for clearer boundaries and less risk of targeting the wrong state; I judged the operational clarity worth more.
-- **Four controls over one safeguard:** four controls instead of one: prevent_destroy on critical resources, detection of destructive changes in Terraform plans, extra approval before a destructive operation runs, and backup and restore automation so data is recoverable if prevention fails. The platform stopped relying on safe definitions alone.
+- **Four controls instead of one safeguard:** prevent_destroy on critical resources, detection of destructive changes in Terraform plans, extra approval before a destructive operation runs, and backup and restore automation so data is recoverable if prevention fails. The platform stopped relying on safe definitions alone.
 - **Repositories split by concern:** clear ownership, at the cost of more repositories to maintain and document.
 - **One baseline module over one per primitive:** simple adoption and fast migration, at the cost of composability.
 - **Identity separate from workload:** services compose several modules instead of one all-in-one module.
