@@ -1,7 +1,9 @@
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import type { MDXModule } from "mdx/types";
 import type { Frontmatter, PersonalFrontmatter, WorkFrontmatter } from "./frontmatter";
-import { buildIndex, entries, getEntry, getFeaturedEntry, getPathEntries, type BodyLoader } from "./registry";
+import { buildIndex, entries, getEntry, getFeaturedEntry, getPathEntries, loadBody, type BodyLoader } from "./registry";
 
 const loader: BodyLoader = () => Promise.resolve({ default: () => null } as unknown as MDXModule);
 
@@ -142,5 +144,31 @@ describe("live registry", () => {
   it("loads the committed content", () => {
     expect(Array.isArray(entries)).toBe(true);
     expect(getEntry("beyond", "no-such-entry")).toBeUndefined();
+  });
+
+  // The real globs against a committed story (Epic 1 retro A-10): dropping
+  // `import: "frontmatter"` or breaking a glob pattern fails here.
+  it("indexes the committed RCM story with its frontmatter and a rendering body", async () => {
+    const entry = getEntry("engineering", "rcm-app-access-watcher");
+    expect(entry).toMatchObject({
+      key: "work/engineering/rcm-app-access-watcher",
+      listed: true,
+      frontmatter: {
+        type: "work",
+        title: expect.any(String),
+        featured: 1,
+        capabilities: expect.arrayContaining(["ownership"]),
+        highlight: { headline: expect.any(String), metric: expect.any(String) },
+      },
+    });
+    expect(getPathEntries("engineering")).toContain(entry);
+    expect(getFeaturedEntry("engineering")).toBe(entry);
+
+    // Rendering, not just importing, catches a block that throws at render time.
+    const body = await loadBody(entry!);
+    const html = renderToStaticMarkup(createElement(body.default));
+    for (const heading of ["Context", "Decision", "Outcome"]) expect(html).toContain(`>${heading}</h2>`);
+    // The Outcome Block shows the same metric as the homepage highlight.
+    expect(html).toContain((entry!.frontmatter as WorkFrontmatter).highlight!.metric!);
   });
 });

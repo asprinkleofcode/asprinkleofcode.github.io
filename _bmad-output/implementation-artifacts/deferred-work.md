@@ -128,7 +128,7 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   evidence: jsdom applies no stylesheet and can't hit-test pseudo-elements, so both are covered only by class assertions; the built CSS was checked to contain the utilities. The metric/unit strings live only in `OutcomeBlock.tsx` today, with no second consumer yet.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-4a-content-schema-hardening.md`
-  status: open
+  status: resolved-by #38 (ES-1 story authored, live-glob registry test renders it, AD-10 scan asserts it found files)
   summary: Story 2.4 part B — author the ES-1 story as `src/content/work/rcm-app-access-watcher.mdx` and add the real-glob registry test against it (and assert the AD-10 `.mdx` scan finds at least one file). Decisions already made (2026-10-11): plain title (e.g. "Keeping InmarOne app access in step with RCM", system name in the body); `featured: 1` (Story 2.5 takes 2); one line on the leadership thread (shared library, org-wide presentation, pattern adopted by other teams); confirmed names: Inmar, InmarOne, RCM, `Auth.RcmAppAccessWatcher`, Audit Management, Contract Management, SQL Server, Debezium, Google Cloud (Pub/Sub, BigQuery, Cloud Run), Python, Terraform, Grafana, with the per-table service names and the two systems' application identifiers described generically. The Audit Management / Contract Management InmarOne example is optional; Alisha says the story doesn't need it.
   evidence: Alisha split Story 2.4 at the step-02 size gate: part A (schema and pipeline checks) ships first because the story's frontmatter needs the `highlight` block to validate. Story 2.4 is `done` in sprint-status only when part B merges.
 
