@@ -51,8 +51,6 @@ The InmarOne platform team owned the APIs I integrated with.
 
 <DecisionBlock
   decision="Capture every change to RCM's authorization data at the database with change data capture, publish it as events, and have each event make the system recompute the affected user's access from RCM and apply it to InmarOne."
-  rationale="CDC events are treated as signals, not state. Three things force a sync: an RCM admin changes an active user's permissions, a user logs in to RCM, or an RCM user is marked inactive. The same user is expected to be processed several times a day, so every run rebuilds that user's access from RCM rather than applying a delta, and running it again is always safe."
-  tradeoffs="Each event says little, so every run makes extra queries and API calls to rebuild the full picture. In return, duplicate or out-of-order events can't leave the wrong access behind."
 />
 
 The pipeline:
@@ -69,6 +67,10 @@ A centralized, validated, environment-specific mapping translates RCM's applicat
 </StorySection>
 
 <StorySection section="rationale">
+
+### Why every event rebuilds the user's access
+
+CDC events are treated as signals, not state. Three things force a sync: an RCM admin changes an active user's permissions, a user logs in to RCM, or an RCM user is marked inactive. The same user is expected to be processed several times a day, so every run rebuilds that user's access from RCM rather than applying a delta, and running it again is always safe.
 
 ### Why capture changes at the database
 
@@ -90,6 +92,7 @@ A managed Google Cloud replication service feeding a storage pipeline would have
 
 <StorySection section="tradeoffs">
 
+- **A full rebuild on every event:** each event says little, so every run makes extra queries and API calls to rebuild the full picture. In return, duplicate or out-of-order events can't leave the wrong access behind.
 - **CDC over polling or API hooks:** complete coverage, at the cost of more infrastructure, and events that carry so little context they have to be enriched downstream.
 - **Event-driven over synchronous:** decoupling, fault tolerance and replay, at the cost of eventual consistency and the need to handle duplicates and ordering.
 - **Debezium on a VM over a container:** better documentation, faster delivery under time pressure and the same cost for a process that runs all the time, at the cost of less flexible scaling and a restart for every configuration change. Its offset and schema state live on a persistent disk, so a restart doesn't reprocess everything, at the cost of more infrastructure to manage.
