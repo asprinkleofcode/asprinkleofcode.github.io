@@ -1,0 +1,130 @@
+---
+type: work
+title: Keeping InmarOne app access in step with RCM
+path: engineering
+summary: InmarOne brought Inmar's healthcare applications into one portal, but it couldn't see who was allowed to use which one. I designed and delivered, as the sole engineer, the event-driven sync that keeps its app access in step with RCM.
+role: Sole engineer and technical lead
+capabilities: [business-to-engineering, ownership, engineering-judgment, ambiguity]
+date: 2026-10-11
+featured: 1
+highlight:
+  headline: Replaced manual app-access provisioning with an event-driven sync from RCM to InmarOne.
+  metric: "4,500"
+  unit: syncs a day, up from 2,000 at launch
+---
+
+import { StorySection, DecisionBlock, OutcomeBlock } from "../../mdx-components";
+
+<StorySection section="context">
+
+InmarOne is Inmar's unified healthcare platform: one portal in front of many applications. Whether a user may use those applications is decided somewhere else, in RCM, the system of record for authorization. InmarOne had no view into that data.
+
+So the two systems were out of step. Access had to be provisioned by hand in both places, which was slow and easy to get wrong. Users ended up with missing or wrong application access. For the business, a user who can't see the right product is lost adoption and a lost upsell, and InmarOne was a top organizational priority.
+
+`Auth.RcmAppAccessWatcher` is the system I built to close that gap: it keeps a user's application access in InmarOne matching what RCM says.
+
+</StorySection>
+
+<StorySection section="problem">
+
+InmarOne had access APIs, but nobody had integrated with them yet. There was no implementation to copy and no pattern to follow, and this was the first external system to use them. The work was both high-ambiguity and high-visibility.
+
+The data was ambiguous too. In RCM, access isn't a single row: features belong to roles, roles belong to users, and an application is available when one of a user's roles contains that application's feature. A change at any of those layers can change what a user can open. And the two systems identified applications differently, with no mapping between them.
+
+</StorySection>
+
+<StorySection section="ownership">
+
+I was the sole engineer and the technical lead, end to end:
+
+- the architecture and design
+- the change-data-capture and event-driven pipeline
+- the InmarOne API integration
+- the infrastructure, written in Terraform
+- the documentation and the org-level knowledge sharing
+
+The InmarOne platform team owned the APIs I integrated with.
+
+</StorySection>
+
+<StorySection section="decision">
+
+<DecisionBlock
+  decision="Capture every change to RCM's authorization data at the database with change data capture, publish it as events, and have each event make the system recompute the affected user's access from RCM and apply it to InmarOne."
+  rationale="CDC events are treated as signals, not state. Three things force a sync: an RCM admin changes an active user's permissions, a user logs in to RCM, or an RCM user is marked inactive. The same user is expected to be processed several times a day, so every run rebuilds that user's access from RCM rather than applying a delta, and running it again is always safe."
+  tradeoffs="Each event says little, so every run makes extra queries and API calls to rebuild the full picture. In return, duplicate or out-of-order events can't leave the wrong access behind."
+/>
+
+The pipeline:
+
+1. Debezium, running as a daemon on a Google Cloud VM, reads row-level changes from RCM's authorization database in SQL Server. It was the first Debezium deployment in the organization.
+2. Each table's changes go to their own Pub/Sub topic. Every topic also has a BigQuery subscription, which keeps a history for debugging, auditing and replay.
+3. Python services on Cloud Run, one for each kind of change (features in roles, roles assigned to users, and users), work out which users are affected.
+4. A final service works out each user's effective application access and calls the InmarOne APIs.
+
+A centralized, validated, environment-specific mapping translates RCM's application identifiers into InmarOne's, shared by every service. A Grafana dashboard tracks the VM, the oldest unacknowledged message, messages processed in the last day and crash frequency, and Google Cloud alerts on stale messages and anomalies.
+
+</StorySection>
+
+<StorySection section="rationale">
+
+### Why capture changes at the database
+
+Access in RCM changes through the UI, through APIs and through one-time scripts. The database is the one place every one of those writes lands, so watching it guarantees complete coverage. Polling, or hooking into each write path, couldn't give that guarantee.
+
+### Why events instead of a direct call
+
+Publishing events decouples RCM from InmarOne, which improves scalability and fault tolerance, and the BigQuery history means events can be replayed.
+
+### Why one instance per service
+
+A grant and a revoke for the same user processed in parallel can finish in the wrong order. Running each service as a single instance rules that race out.
+
+### What I rejected
+
+A managed Google Cloud replication service feeding a storage pipeline would have added storage cost and latency for data that isn't analytical. I kept the pipeline lean and purpose-built instead.
+
+</StorySection>
+
+<StorySection section="tradeoffs">
+
+- **CDC over polling or API hooks:** complete coverage, at the cost of more infrastructure, and events that carry so little context they have to be enriched downstream.
+- **Event-driven over synchronous:** decoupling, fault tolerance and replay, at the cost of eventual consistency and the need to handle duplicates and ordering.
+- **Debezium on a VM over a container:** better documentation, faster delivery under time pressure and the same cost for a process that runs all the time, at the cost of less flexible scaling and a restart for every configuration change. Its offset and schema state live on a persistent disk, so a restart doesn't reprocess everything, at the cost of more infrastructure to manage.
+- **A shared mapping file for application identifiers:** it bridged two systems with no common identifier, at the cost of a configuration file someone has to keep correct.
+- **Single-instance services:** correctness over throughput.
+
+</StorySection>
+
+<StorySection section="collaboration">
+
+There was no working relationship between my team and the InmarOne platform team before this. As their first integrator, I built the integration with them iteratively, validating each step together.
+
+Beyond the integration itself, I extracted a shared Python library of InmarOne API clients and RCM logic with 100% unit test coverage in CI/CD. I also presented the architecture org-wide, and other teams adopted the CDC and pub/sub pattern.
+
+</StorySection>
+
+<StorySection section="outcome">
+
+<OutcomeBlock
+  metric="4,500"
+  unit="syncs a day, up from 2,000 at launch"
+  outcome="Manual app-access provisioning across RCM and InmarOne is gone. A user's InmarOne applications match RCM in near real time, and any wrong state corrects itself on the next change or login. The count is syncs as of March 2026, not users: the same user is synced several times a day."
+/>
+
+Correct access at login means less user confusion and fewer support requests, and correct product visibility protects revenue. Sync stayed near real time as the volume more than doubled.
+
+What it doesn't do: users are still created by hand in RCM, and RCM remains the only system that can grant or remove access to RCM applications. The watcher keeps InmarOne in step with RCM; it doesn't replace it.
+
+</StorySection>
+
+<StorySection section="reflection">
+
+I'd defend these calls under the constraints I had. With more time or influence, I'd change these:
+
+- **Deployment strategy.** I chose the VM mainly for time to delivery. I'd run a deeper cost and runtime comparison against a containerized deployment such as Cloud Run, which would also remove the restart for every configuration change.
+- **The upstream data model.** The identifier mapping was a pragmatic workaround. I'd push for RCM's applications table to store InmarOne's application identifier directly, so the mapping can't drift.
+- **Concurrency.** Single instances are enough at current volume. For more throughput I'd explore safe parallelism, with ordering guarantees, deduplication and idempotent reconciliation.
+- **Business-level observability.** The operational monitoring is strong. I'd add sync latency, drift detection between RCM and InmarOne, and error rates tied to user impact, so system health connects to business impact.
+
+</StorySection>

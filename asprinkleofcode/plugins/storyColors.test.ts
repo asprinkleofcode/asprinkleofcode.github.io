@@ -30,7 +30,10 @@ const storyMarkup = (source: string) => [...source.matchAll(STORY_COLOR_ATTRIBUT
 
 describe("AD-10 semantic tokens in story bodies", () => {
   it("finds no primitive, raw colour or palette utility in story markup", () => {
-    const offenders = storyFiles(contentDir).flatMap((file) => {
+    const files = storyFiles(contentDir);
+    // Committed stories exist, so an empty scan means the walk broke, not that stories are clean.
+    expect(files.length, `no .mdx stories found under ${contentDir}`).toBeGreaterThan(0);
+    const offenders = files.flatMap((file) => {
       const relative = path.relative(contentDir, file).split(path.sep).join("/");
       return findColorViolations(storyMarkup(readFileSync(file, "utf8"))).map((v) => `src/content/${relative}: ${v}`);
     });
