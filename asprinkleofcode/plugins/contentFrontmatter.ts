@@ -120,9 +120,10 @@ const MDX_COMMENT = /\{\/\*[\s\S]*?\*\/\}/g;
 const ATX_H1 = /^ {0,3}(?:(?:>|[*+-]|\d+[.)])[ \t]*)*#(?:[ \t]|$)/m;
 const ATX_H2 = /^ {0,3}(?:(?:>|[*+-]|\d+[.)])[ \t]*)*##(?:[ \t]|$)/m;
 // A paragraph line underlined with `=` (h1) or `-` (h2). A `---` after a
-// blank line is a thematic break, not a heading.
+// blank line, or after an ATX heading, list item or `<` tag line (none of
+// which is a paragraph), is a thematic break, not a heading.
 const SETEXT_H1 = /^ {0,3}\S[^\n]*\n {0,3}=+[ \t]*$/m;
-const SETEXT_H2 = /^ {0,3}\S[^\n]*\n {0,3}-+[ \t]*$/m;
+const SETEXT_H2 = /^ {0,3}(?![*+-][ \t]|\d+[.)][ \t]|#{1,6}(?:[ \t]|$)|<)\S[^\n]*\n {0,3}-+[ \t]*$/m;
 const STORY_SECTION_TAG = /<StorySection\b([^>]*)>/g;
 const LITERAL_SECTION = /^\s*section=(?:"([^"]*)"|'([^']*)')\s*\/?\s*$/;
 const ATTRIBUTE_NAME = /(?:^|\s)([A-Za-z_$][\w$:-]*)/g;

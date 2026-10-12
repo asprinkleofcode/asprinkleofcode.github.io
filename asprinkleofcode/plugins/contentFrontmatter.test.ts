@@ -219,6 +219,9 @@ describe("work story body structure (AD-3)", () => {
     ["a thematic break after a blank line", "\nA paragraph.\n\n---\n\nMore text.\n"],
     ["a list item under a paragraph", "\nA paragraph.\n- an item\n"],
     ["a setext h2 inside a code fence", "\n```md\nHeading\n---\n```\n"],
+    ["a thematic break right after an ATX heading", "\n### Sub\n---\n"],
+    ["a thematic break right after a list item", "\n- item\n---\n"],
+    ["a thematic break right after a JSX tag line", "\n</StorySection>\n---\n"],
   ])("accepts %s", (_, extra) => {
     expect(processContentFile(file("work/foo.mdx"), WORK + extra, options).frontmatter).not.toBeNull();
   });

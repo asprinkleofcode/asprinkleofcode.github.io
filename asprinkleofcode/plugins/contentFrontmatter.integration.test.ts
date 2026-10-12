@@ -172,7 +172,7 @@ describe("content pipeline through Vite", () => {
     expect(error).toBeInstanceOf(Error);
     expect((error as Error).name).toBe("FrontmatterError");
     expect((error as Error).message).toContain("src/content/work/decision-rationale.mdx");
-    expect((error as Error).message).toContain("must not set rationale=/tradeoffs=");
+    expect((error as Error).message).toContain("must not set rationale=/tradeoffs= (found rationale=, tradeoffs=)");
     expect((error as Error).message).toContain("write them in the Rationale/Tradeoffs sections");
   });
 
