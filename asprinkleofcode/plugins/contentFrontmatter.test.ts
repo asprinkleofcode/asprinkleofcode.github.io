@@ -208,8 +208,19 @@ describe("work story body structure (AD-3)", () => {
   it.each([
     ["a markdown h2", "\n## Heading\n"],
     ["a JSX h2", "<h2>Heading</h2>\n"],
+    ["a setext h2", "\nHeading\n---\n"],
+    ["a setext h2 with a one-dash underline", "\nHeading\n-\n"],
+    ["an indented setext h2", "\n   Heading\n   ---  \n"],
   ])("rejects %s beside the section headings", (_, h2) => {
     expect(problemsOf("work/foo.mdx", WORK + h2)).toEqual([expect.stringContaining("must not contain its own h2")]);
+  });
+
+  it.each([
+    ["a thematic break after a blank line", "\nA paragraph.\n\n---\n\nMore text.\n"],
+    ["a list item under a paragraph", "\nA paragraph.\n- an item\n"],
+    ["a setext h2 inside a code fence", "\n```md\nHeading\n---\n```\n"],
+  ])("accepts %s", (_, extra) => {
+    expect(processContentFile(file("work/foo.mdx"), WORK + extra, options).frontmatter).not.toBeNull();
   });
 
   it("accepts a self-closing section tag", () => {
@@ -268,6 +279,39 @@ describe("work story body structure (AD-3)", () => {
       accepts(
         '<OutcomeBlock outcome="a" />\n\n```mdx\n<OutcomeBlock outcome="b" />\n```\n\n`<OutcomeBlock />`\n\n{/* <OutcomeBlock /> */}\n'
       );
+    });
+  });
+
+  describe("Decision Block carries only the decision (retro F-1)", () => {
+    const accepts = (extra: string) =>
+      expect(processContentFile(file("work/foo.mdx"), WORK + extra, options).frontmatter).not.toBeNull();
+
+    it.each([
+      ["a decision-only block", '<DecisionBlock decision="Do A." />\n'],
+      ["a multi-line decision-only block", '<DecisionBlock\n  decision="Do A."\n/>\n'],
+      ["rationale= inside the decision string", "<DecisionBlock decision='weighed rationale=\"x\" > 0' />\n"],
+      ["rationale= text inside a JSX decision", "<DecisionBlock decision={<>a > b, rationale=1 tradeoffs=2</>} />\n"],
+      ["rationale= inside a code fence", '\n```mdx\n<DecisionBlock decision="d" rationale="r" />\n```\n'],
+      ["tradeoffs= inside inline code", '\nNever write `<DecisionBlock tradeoffs="t" />`.\n'],
+      ["rationale= inside an MDX comment", '\n{/* <DecisionBlock decision="d" rationale="r" /> */}\n'],
+      ["rationale= on another tag", '<OutcomeBlock outcome="o" rationale="r" tradeoffs="t" />\n'],
+      ["a differently named component", '<DecisionBlockList rationale="r" tradeoffs="t" />\n'],
+    ])("accepts %s", (_, extra) => accepts(extra));
+
+    it.each([
+      ["rationale=", '<DecisionBlock decision="d" rationale="r" />\n', "rationale="],
+      ["tradeoffs=", "<DecisionBlock tradeoffs='t' decision='d' />\n", "tradeoffs="],
+      ["rationale={…}, multi-line", '<DecisionBlock\n  decision={<>a > b</>}\n  rationale={"r"}\n/>\n', "rationale="],
+      ["both, after a JSX decision", '<DecisionBlock decision={<>a > b</>} rationale="r" tradeoffs="t" />\n', "rationale=, tradeoffs="],
+    ])("rejects %s, pointing at the Rationale/Tradeoffs sections", (_, extra, found) => {
+      expect(problemsOf("work/foo.mdx", WORK + extra)).toEqual([
+        `<DecisionBlock> must not set rationale=/tradeoffs= (found ${found}); the block carries only decision=, so write them in the Rationale/Tradeoffs sections`,
+      ]);
+    });
+
+    it("rejects the props even when the story has no matching section", () => {
+      // WORK has no Rationale or Tradeoffs section; the ban is unconditional (AD-3).
+      expect(problemsOf("work/foo.mdx", WORK + '<DecisionBlock decision="d" tradeoffs="t" />\n')).toHaveLength(1);
     });
   });
 

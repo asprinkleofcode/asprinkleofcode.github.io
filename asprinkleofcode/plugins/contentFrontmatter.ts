@@ -23,7 +23,9 @@ import { REQUIRED_STORY_SECTIONS, STORY_SECTION_ORDER, type StorySectionName } f
  *   compiles it; a draft's body is emptied so none of it ships.
  * - A non-draft work story's body must follow the AD-3 section rules, and
  *   has at most one `<OutcomeBlock>`, with no `metric=`/`unit=` (those come
- *   only from frontmatter `highlight`; Epic 2 retro F-6) (`storyBodyProblems`),
+ *   only from frontmatter `highlight`; Epic 2 retro F-6), and no
+ *   `<DecisionBlock>` sets `rationale=`/`tradeoffs=` (those are entries in
+ *   the Rationale/Tradeoffs sections; Epic 2 retro F-1) (`storyBodyProblems`),
  *   or the build fails naming the file.
  * - A non-draft entry's `hero.src` must exist under `src/assets/media/`, and
  *   no two non-draft entries in one path may share a `featured` value
@@ -117,26 +119,30 @@ const MDX_COMMENT = /\{\/\*[\s\S]*?\*\/\}/g;
 // An ATX heading, optionally behind blockquote or list markers.
 const ATX_H1 = /^ {0,3}(?:(?:>|[*+-]|\d+[.)])[ \t]*)*#(?:[ \t]|$)/m;
 const ATX_H2 = /^ {0,3}(?:(?:>|[*+-]|\d+[.)])[ \t]*)*##(?:[ \t]|$)/m;
-// A paragraph line underlined with `=`.
+// A paragraph line underlined with `=` (h1) or `-` (h2). A `---` after a
+// blank line is a thematic break, not a heading.
 const SETEXT_H1 = /^ {0,3}\S[^\n]*\n {0,3}=+[ \t]*$/m;
+const SETEXT_H2 = /^ {0,3}\S[^\n]*\n {0,3}-+[ \t]*$/m;
 const STORY_SECTION_TAG = /<StorySection\b([^>]*)>/g;
 const LITERAL_SECTION = /^\s*section=(?:"([^"]*)"|'([^']*)')\s*\/?\s*$/;
-const OUTCOME_BLOCK_OPEN = /<OutcomeBlock(?=[\s/>]|$)/g;
 const ATTRIBUTE_NAME = /(?:^|\s)([A-Za-z_$][\w$:-]*)/g;
 /** Attributes `OutcomeBlock` reads from frontmatter `highlight`, never from the body. */
 const HIGHLIGHT_ATTRIBUTES = ["metric", "unit"];
+/** Reasoning that lives in the Rationale/Tradeoffs sections, never on a `DecisionBlock` (AD-3). */
+const REASONING_ATTRIBUTES = ["rationale", "tradeoffs"];
 
 /**
- * The attribute names on each `<OutcomeBlock …>` tag in `source`. A plain
+ * The attribute names on each `<name …>` tag in `source` (that tag exactly:
+ * `<DecisionBlockList>` is not a `<DecisionBlock>`). A plain
  * `[^>]*` stops at the first `>` inside a value such as `outcome={<>…</>}`,
  * so this walks the tag: quoted values are skipped, `{…}` expressions are
  * skipped by brace depth (quotes inside them are not tracked, since JSX text
  * like "doesn't" is far likelier there than a string holding a brace), and
  * the tag ends at the first `>` outside both.
  */
-function outcomeBlockAttributes(source: string): string[][] {
+function blockAttributes(source: string, name: string): string[][] {
   const tags: string[][] = [];
-  for (const open of source.matchAll(OUTCOME_BLOCK_OPEN)) {
+  for (const open of source.matchAll(new RegExp(`<${name}(?=[\\s/>]|$)`, "g"))) {
     let topLevel = "";
     let quote: string | null = null;
     let depth = 0;
@@ -171,8 +177,11 @@ function outcomeBlockAttributes(source: string): string[][] {
  * literal section, sections follow the canonical order without repeats,
  * Context, Decision and Outcome are present, and nothing competes with the
  * page's one `<h1>` (the story title) or the section `<h2>`s. There is at
- * most one `<OutcomeBlock>`, and it never sets `metric`/`unit`. Code fences,
- * inline code and MDX comments are ignored.
+ * most one `<OutcomeBlock>`, and it never sets `metric`/`unit`. A
+ * `<DecisionBlock>` never sets `rationale`/`tradeoffs`, whether or not the
+ * story has a matching section: the block no longer renders them, so MDX
+ * would drop that reasoning silently (AD-3). Code fences, inline code and MDX
+ * comments are ignored.
  */
 export function storyBodyProblems(body: string): string[] {
   const source = body.replace(CODE_FENCE, "").replace(MDX_COMMENT, "").replace(INLINE_CODE, "");
@@ -202,11 +211,21 @@ export function storyBodyProblems(body: string): string[] {
   if (ATX_H1.test(source) || SETEXT_H1.test(source) || /<h1\b/.test(source)) {
     problems.push("the body must not contain an h1; the story title is the page's only h1 (use ### for subheadings)");
   }
-  if (ATX_H2.test(source) || /<h2\b/.test(source)) {
+  if (ATX_H2.test(source) || SETEXT_H2.test(source) || /<h2\b/.test(source)) {
     problems.push("the body must not contain its own h2; section headings come from <StorySection> (use ### for subheadings)");
   }
 
-  const outcomeBlocks = outcomeBlockAttributes(source);
+  const reasoningProps = [
+    ...new Set(blockAttributes(source, "DecisionBlock").flat().filter((name) => REASONING_ATTRIBUTES.includes(name))),
+  ];
+  if (reasoningProps.length > 0) {
+    problems.push(
+      `<DecisionBlock> must not set rationale=/tradeoffs= (found ${reasoningProps.map((name) => `${name}=`).join(", ")}); ` +
+        `the block carries only decision=, so write them in the Rationale/Tradeoffs sections`
+    );
+  }
+
+  const outcomeBlocks = blockAttributes(source, "OutcomeBlock");
   const highlightProps = [...new Set(outcomeBlocks.flat().filter((name) => HIGHLIGHT_ATTRIBUTES.includes(name)))];
   if (highlightProps.length > 0) {
     problems.push(
