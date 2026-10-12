@@ -21,8 +21,10 @@ import { REQUIRED_STORY_SECTIONS, STORY_SECTION_ORDER, type StorySectionName } f
  *   and the `\0` prefix keeps MDX and React plugins off it.
  * - `<file>.mdx` has its frontmatter blanked (line numbers kept) before MDX
  *   compiles it; a draft's body is emptied so none of it ships.
- * - A non-draft work story's body must follow the AD-3 section rules
- *   (`storyBodyProblems`), or the build fails naming the file.
+ * - A non-draft work story's body must follow the AD-3 section rules, and
+ *   has at most one `<OutcomeBlock>`, with no `metric=`/`unit=` (those come
+ *   only from frontmatter `highlight`; Epic 2 retro F-6) (`storyBodyProblems`),
+ *   or the build fails naming the file.
  * - A non-draft entry's `hero.src` must exist under `src/assets/media/`, and
  *   no two non-draft entries in one path may share a `featured` value
  *   (`featuredClash`); either failure names the file(s).
@@ -119,12 +121,57 @@ const ATX_H2 = /^ {0,3}(?:(?:>|[*+-]|\d+[.)])[ \t]*)*##(?:[ \t]|$)/m;
 const SETEXT_H1 = /^ {0,3}\S[^\n]*\n {0,3}=+[ \t]*$/m;
 const STORY_SECTION_TAG = /<StorySection\b([^>]*)>/g;
 const LITERAL_SECTION = /^\s*section=(?:"([^"]*)"|'([^']*)')\s*\/?\s*$/;
+const OUTCOME_BLOCK_OPEN = /<OutcomeBlock(?=[\s/>]|$)/g;
+const ATTRIBUTE_NAME = /(?:^|\s)([A-Za-z_$][\w$:-]*)/g;
+/** Attributes `OutcomeBlock` reads from frontmatter `highlight`, never from the body. */
+const HIGHLIGHT_ATTRIBUTES = ["metric", "unit"];
+
+/**
+ * The attribute names on each `<OutcomeBlock …>` tag in `source`. A plain
+ * `[^>]*` stops at the first `>` inside a value such as `outcome={<>…</>}`,
+ * so this walks the tag: quoted values are skipped, `{…}` expressions are
+ * skipped by brace depth (quotes inside them are not tracked, since JSX text
+ * like "doesn't" is far likelier there than a string holding a brace), and
+ * the tag ends at the first `>` outside both.
+ */
+function outcomeBlockAttributes(source: string): string[][] {
+  const tags: string[][] = [];
+  for (const open of source.matchAll(OUTCOME_BLOCK_OPEN)) {
+    let topLevel = "";
+    let quote: string | null = null;
+    let depth = 0;
+    for (let i = open.index + open[0].length; i < source.length; i++) {
+      const char = source[i];
+      if (quote !== null) {
+        if (char === quote) quote = null;
+        topLevel += " ";
+      } else if (depth > 0) {
+        if (char === "{") depth++;
+        else if (char === "}") depth--;
+        topLevel += " ";
+      } else if (char === '"' || char === "'") {
+        quote = char;
+        topLevel += " ";
+      } else if (char === "{") {
+        depth = 1;
+        topLevel += " ";
+      } else if (char === ">") {
+        break;
+      } else {
+        topLevel += char;
+      }
+    }
+    tags.push([...topLevel.matchAll(ATTRIBUTE_NAME)].map((match) => match[1]));
+  }
+  return tags;
+}
 
 /**
  * A work story's body structure (AD-3, AD-15): every `<StorySection>` names a
  * literal section, sections follow the canonical order without repeats,
  * Context, Decision and Outcome are present, and nothing competes with the
- * page's one `<h1>` (the story title) or the section `<h2>`s. Code fences,
+ * page's one `<h1>` (the story title) or the section `<h2>`s. There is at
+ * most one `<OutcomeBlock>`, and it never sets `metric`/`unit`. Code fences,
  * inline code and MDX comments are ignored.
  */
 export function storyBodyProblems(body: string): string[] {
@@ -157,6 +204,18 @@ export function storyBodyProblems(body: string): string[] {
   }
   if (ATX_H2.test(source) || /<h2\b/.test(source)) {
     problems.push("the body must not contain its own h2; section headings come from <StorySection> (use ### for subheadings)");
+  }
+
+  const outcomeBlocks = outcomeBlockAttributes(source);
+  const highlightProps = [...new Set(outcomeBlocks.flat().filter((name) => HIGHLIGHT_ATTRIBUTES.includes(name)))];
+  if (highlightProps.length > 0) {
+    problems.push(
+      `<OutcomeBlock> must not set metric=/unit= (found ${highlightProps.map((name) => `${name}=`).join(", ")}); ` +
+        `use frontmatter highlight { metric, unit }, which the Outcome Block and the homepage path card both show`
+    );
+  }
+  if (outcomeBlocks.length > 1) {
+    problems.push(`a story body may have at most one <OutcomeBlock> (found ${outcomeBlocks.length})`);
   }
   return problems;
 }
