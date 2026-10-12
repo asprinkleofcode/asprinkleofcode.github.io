@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import type { MDXModule } from "mdx/types";
 import type { Frontmatter, PersonalFrontmatter, WorkFrontmatter } from "./frontmatter";
-import { buildIndex, entries, getEntry, getFeaturedEntry, getPathEntries, loadBody, type BodyLoader } from "./registry";
+import { buildIndex, entries, getEntry, getFeaturedEntries, getPathEntries, loadBody, type BodyLoader } from "./registry";
 
 const loader: BodyLoader = () => Promise.resolve({ default: () => null } as unknown as MDXModule);
 
@@ -101,26 +101,27 @@ describe("buildIndex", () => {
   });
 });
 
-describe("getFeaturedEntry", () => {
-  it("returns undefined for an empty index", () => {
-    expect(getFeaturedEntry("engineering", [])).toBeUndefined();
+describe("getFeaturedEntries", () => {
+  it("returns an empty list for an empty index", () => {
+    expect(getFeaturedEntries("engineering", [])).toEqual([]);
   });
 
-  it("returns undefined when the path has only unfeatured entries", () => {
+  it("returns an empty list when the path has only unfeatured entries", () => {
     const built = index({
       "../content/work/a.mdx": work({ title: "A" }),
       "../content/work/b.mdx": work({ title: "B", path: "leadership", featured: 1 }),
     });
-    expect(getFeaturedEntry("engineering", built)).toBeUndefined();
+    expect(getFeaturedEntries("engineering", built)).toEqual([]);
   });
 
-  it("picks the lowest featured number in the path", () => {
+  it("returns the path's featured entries in featured order, without unfeatured or other-path ones", () => {
     const built = index({
       "../content/work/two.mdx": work({ title: "Two", featured: 2 }),
       "../content/work/one.mdx": work({ title: "One", featured: 1 }),
       "../content/work/plain.mdx": work({ title: "Plain" }),
+      "../content/work/lead.mdx": work({ title: "Lead", path: "leadership", featured: 1 }),
     });
-    expect(getFeaturedEntry("engineering", built)?.slug).toBe("one");
+    expect(getFeaturedEntries("engineering", built).map((e) => e.slug)).toEqual(["one", "two"]);
   });
 
   it("skips unlisted entries", () => {
@@ -128,9 +129,9 @@ describe("getFeaturedEntry", () => {
       "../content/personal/care.mdx": personal({ listed: false, featured: 1 }),
       "../content/personal/garden.mdx": personal({ featured: 2 }),
     });
-    expect(getFeaturedEntry("beyond", built)?.slug).toBe("garden");
+    expect(getFeaturedEntries("beyond", built).map((e) => e.slug)).toEqual(["garden"]);
     const onlyUnlisted = index({ "../content/personal/care.mdx": personal({ listed: false, featured: 1 }) });
-    expect(getFeaturedEntry("beyond", onlyUnlisted)).toBeUndefined();
+    expect(getFeaturedEntries("beyond", onlyUnlisted)).toEqual([]);
   });
 });
 
@@ -162,7 +163,7 @@ describe("live registry", () => {
       },
     });
     expect(getPathEntries("engineering")).toContain(entry);
-    expect(getFeaturedEntry("engineering")).toBe(entry);
+    expect(getFeaturedEntries("engineering")[0]).toBe(entry);
 
     // Rendering, not just importing, catches a block that throws at render time.
     const body = await loadBody(entry!);
@@ -172,7 +173,7 @@ describe("live registry", () => {
     expect(html).toContain((entry!.frontmatter as WorkFrontmatter).highlight!.metric!);
   });
 
-  it("indexes the committed IaC story after the RCM story, which stays the featured pick", async () => {
+  it("indexes the committed IaC story as the path card's second slide, after RCM", async () => {
     const entry = getEntry("engineering", "azure-terraform-platform");
     expect(entry).toMatchObject({
       key: "work/engineering/azure-terraform-platform",
@@ -190,7 +191,9 @@ describe("live registry", () => {
     const slugs = getPathEntries("engineering").map((e) => e.slug);
     expect(slugs).toContain("azure-terraform-platform");
     expect(slugs.indexOf("rcm-app-access-watcher")).toBeLessThan(slugs.indexOf("azure-terraform-platform"));
-    expect(getFeaturedEntry("engineering")?.slug).toBe("rcm-app-access-watcher");
+    const slides = getFeaturedEntries("engineering");
+    expect(slides[0]?.slug).toBe("rcm-app-access-watcher");
+    expect(slides[1]).toBe(entry);
 
     const body = await loadBody(entry!);
     const html = renderToStaticMarkup(createElement(body.default));

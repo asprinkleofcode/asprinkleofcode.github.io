@@ -123,7 +123,7 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   evidence: Both are real once a story body exists, but the layout and required-section check belong to the detail page; Story 2.1 only ships the blocks (Story 2.1 review, Blind Hunter).
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-1-work-story-presentation-components.md`
-  status: open (Story 2.6 only; the StoryCard browser check resolved-by #36: whole-card click and single focus ring confirmed on `/engineering`)
+  status: resolved-by #40 (metric/unit classes extracted to `src/lib/metricClasses.ts`, shared by OutcomeBlock and PathCard; the StoryCard browser check was resolved-by #36)
   summary: Browser-check `StoryCard`'s whole-card click (the `::after` overlay) and the single focus ring around the card once Story 2.3 renders cards; Story 2.6 extracts the `OutcomeBlock` metric/unit classes into a shared constant when the Path Card needs them.
   evidence: jsdom applies no stylesheet and can't hit-test pseudo-elements, so both are covered only by class assertions; the built CSS was checked to contain the utilities. The metric/unit strings live only in `OutcomeBlock.tsx` today, with no second consumer yet.
 

@@ -10,11 +10,10 @@
   Synced to DESIGN.md v0.9 / EXPERIENCE.md v0.13 (UX-030, 2026-10-04): white name + rose
   title, header brand "Alisha Korba", twinkling token-tinted stars, body-size positioning
   line, as-built 4:5 headshot, UX-028 footer icon row on background.recessed.
-  - EXPERIENCE.md §5.2 header · §6.1 section order · §6.2 Recognition · §6.3 Exploration
-    (label-only) · §6.4 Evidence & Highlights · §6.5 personality = the BtC hint only
+  - EXPERIENCE.md §5.2 header · §6.1 section order · §6.2 Recognition · §6.3 path cards (UX-031,
+    Story 2.6: replaces label-only Exploration and Evidence & Highlights) · §6.5 personality = the BtC card only
   - PRD D-25 positioning statement · D-15 path labels · D-16/17 footer-only externals
   - DESIGN.md §6 header brand · §7 / §7a tokens · §8 type scale · §9 spacing · §15 shape/elevation/footer · §16 ambient layer
-  Dashed amber boxes = OPEN content (EXPERIENCE §24 items 1–4). Not invented here.
   The spines win on conflict.
 */
 :root{
@@ -31,7 +30,6 @@
 body{margin:0;background:#08080c;color:var(--text-primary);padding:24px 16px 48px}
 .legend{max-width:1440px;margin:0 auto 20px;color:var(--text-secondary);font-size:13px;line-height:1.5}
 .legend b{color:var(--text-primary)}
-.legend .open{display:inline-block;border:1px dashed var(--warning);color:var(--warning);padding:0 6px;border-radius:4px;font-size:12px}
 .frames{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
 .frame-wrap{display:flex;flex-direction:column;gap:8px}
 .frame-label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--text-secondary)}
@@ -95,25 +93,31 @@ section{padding:56px 40px}
 .mobile .rec{flex-direction:column;align-items:flex-start;gap:24px}
 .mobile .headshot{width:192px;height:240px}
 
-/* 2 · Exploration — §6.3, label-only */
-.explore{background:var(--bg-recessed);border-block:1px solid var(--border-default)}
-.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+/* 2 · Path cards — §6.3, UX-031 (Story 2.6). One section, three cards; the "Explore" h2 is visually hidden.
+   A live card: label, optional metric + unit, highlight headline, summary, and its one link stretched over the card.
+   Rotation buttons sit above the overlay. A path with no story is a non-link "Coming soon" card. */
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding-top:0}
 .mobile .paths{grid-template-columns:1fr}
-.path{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 20px;border:1px solid var(--border-essential);
-  border-radius:var(--r);color:var(--text-primary);text-decoration:none;font-weight:600;background:var(--bg-primary)}
-.path span{color:var(--accent)}
-.path:hover{background:var(--bg-secondary)}
-.path.focus{outline:2px solid var(--brand-primary);outline-offset:2px}
-
-/* 3 · Evidence & Highlights — §6.4 */
-.hl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.hl li{display:grid;grid-template-columns:200px 1fr;gap:20px;padding:18px 0;border-top:1px solid var(--border-default);align-items:baseline}
-.mobile .hl li{grid-template-columns:1fr;gap:8px}
-.hl li:last-child{border-bottom:1px solid var(--border-default)}
-.hl .lab{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--text-secondary)}
-.hl .lab.btc::after{content:" · personal hint";text-transform:none;letter-spacing:0;font-weight:400;opacity:.8}
-.open{border:1px dashed var(--warning);color:var(--warning);border-radius:var(--r-ctl);padding:8px 12px;font-size:.9rem;line-height:1.45}
-.hl a{color:var(--brand-primary);font-size:.875rem;text-decoration:none;margin-top:8px;display:inline-block}
+.card{position:relative;display:flex;flex-direction:column;gap:12px;padding:20px;border:1px solid var(--border-default);
+  border-radius:var(--r);background:var(--bg-primary)}
+.card:hover{border-color:var(--border-essential)}
+.card.focus{box-shadow:0 0 0 2px var(--bg-primary),0 0 0 4px var(--brand-primary)}
+.card.soon{background:var(--bg-recessed);border-style:dashed}
+.card.soon:hover{border-color:var(--border-default)}
+.card h3{margin:0;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--text-secondary)}
+.card .metric{display:flex;flex-direction:column;margin:0}
+.card .metric b{font-size:2.25rem;line-height:1.25;font-weight:600}
+.card .metric span{font-size:.875rem;color:var(--text-secondary)}
+.card .head{margin:0;font-size:1.125rem;line-height:1.4;font-weight:600}
+.card .sum{margin:0;font-size:1rem;line-height:1.55;color:var(--text-secondary)}
+.card .more{margin-top:auto;color:var(--brand-primary);text-decoration:none;width:fit-content}
+.card .more:hover{text-decoration:underline;text-underline-offset:4px}
+.card .more::after{content:"";position:absolute;inset:0;border-radius:var(--r)}
+.card .rot{position:relative;z-index:1;display:flex;align-items:center;gap:8px;font-size:.875rem;color:var(--text-secondary)}
+.card .rot button{min-width:36px;min-height:36px;border:1px solid var(--border-default);border-radius:var(--r);background:var(--bg-secondary);color:var(--text-primary);font:inherit;cursor:pointer}
+.card .rot button:hover{border-color:var(--border-essential)}
+.card .badge{width:fit-content;margin:0;padding:0 8px;border:1px solid var(--border-essential);border-radius:var(--r-ctl);font-size:.875rem;color:var(--text-primary)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* footer — DESIGN §11, §15 (UX-030 surface), EXPERIENCE §13 Footer Links (UX-028 icon row) */
 footer{background:var(--bg-recessed);box-shadow:inset 0 2px 6px rgba(0,0,0,.5);padding:28px 40px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--border-default)}
@@ -127,8 +131,8 @@ footer{background:var(--bg-recessed);box-shadow:inset 0 2px 6px rgba(0,0,0,.5);p
 </head>
 <body>
 
-<p class="legend"><b>Homepage key screen:</b> desktop and mobile, built only from what DESIGN.md v0.9, EXPERIENCE.md v0.13, and PRD D-25 already decide (synced for UX-030).
-Boxes marked <span class="open">like this</span> are content that's still OPEN (EXPERIENCE §24). They're left empty on purpose. Small grey section tags tie each block to its spec section. If this mock and the spines disagree, the spines win.</p>
+<p class="legend"><b>Homepage key screen:</b> desktop and mobile, built only from what DESIGN.md v0.9, EXPERIENCE.md v0.13, and PRD D-25 already decide (synced for UX-030). Story 2.6 (UX-031) replaced Exploration and Highlights with three path cards, using the committed frontmatter copy: Engineering is live, with two slides; the other two paths say "Coming soon".
+Small grey section tags tie each block to its spec section. If this mock and the spines disagree, the spines win.</p>
 
 <div class="frames">
 
@@ -152,23 +156,28 @@ Boxes marked <span class="open">like this</span> are content that's still OPEN (
     <div class="headshot" role="img" aria-label="Alisha Sprinkle Korba"></div>
   </section>
 
-  <section class="sec explore">
-    <span class="callout">§6.3 Exploration · label-only</span>
-    <p class="kicker">Explore</p>
-    <div class="paths">
-      <a class="path" href="#">Engineering <span>→</span></a>
-      <a class="path focus" href="#">Leadership &amp; Enablement <span>→</span></a>
-      <a class="path" href="#">Beyond the Code <span>→</span></a>
-    </div>
-  </section>
-
   <section class="sec">
-    <span class="callout">§6.4 Evidence &amp; Highlights</span>
-    <p class="kicker">Highlights</p>
-    <ul class="hl">
-      <li><span class="lab">Engineering</span><div><div class="open">OPEN · one high-signal evidence teaser. Story selection 2–3 pending (§24 items 2, 4)</div><a href="#">Read the story →</a></div></li>
-      <li><span class="lab">Leadership &amp; Enablement</span><div><div class="open">OPEN · one dedicated evidence teaser, its own and not shared with Engineering (§24 items 3, 4)</div><a href="#">Read the story →</a></div></li>
-      <li><span class="lab btc">Beyond the Code</span><div><div class="open">OPEN · one-line hint about powerlifting / Birdhouses. Wording pending (§24 item 1)</div></div></li>
+    <span class="callout">§6.3 Path cards · UX-031 · focus ring shown on the Engineering card</span>
+    <h2 class="sr-only">Explore</h2>
+    <ul class="paths" style="list-style:none;margin:0;padding:0">
+      <li class="card focus">
+        <h3>Engineering</h3>
+        <p class="metric"><b>4,500</b><span>syncs a day, up from 2,000 at launch</span></p>
+        <p class="head">Replaced manual app-access provisioning with an event-driven sync from RCM to InmarOne.</p>
+        <p class="sum">InmarOne brought Inmar's healthcare applications into one portal, but it couldn't see who was allowed to use which one. I designed and delivered, as the sole engineer, the event-driven sync that keeps its app access in step with RCM.</p>
+        <a class="more" href="#">Read the story <span aria-hidden="true">→</span></a>
+        <div class="rot"><button type="button" aria-label="Previous Engineering highlight">←</button>1 of 2<button type="button" aria-label="Next Engineering highlight">→</button></div>
+      </li>
+      <li class="card soon">
+        <h3>Leadership &amp; Enablement</h3>
+        <p class="badge">Coming soon</p>
+        <p class="sum">Onboarding, teaching, and making knowledge repeatable.</p>
+      </li>
+      <li class="card soon">
+        <h3>Beyond the Code</h3>
+        <p class="badge">Coming soon</p>
+        <p class="sum">Powerlifting and birdhouses, and what each taught me.</p>
+      </li>
     </ul>
   </section>
 
@@ -205,21 +214,27 @@ Boxes marked <span class="open">like this</span> are content that's still OPEN (
     <div class="headshot" role="img" aria-label="Alisha Sprinkle Korba"></div>
   </section>
 
-  <section class="sec explore">
-    <p class="kicker">Explore</p>
-    <div class="paths">
-      <a class="path" href="#">Engineering <span>→</span></a>
-      <a class="path" href="#">Leadership &amp; Enablement <span>→</span></a>
-      <a class="path" href="#">Beyond the Code <span>→</span></a>
-    </div>
-  </section>
-
   <section class="sec">
-    <p class="kicker">Highlights</p>
-    <ul class="hl">
-      <li><span class="lab">Engineering</span><div><div class="open">OPEN · evidence teaser</div><a href="#">Read the story →</a></div></li>
-      <li><span class="lab">Leadership &amp; Enablement</span><div><div class="open">OPEN · evidence teaser</div><a href="#">Read the story →</a></div></li>
-      <li><span class="lab btc">Beyond the Code</span><div><div class="open">OPEN · one-line hint</div></div></li>
+    <h2 class="sr-only">Explore</h2>
+    <ul class="paths" style="list-style:none;margin:0;padding:0">
+      <li class="card">
+        <h3>Engineering</h3>
+        <p class="metric"><b>4,500</b><span>syncs a day, up from 2,000 at launch</span></p>
+        <p class="head">Replaced manual app-access provisioning with an event-driven sync from RCM to InmarOne.</p>
+        <p class="sum">InmarOne brought Inmar's healthcare applications into one portal, but it couldn't see who was allowed to use which one. I designed and delivered, as the sole engineer, the event-driven sync that keeps its app access in step with RCM.</p>
+        <a class="more" href="#">Read the story <span aria-hidden="true">→</span></a>
+        <div class="rot"><button type="button" aria-label="Previous Engineering highlight">←</button>1 of 2<button type="button" aria-label="Next Engineering highlight">→</button></div>
+      </li>
+      <li class="card soon">
+        <h3>Leadership &amp; Enablement</h3>
+        <p class="badge">Coming soon</p>
+        <p class="sum">Onboarding, teaching, and making knowledge repeatable.</p>
+      </li>
+      <li class="card soon">
+        <h3>Beyond the Code</h3>
+        <p class="badge">Coming soon</p>
+        <p class="sum">Powerlifting and birdhouses, and what each taught me.</p>
+      </li>
     </ul>
   </section>
 

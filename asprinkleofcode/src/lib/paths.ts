@@ -10,14 +10,30 @@ const PATH_LABELS = {
 /**
  * The three exploration paths (PRD D-15, EXPERIENCE §6.3): fixed product
  * structure, so they always render whether or not any story exists. The one
- * source for the header nav, the homepage Exploration tiles and the path
- * index titles.
+ * source for the header nav, the homepage path cards and the path index
+ * titles. `description` is the one line a path card shows while the path has
+ * no story yet ("Coming soon").
  */
 export const EXPLORATION_PATHS = [
-  { path: "engineering", to: "/engineering", label: PATH_LABELS.engineering },
-  { path: "leadership", to: "/leadership", label: PATH_LABELS.leadership },
-  { path: "beyond", to: "/beyond", label: PATH_LABELS.beyond },
-] as const satisfies readonly { path: EntryPath; to: string; label: string }[];
+  {
+    path: "engineering",
+    to: "/engineering",
+    label: PATH_LABELS.engineering,
+    description: "Systems I designed and delivered, and the decisions behind them.",
+  },
+  {
+    path: "leadership",
+    to: "/leadership",
+    label: PATH_LABELS.leadership,
+    description: "Onboarding, teaching, and making knowledge repeatable.",
+  },
+  {
+    path: "beyond",
+    to: "/beyond",
+    label: PATH_LABELS.beyond,
+    description: "Powerlifting and birdhouses, and what each taught me.",
+  },
+] as const satisfies readonly { path: EntryPath; to: string; label: string; description: string }[];
 
 /** The decided label for a path, e.g. "Leadership & Enablement". */
 export function pathLabel(path: EntryPath): string {

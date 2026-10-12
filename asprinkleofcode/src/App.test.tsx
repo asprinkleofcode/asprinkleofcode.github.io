@@ -99,12 +99,12 @@ vi.mock("./components/AmbientLayer/AmbientLayer", async (importOriginal) => {
 // Path-aware index state; empty by default (zero content), set per test.
 const registry = vi.hoisted(() => ({
   pathEntries: {} as Record<string, Entry[]>,
-  featured: {} as Record<string, Entry>,
+  featured: {} as Record<string, Entry[]>,
 }));
 vi.mock("./lib/registry", () => ({
   entries: [],
   getPathEntries: (path: string) => registry.pathEntries[path] ?? [],
-  getFeaturedEntry: (path: string) => registry.featured[path],
+  getFeaturedEntries: (path: string) => registry.featured[path] ?? [],
   getEntry: (path: string, slug: string) => fixtures.find((e) => e.path === path && e.slug === slug),
   loadBody: (entry: Entry) => bodies[entry.key](),
 }));
@@ -281,7 +281,7 @@ describe("App smoke test", () => {
     expect(screen.getByRole("link", { name: "Home" }).getAttribute("aria-current")).toBeNull();
   });
 
-  describe("homepage exploration (Story 1.7)", () => {
+  describe("homepage path cards and path indexes", () => {
     const explore = () => screen.getByRole("region", { name: "Explore" });
 
     afterEach(() => {
@@ -289,31 +289,74 @@ describe("App smoke test", () => {
       registry.featured = {};
     });
 
-    it("shows each path's featured entry under its own label, Highlights after Explore", async () => {
-      const hint: Entry = {
-        ...personal,
-        key: "personal/beyond/lifting",
-        slug: "lifting",
-        frontmatter: { ...personal.frontmatter, title: "Lifting", summary: "I lift heavy things." } as PersonalFrontmatter,
+    it("shows one live Engineering card and two Coming soon cards below Recognition", async () => {
+      const foo = work("foo", "Foo Story");
+      registry.featured = {
+        engineering: [
+          {
+            ...foo,
+            frontmatter: {
+              ...foo.frontmatter,
+              featured: 1,
+              highlight: { headline: "Foo headline.", metric: "4,500", unit: "syncs a day" },
+            } as WorkFrontmatter,
+          },
+        ],
+      };
+      renderAt("/");
+      const heading = await h1(IDENTITY.name);
+      expect(heading.compareDocumentPosition(explore()) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+      const cards = within(explore()).getAllByRole("listitem");
+      expect(cards.map((card) => within(card).getByRole("heading", { level: 3 }).textContent)).toEqual([
+        "Engineering",
+        "Leadership & Enablement",
+        "Beyond the Code",
+      ]);
+      expect(within(cards[0]).getByText("4,500")).toBeDefined();
+      expect(within(cards[0]).getByText("Foo headline.")).toBeDefined();
+      expect(within(cards[1]).getByText("Coming soon")).toBeDefined();
+      expect(within(cards[2]).getByText("Coming soon")).toBeDefined();
+      expect(within(explore()).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/engineering/foo"]);
+
+      fireEvent.click(within(cards[0]).getByRole("link", { name: /Read the story/ }));
+      await h1("Foo Story");
+      expect(await screen.findByText("Foo body text.")).toBeDefined();
+      expect(consoleError).not.toHaveBeenCalled();
+    });
+
+    it("wires each card to its own path's featured entries, and rotates Engineering", async () => {
+      const featuredWork = (slug: string, title: string, featured: number, path: WorkFrontmatter["path"] = "engineering"): Entry => {
+        const entry = work(slug, title, path);
+        return {
+          ...entry,
+          frontmatter: { ...entry.frontmatter, featured, highlight: { headline: `${title} headline.` } } as WorkFrontmatter,
+        };
       };
       registry.featured = {
-        engineering: work("eng-feat", "Eng Featured"),
-        leadership: work("lead-feat", "Lead Featured", "leadership"),
-        beyond: hint,
+        engineering: [featuredWork("eng-one", "Eng One", 1), featuredWork("eng-two", "Eng Two", 2)],
+        leadership: [featuredWork("lead-one", "Lead One", 1, "leadership")],
+        beyond: [
+          {
+            ...personal,
+            frontmatter: { ...personal.frontmatter, featured: 1, highlight: { headline: "Garden headline." } } as PersonalFrontmatter,
+          },
+        ],
       };
       renderAt("/");
       await h1(IDENTITY.name);
-      const highlights = screen.getByRole("region", { name: "Highlights" });
-      expect(explore().compareDocumentPosition(highlights) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-
-      const rows = within(highlights).getAllByRole("listitem");
-      expect(
-        rows.map((row) => [row.firstElementChild?.textContent, within(row).getByRole("link").textContent, within(row).getByRole("link").getAttribute("href")])
-      ).toEqual([
-        ["Engineering", "Eng Featured", "/engineering/eng-feat"],
-        ["Leadership & Enablement", "Lead Featured", "/leadership/lead-feat"],
-        ["Beyond the Code", "I lift heavy things.", "/beyond/lifting"],
+      const cardLink = (index: number) =>
+        within(within(explore()).getAllByRole("listitem")[index]).getByRole("link", { name: /Read the story/ });
+      expect([0, 1, 2].map((i) => cardLink(i).getAttribute("href"))).toEqual([
+        "/engineering/eng-one",
+        "/leadership/lead-one",
+        "/beyond/garden",
       ]);
+      expect(within(explore()).queryByText("Coming soon")).toBeNull();
+
+      fireEvent.click(screen.getByRole("button", { name: "Next Engineering highlight" }));
+      expect(cardLink(0).getAttribute("href")).toBe("/engineering/eng-two");
+      expect(cardLink(1).getAttribute("href")).toBe("/leadership/lead-one");
     });
 
     it.each([
@@ -341,27 +384,27 @@ describe("App smoke test", () => {
       expect(screen.queryByText("No stories published yet.")).toBeNull();
     });
 
-    it("lists the three path links below Recognition, in order, with no Highlights heading", async () => {
+    it("shows three Coming soon path cards below Recognition with zero content", async () => {
       renderAt("/");
       const heading = await h1(IDENTITY.name);
-      const links = within(explore()).getAllByRole("link");
-      expect(links.map((a) => [a.textContent?.replace("→", ""), a.getAttribute("href")])).toEqual([
-        ["Engineering", "/engineering"],
-        ["Leadership & Enablement", "/leadership"],
-        ["Beyond the Code", "/beyond"],
-      ]);
       expect(heading.compareDocumentPosition(explore()) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-      // Zero featured content: Evidence & Highlights renders nothing, heading included.
-      expect(screen.queryByRole("heading", { name: "Highlights" })).toBeNull();
+      expect(within(explore()).getAllByRole("heading", { level: 3 }).map((h) => h.textContent)).toEqual([
+        "Engineering",
+        "Leadership & Enablement",
+        "Beyond the Code",
+      ]);
+      expect(within(explore()).getAllByText("Coming soon")).toHaveLength(3);
+      expect(within(explore()).queryAllByRole("link")).toEqual([]);
+      expect(screen.queryByRole("region", { name: "Highlights" })).toBeNull();
       expect(consoleError).not.toHaveBeenCalled();
     });
 
     it.each(["Engineering", "Leadership & Enablement", "Beyond the Code"])(
-      "navigates from the %s tile to its index h1 and empty state",
+      "keeps %s reachable from the header, with its index h1 and empty state",
       async (label) => {
         renderAt("/");
         await h1(IDENTITY.name);
-        fireEvent.click(within(explore()).getByRole("link", { name: label }));
+        fireEvent.click(within(screen.getByRole("navigation", { name: "Main" })).getByRole("link", { name: label }));
         const indexHeading = await h1(label);
         await waitFor(() => expect(document.activeElement).toBe(indexHeading));
         expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
