@@ -6,6 +6,7 @@ import { entryHref } from "../../lib/paths";
 import { storyProseClasses } from "../../lib/proseClasses";
 import { getEntry, type Entry } from "../../lib/registry";
 import { getStoryBody } from "../../lib/storyBody";
+import { StoryHighlightContext } from "../../lib/storyHighlight";
 import { useDocumentMeta } from "../../lib/useDocumentMeta";
 import { usePrefersReducedMotion } from "../../lib/usePrefersReducedMotion";
 import NotFound from "../NotFound/NotFound";
@@ -64,7 +65,10 @@ function WorkStoryArticle({ entry, frontmatter }: { entry: Entry; frontmatter: W
         </ul>
       </header>
       <div className={`mt-10 ${storyProseClasses}`}>
-        <Body />
+        {/* The Outcome Block's metric and unit come from frontmatter, never the body (retro F-6). */}
+        <StoryHighlightContext value={frontmatter.highlight}>
+          <Body />
+        </StoryHighlightContext>
       </div>
     </article>
   );

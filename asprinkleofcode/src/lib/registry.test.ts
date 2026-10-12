@@ -13,6 +13,7 @@ import {
   type BodyLoader,
   type Entry,
 } from "./registry";
+import { StoryHighlightContext } from "./storyHighlight";
 
 const loader: BodyLoader = () => Promise.resolve({ default: () => null } as unknown as MDXModule);
 
@@ -207,7 +208,10 @@ const workEntries = entries.filter((e) => e.frontmatter.type === "work");
 
 async function renderWorkBody(entry: Entry): Promise<Document> {
   const body = await loadBody(entry);
-  const html = renderToStaticMarkup(createElement(body.default));
+  // Wrapped in the story highlight the same way WorkStory wraps it.
+  const html = renderToStaticMarkup(
+    createElement(StoryHighlightContext, { value: entry.frontmatter.highlight }, createElement(body.default))
+  );
   return new DOMParser().parseFromString(html, "text/html");
 }
 

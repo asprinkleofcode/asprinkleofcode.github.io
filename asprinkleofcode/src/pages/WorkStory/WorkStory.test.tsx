@@ -7,13 +7,15 @@ import { MemoryRouter, Route, Routes, useNavigate, type NavigateFunction } from 
 import { aSprinkleOfCodeApplyTheme, aSprinkleOfCodeTheme } from "../../theme/aSprinkleOfCodeTheme";
 import { expectNoFlowbiteDefaults } from "../../test/expectNoFlowbiteDefaults";
 import { DOCUMENT_META_ATTRIBUTE } from "../../lib/useDocumentMeta";
+import { metricClasses, metricUnitClasses } from "../../lib/metricClasses";
+import type { Highlight } from "../../lib/frontmatter";
 import type { Entry } from "../../lib/registry";
 import DecisionBlock from "../../components/DecisionBlock/DecisionBlock";
 import OutcomeBlock from "../../components/OutcomeBlock/OutcomeBlock";
 import StorySection from "../../components/StorySection/StorySection";
 import WorkStory from "./WorkStory";
 
-const entry = (slug: string, path: "engineering" | "leadership", date?: string): Entry => ({
+const entry = (slug: string, path: "engineering" | "leadership", date?: string, highlight?: Highlight): Entry => ({
   key: `work/${path}/${slug}`,
   path,
   slug,
@@ -27,10 +29,16 @@ const entry = (slug: string, path: "engineering" | "leadership", date?: string):
     role: "Fixture role",
     capabilities: ["ownership", "engineering-judgment"],
     ...(date ? { date } : {}),
+    ...(highlight ? { highlight } : {}),
   },
 });
 
-const fixtures = [entry("story", "engineering", "2026-01-15"), entry("other", "engineering"), entry("lead", "leadership")];
+const HIGHLIGHT: Highlight = { headline: "Fixture headline.", metric: "4,500", unit: "syncs a day, up from 2,000" };
+const fixtures = [
+  entry("story", "engineering", "2026-01-15", HIGHLIGHT),
+  entry("other", "engineering"),
+  entry("lead", "leadership"),
+];
 
 // A body shaped like a real story: required sections, blocks, prose subheading.
 const Body = () => (
@@ -43,7 +51,7 @@ const Body = () => (
       <DecisionBlock decision="Fixture decision." rationale="Fixture rationale." />
     </StorySection>
     <StorySection section="outcome">
-      <OutcomeBlock metric="4,500" unit="syncs a day, up from 2,000" outcome="Fixture outcome." />
+      <OutcomeBlock outcome="Fixture outcome." />
     </StorySection>
   </>
 );
@@ -129,6 +137,27 @@ describe("WorkStory page", () => {
     ]);
     expect(screen.getByText("Fixture story summary.").className).toContain("text-text-secondary");
     expect(screen.getByText("Role: Fixture role").className).toContain("type-meta");
+  });
+
+  it("shows the frontmatter highlight's metric and unit at the top of the Outcome panel", async () => {
+    renderAt("/engineering/story");
+    await screen.findByText("Fixture outcome.");
+    const outcome = screen.getByRole("region", { name: "Outcome" });
+    const metric = within(outcome).getByText("4,500");
+    const unit = within(outcome).getByText("syncs a day, up from 2,000");
+    expect(metric.className).toBe(metricClasses);
+    expect(unit.className).toBe(metricUnitClasses);
+    const panel = metric.closest("p")!.parentElement!;
+    expect(panel.firstElementChild).toBe(metric.closest("p"));
+    expect(panel.lastElementChild!.textContent).toBe("Fixture outcome.");
+  });
+
+  it("shows no metric for a story without a highlight", async () => {
+    renderAt("/engineering/other");
+    await screen.findByText("Fixture outcome.");
+    const outcome = screen.getByRole("region", { name: "Outcome" });
+    expect(within(outcome).queryByText("4,500")).toBeNull();
+    expect(outcome.querySelector(".text-4xl")).toBeNull();
   });
 
   it("scopes prose styling to the body wrapper", async () => {
