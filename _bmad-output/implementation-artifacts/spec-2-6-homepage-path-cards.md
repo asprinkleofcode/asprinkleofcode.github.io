@@ -85,7 +85,7 @@ context:
 - [x] `src/pages/Landing/Landing.tsx`; delete `ExplorationPaths`/`EvidenceHighlights` -- swap sections.
 - [x] `src/App.test.tsx` -- path-card homepage tests: one live Engineering card plus two Coming soon cards with the empty mock, and clicking the card link opens the story page.
 - [x] `_bmad-output/mockups/key-homepage.html` -- path cards replace Explore and Highlights on desktop and mobile.
-- [ ] `_bmad-output/implementation-artifacts/deferred-work.md` -- at close-out, mark the 2.1 metric-constant entry `resolved-by #<PR>`.
+- [x] `_bmad-output/implementation-artifacts/deferred-work.md` -- at close-out, mark the 2.1 metric-constant entry `resolved-by #<PR>`.
 
 **Acceptance Criteria:**
 - Given the built site, when `/#/` loads, then Recognition is followed by three cards. Engineering shows "4,500" and "1 of 2", and the other two say "Coming soon". There are no console errors.
