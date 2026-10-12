@@ -62,6 +62,8 @@ The pipeline:
 3. Python services on Cloud Run, one for each kind of change (features in roles, roles assigned to users, and users), work out which users are affected.
 4. A final service works out each user's effective application access and calls the InmarOne APIs.
 
+A login reaches the pipeline the same way as any other change: RCM writes to the user's row in its users table on every login, Debezium captures that write and publishes it to Pub/Sub, and that message starts the user's sync on Cloud Run.
+
 A centralized, validated, environment-specific mapping translates RCM's application identifiers into InmarOne's, shared by every service. A Grafana dashboard tracks the VM, the oldest unacknowledged message, messages processed in the last day and crash frequency, and Google Cloud alerts on stale messages and anomalies.
 
 </StorySection>
