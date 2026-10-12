@@ -3,7 +3,16 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import type { MDXModule } from "mdx/types";
 import type { Frontmatter, PersonalFrontmatter, WorkFrontmatter } from "./frontmatter";
-import { buildIndex, entries, getEntry, getFeaturedEntries, getPathEntries, loadBody, type BodyLoader } from "./registry";
+import {
+  buildIndex,
+  entries,
+  getEntry,
+  getFeaturedEntries,
+  getPathEntries,
+  loadBody,
+  type BodyLoader,
+  type Entry,
+} from "./registry";
 
 const loader: BodyLoader = () => Promise.resolve({ default: () => null } as unknown as MDXModule);
 
@@ -149,7 +158,7 @@ describe("live registry", () => {
 
   // The real globs against a committed story (Epic 1 retro A-10): dropping
   // `import: "frontmatter"` or breaking a glob pattern fails here.
-  it("indexes the committed RCM story with its frontmatter and a rendering body", async () => {
+  it("indexes the committed RCM story first on the engineering path card", () => {
     const entry = getEntry("engineering", "rcm-app-access-watcher");
     expect(entry).toMatchObject({
       key: "work/engineering/rcm-app-access-watcher",
@@ -164,16 +173,9 @@ describe("live registry", () => {
     });
     expect(getPathEntries("engineering")).toContain(entry);
     expect(getFeaturedEntries("engineering")[0]).toBe(entry);
-
-    // Rendering, not just importing, catches a block that throws at render time.
-    const body = await loadBody(entry!);
-    const html = renderToStaticMarkup(createElement(body.default));
-    for (const heading of ["Context", "Decision", "Outcome"]) expect(html).toContain(`>${heading}</h2>`);
-    // The Outcome Block shows the same metric as the homepage highlight.
-    expect(html).toContain((entry!.frontmatter as WorkFrontmatter).highlight!.metric!);
   });
 
-  it("indexes the committed IaC story as the path card's second slide, after RCM", async () => {
+  it("indexes the committed IaC story as the path card's second slide, after RCM", () => {
     const entry = getEntry("engineering", "azure-terraform-platform");
     expect(entry).toMatchObject({
       key: "work/engineering/azure-terraform-platform",
@@ -194,13 +196,41 @@ describe("live registry", () => {
     const slides = getFeaturedEntries("engineering");
     expect(slides[0]?.slug).toBe("rcm-app-access-watcher");
     expect(slides[1]).toBe(entry);
+  });
+});
 
-    const body = await loadBody(entry!);
-    const html = renderToStaticMarkup(createElement(body.default));
-    for (const heading of ["Context", "Decision", "Outcome"]) expect(html).toContain(`>${heading}</h2>`);
-    // The Outcome Block repeats the highlight's metric and unit.
-    const { metric, unit } = (entry!.frontmatter as WorkFrontmatter).highlight!;
-    expect(html).toContain(metric!);
-    expect(html).toContain(unit!);
+// Every committed non-draft work story, from the real globs (Epic 2 retro A-1).
+// Rendering, not just importing, catches a body that throws at render time, so
+// a broken story fails here instead of on the live site. A new story is
+// covered by adding its file, with no edit here.
+const workEntries = entries.filter((e) => e.frontmatter.type === "work");
+
+async function renderWorkBody(entry: Entry): Promise<Document> {
+  const body = await loadBody(entry);
+  const html = renderToStaticMarkup(createElement(body.default));
+  return new DOMParser().parseFromString(html, "text/html");
+}
+
+const sectionHeadings = (doc: Document) =>
+  [...doc.querySelectorAll("section > h2")].map((h) => h.textContent);
+const outcomeSection = (doc: Document) =>
+  [...doc.querySelectorAll("section")].find((s) => s.querySelector(":scope > h2")?.textContent === "Outcome");
+
+describe("live work story bodies", () => {
+  it("has at least one committed work story, so the render check can't pass vacuously", () => {
+    expect(workEntries.length).toBeGreaterThan(0);
+  });
+
+  it.each(workEntries.map((entry) => [entry.key, entry] as const))("renders %s", async (_, entry) => {
+    const doc = await renderWorkBody(entry);
+    expect(sectionHeadings(doc)).toEqual(expect.arrayContaining(["Context", "Decision", "Outcome"]));
+
+    // The Outcome section shows the same metric and unit as the homepage path card.
+    const { highlight } = entry.frontmatter as WorkFrontmatter;
+    if (highlight?.metric) {
+      const outcome = outcomeSection(doc)!;
+      expect(outcome.textContent).toContain(highlight.metric);
+      if (highlight.unit) expect(outcome.textContent).toContain(highlight.unit);
+    }
   });
 });
