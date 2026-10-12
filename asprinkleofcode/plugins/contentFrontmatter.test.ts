@@ -1,7 +1,14 @@
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { fileURLToPath } from "node:url";
+import { describe, expect, it, vi } from "vitest";
 import { FrontmatterError } from "../src/lib/frontmatter";
-import contentFrontmatter, { featuredClash, featuredSlot, processContentFile, type FeaturedSlot } from "./contentFrontmatter";
+import contentFrontmatter, {
+  featuredClash,
+  featuredSlot,
+  pathsWithoutFeatured,
+  processContentFile,
+  type FeaturedSlot,
+} from "./contentFrontmatter";
 
 const root = path.resolve("/project");
 const contentDir = path.join(root, "src", "content");
@@ -266,6 +273,61 @@ describe("featured uniqueness per path", () => {
   });
 });
 
+describe("every listed path has a featured entry (path cards)", () => {
+  const listed = (entries: [string, string][]) => new Map(entries);
+  const slots = (entries: [string, FeaturedSlot][]) => new Map(entries);
+
+  it("names a path with listed entries but no featured one", () => {
+    expect(
+      pathsWithoutFeatured(
+        listed([
+          ["src/content/work/a.mdx", "engineering"],
+          ["src/content/work/b.mdx", "leadership"],
+        ]),
+        slots([["src/content/work/a.mdx", { path: "engineering", featured: 1 }]])
+      )
+    ).toEqual(["leadership"]);
+  });
+
+  it("passes when each listed path has a featured entry, or nothing is listed", () => {
+    expect(
+      pathsWithoutFeatured(
+        listed([
+          ["src/content/work/a.mdx", "engineering"],
+          ["src/content/work/b.mdx", "engineering"],
+          ["src/content/personal/c.mdx", "beyond"],
+        ]),
+        slots([
+          ["src/content/work/b.mdx", { path: "engineering", featured: 2 }],
+          ["src/content/personal/c.mdx", { path: "beyond", featured: 1 }],
+        ])
+      )
+    ).toEqual([]);
+    expect(pathsWithoutFeatured(listed([]), slots([]))).toEqual([]);
+  });
+
+  it("ignores an unlisted featured entry, which never reaches a path card", () => {
+    expect(
+      pathsWithoutFeatured(
+        listed([["src/content/personal/a.mdx", "beyond"]]),
+        slots([["src/content/personal/hidden.mdx", { path: "beyond", featured: 1 }]])
+      )
+    ).toEqual(["beyond"]);
+  });
+
+  it("names every failing path, sorted", () => {
+    expect(
+      pathsWithoutFeatured(
+        listed([
+          ["src/content/work/l.mdx", "leadership"],
+          ["src/content/personal/p.mdx", "beyond"],
+        ]),
+        slots([])
+      )
+    ).toEqual(["beyond", "leadership"]);
+  });
+});
+
 describe("contentFrontmatter plugin hooks", () => {
   type Hook = (this: unknown, ...args: unknown[]) => unknown;
 
@@ -277,6 +339,40 @@ describe("contentFrontmatter plugin hooks", () => {
 
   it("runs before other plugins", () => {
     expect(setup().enforce).toBe("pre");
+  });
+
+  describe("build end: every listed path has a featured entry", () => {
+    const fixtureRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), "__fixtures__", "listed-unfeatured");
+    const fixture = (relative: string) => path.join(fixtureRoot, "src", "content", ...relative.split("/"));
+
+    function runBuild(command: "build" | "serve", files: string[]) {
+      const plugin = contentFrontmatter();
+      (plugin.configResolved as Hook).call({}, { root: fixtureRoot, publicDir: path.join(fixtureRoot, "public"), command });
+      const loadContext = { addWatchFile: () => {} };
+      for (const relative of files) {
+        (plugin.load as Hook).call(loadContext, `\0content-frontmatter:${fixture(relative)}`);
+      }
+      const error = vi.fn();
+      (plugin.buildEnd as Hook).call({ error }, undefined);
+      return error;
+    }
+
+    it("fails the build naming a path with a listed entry but no featured one", () => {
+      const error = runBuild("build", ["work/engineering-featured.mdx", "work/leadership-unfeatured.mdx"]);
+      expect(error).toHaveBeenCalledTimes(1);
+      expect(error.mock.calls[0][0]).toMatch(/the leadership path/);
+      expect(error.mock.calls[0][0]).not.toMatch(/engineering/);
+    });
+
+    it("never runs outside vite build", () => {
+      expect(runBuild("serve", ["work/engineering-featured.mdx", "work/leadership-unfeatured.mdx"])).not.toHaveBeenCalled();
+    });
+
+    it("ignores drafts and unlisted personal entries", () => {
+      expect(
+        runBuild("build", ["work/engineering-featured.mdx", "work/leadership-draft.mdx", "personal/beyond-unlisted.mdx"])
+      ).not.toHaveBeenCalled();
+    });
   });
 
   it("transforms content .mdx and ignores everything else", () => {

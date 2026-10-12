@@ -85,11 +85,11 @@ export function getPathEntries(path: EntryPath, index: readonly Entry[] = entrie
 }
 
 /**
- * The path's homepage highlight: its first listed entry with `featured` set.
- * The index is sorted `featured` ascending, so that is the lowest number.
+ * The path card's slides: the path's listed entries with `featured` set, in
+ * index order (`featured` ascending). Empty when the path has none.
  */
-export function getFeaturedEntry(path: EntryPath, index: readonly Entry[] = entries): Entry | undefined {
-  return index.find((entry) => entry.path === path && entry.listed && entry.frontmatter.featured !== undefined);
+export function getFeaturedEntries(path: EntryPath, index: readonly Entry[] = entries): Entry[] {
+  return getPathEntries(path, index).filter((entry) => entry.frontmatter.featured !== undefined);
 }
 
 /** Any non-draft entry, listed or not. */

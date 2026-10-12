@@ -26,6 +26,11 @@ import { REQUIRED_STORY_SECTIONS, STORY_SECTION_ORDER, type StorySectionName } f
  * - A non-draft entry's `hero.src` must exist under `src/assets/media/`, and
  *   no two non-draft entries in one path may share a `featured` value
  *   (`featuredClash`); either failure names the file(s).
+ * - At the end of `vite build`, every path with a listed non-draft entry
+ *   (work entries, and personal entries with `listed: true`) must also have a
+ *   listed featured one (`pathsWithoutFeatured`), so a live homepage path card
+ *   always has a slide; the failure names each path. Only `vite build` runs
+ *   this check, so the dev server (and the integration harness) never does.
  */
 
 const QUERY = "frontmatter";
@@ -79,6 +84,21 @@ export function featuredClash(
     if (other !== file && taken.path === slot.path && taken.featured === slot.featured) return other;
   }
   return null;
+}
+
+/**
+ * Paths with a listed entry but no listed featured entry, sorted. `listed`
+ * maps each listed non-draft entry's display path to its content path;
+ * `featured` holds every non-draft featured entry, and only those that are
+ * also listed count, since an unlisted entry never reaches a path card.
+ */
+export function pathsWithoutFeatured(
+  listed: ReadonlyMap<string, string>,
+  featured: ReadonlyMap<string, FeaturedSlot>
+): string[] {
+  const withFeatured = new Set<string>();
+  for (const [file, slot] of featured) if (listed.has(file)) withFeatured.add(slot.path);
+  return [...new Set(listed.values())].filter((p) => !withFeatured.has(p)).sort();
 }
 
 function splitFrontmatter(source: string): { yaml: string | null; body: string } {
@@ -208,6 +228,9 @@ export default function contentFrontmatter(): Plugin {
   let mediaDir = "";
   // Every loaded non-draft featured entry, keyed by display path, for the cross-file `featured` check.
   const featuredSlots = new Map<string, FeaturedSlot>();
+  // Every loaded listed non-draft entry (display path -> content path), for the build-end path-card check.
+  const listedPaths = new Map<string, string>();
+  let command: "build" | "serve" = "serve";
 
   const isContentFile = (file: string) =>
     file.endsWith(".mdx") && path.resolve(file).startsWith(contentDir + path.sep);
@@ -236,10 +259,15 @@ export default function contentFrontmatter(): Plugin {
       mediaDir = path.resolve(config.root, "src/assets/media");
       // The plugin instance can be reused for another root (the integration tests share vite.config's plugins).
       featuredSlots.clear();
+      listedPaths.clear();
+      command = config.command;
     },
 
     watchChange(id, change) {
-      if (change.event === "delete" && isContentFile(id)) featuredSlots.delete(displayPath(id));
+      if (change.event === "delete" && isContentFile(id)) {
+        featuredSlots.delete(displayPath(id));
+        listedPaths.delete(displayPath(id));
+      }
     },
 
     async resolveId(source, importer) {
@@ -267,7 +295,23 @@ export default function contentFrontmatter(): Plugin {
       }
       if (slot) featuredSlots.set(display, slot);
       else featuredSlots.delete(display);
+      if (frontmatter !== null && (frontmatter.type === "work" || frontmatter.listed)) {
+        listedPaths.set(display, frontmatter.type === "work" ? frontmatter.path : PERSONAL_PATH);
+      } else {
+        listedPaths.delete(display);
+      }
       return `export const frontmatter = ${JSON.stringify(frontmatter)};\n`;
+    },
+
+    buildEnd(error) {
+      if (error || command !== "build") return;
+      const missing = pathsWithoutFeatured(listedPaths, featuredSlots);
+      if (missing.length > 0) {
+        this.error(
+          `Content: listed entries but no featured entry in ${missing.map((p) => `the ${p} path`).join(", ")}; ` +
+            `set "featured" (with a "highlight") on a listed entry in each, so its homepage path card has a slide`
+        );
+      }
     },
 
     transform(code, id) {
