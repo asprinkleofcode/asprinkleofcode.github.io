@@ -171,4 +171,33 @@ describe("live registry", () => {
     // The Outcome Block shows the same metric as the homepage highlight.
     expect(html).toContain((entry!.frontmatter as WorkFrontmatter).highlight!.metric!);
   });
+
+  it("indexes the committed IaC story after the RCM story, which stays the featured pick", async () => {
+    const entry = getEntry("engineering", "azure-terraform-platform");
+    expect(entry).toMatchObject({
+      key: "work/engineering/azure-terraform-platform",
+      listed: true,
+      frontmatter: {
+        type: "work",
+        title: expect.any(String),
+        featured: 2,
+        capabilities: expect.arrayContaining(["engineering-judgment"]),
+        highlight: { headline: expect.any(String), metric: expect.any(String) },
+      },
+    });
+    // Path order is featured ascending, so the path card's slides run RCM, then IaC.
+    // Relative order only, so adding another story stays a one-file change.
+    const slugs = getPathEntries("engineering").map((e) => e.slug);
+    expect(slugs).toContain("azure-terraform-platform");
+    expect(slugs.indexOf("rcm-app-access-watcher")).toBeLessThan(slugs.indexOf("azure-terraform-platform"));
+    expect(getFeaturedEntry("engineering")?.slug).toBe("rcm-app-access-watcher");
+
+    const body = await loadBody(entry!);
+    const html = renderToStaticMarkup(createElement(body.default));
+    for (const heading of ["Context", "Decision", "Outcome"]) expect(html).toContain(`>${heading}</h2>`);
+    // The Outcome Block repeats the highlight's metric and unit.
+    const { metric, unit } = (entry!.frontmatter as WorkFrontmatter).highlight!;
+    expect(html).toContain(metric!);
+    expect(html).toContain(unit!);
+  });
 });
