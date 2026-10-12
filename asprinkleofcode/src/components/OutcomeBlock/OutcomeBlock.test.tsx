@@ -2,10 +2,13 @@ import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import type { Highlight } from "../../lib/frontmatter";
+import { metricClasses } from "../../lib/metricClasses";
 import { StoryHighlightContext } from "../../lib/storyHighlight";
 import { expectNoFlowbiteDefaults } from "../../test/expectNoFlowbiteDefaults";
 import OutcomeBlock from "./OutcomeBlock";
 
+// Derived from the shared classes, so a class change can't make the "no metric" checks vacuous.
+const METRIC_SELECTOR = `.${metricClasses.split(" ").join(".")}`;
 const OUTCOME = "Fixture outcome: what changed as a result.";
 const classes = (el: Element) => el.className.split(/\s+/);
 const follows = (a: Node, b: Node) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
@@ -47,13 +50,13 @@ describe("OutcomeBlock", () => {
     const panel = container.firstElementChild!;
     expect(panel.children).toHaveLength(1);
     expect(panel.textContent).toBe(OUTCOME);
-    expect(container.querySelector(".text-4xl")).toBeNull();
+    expect(container.querySelector(METRIC_SELECTOR)).toBeNull();
   });
 
   it("renders no metric area outside a story page (no provider)", () => {
     const { container } = render(<OutcomeBlock outcome={OUTCOME} />);
     expect(container.firstElementChild!.children).toHaveLength(1);
-    expect(container.querySelector(".text-4xl")).toBeNull();
+    expect(container.querySelector(METRIC_SELECTOR)).toBeNull();
   });
 
   it("renders rich-text outcomes as given", () => {
@@ -76,7 +79,7 @@ describe("OutcomeBlock", () => {
   it("treats an empty metric or unit as absent, and never shows a unit alone", () => {
     const { container } = renderIn({ headline: "H.", metric: "" });
     expect(container.firstElementChild!.children).toHaveLength(1);
-    expect(container.querySelector(".text-4xl")).toBeNull();
+    expect(container.querySelector(METRIC_SELECTOR)).toBeNull();
 
     const unitOnly = renderIn({ headline: "H.", metric: "", unit: "syncs a day" });
     expect(unitOnly.container.firstElementChild!.children).toHaveLength(1);

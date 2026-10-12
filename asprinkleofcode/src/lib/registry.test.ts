@@ -13,6 +13,7 @@ import {
   type BodyLoader,
   type Entry,
 } from "./registry";
+import { metricClasses, metricUnitClasses } from "./metricClasses";
 import { StoryHighlightContext } from "./storyHighlight";
 
 const loader: BodyLoader = () => Promise.resolve({ default: () => null } as unknown as MDXModule);
@@ -229,12 +230,13 @@ describe("live work story bodies", () => {
     const doc = await renderWorkBody(entry);
     expect(sectionHeadings(doc)).toEqual(expect.arrayContaining(["Context", "Decision", "Outcome"]));
 
-    // The Outcome section shows the same metric and unit as the homepage path card.
+    // The Outcome section shows the same metric and unit as the homepage path card,
+    // in the shared metric elements (prose repeating the number doesn't count).
     const { highlight } = entry.frontmatter as WorkFrontmatter;
-    if (highlight?.metric) {
-      const outcome = outcomeSection(doc)!;
-      expect(outcome.textContent).toContain(highlight.metric);
-      if (highlight.unit) expect(outcome.textContent).toContain(highlight.unit);
-    }
+    const outcome = outcomeSection(doc)!;
+    const withClass = (className: string) =>
+      [...outcome.querySelectorAll("*")].filter((el) => el.className === className).map((el) => el.textContent);
+    expect(withClass(metricClasses)).toEqual(highlight?.metric ? [highlight.metric] : []);
+    expect(withClass(metricUnitClasses)).toEqual(highlight?.metric && highlight.unit ? [highlight.unit] : []);
   });
 });

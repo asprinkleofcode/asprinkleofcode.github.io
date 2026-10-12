@@ -79,6 +79,8 @@ describe("content pipeline through Vite", () => {
     expect(html).toMatch(/<h2 [^>]*>Context<\/h2>/);
     expect(html).toContain("<h3>Valid work subheading</h3>");
     expect(html).toContain("WORKBODYMARKER");
+    // An outcome-only Outcome Block passes the body rules and compiles.
+    expect(html).toContain("Fixture outcome.");
     expect(html).not.toContain("type: work");
     expect(await render(registry, "../content/personal/valid-personal.mdx")).toContain("PERSONALBODYMARKER");
 
@@ -160,5 +162,16 @@ describe("content pipeline through Vite", () => {
     expect((error as Error).name).toBe("FrontmatterError");
     expect((error as Error).message).toContain("src/content/work/literal-metric.mdx");
     expect((error as Error).message).toContain("use frontmatter highlight");
+  });
+
+  it("fails a work story with more than one Outcome Block, naming the file", async () => {
+    const error: unknown = await loadFixture("invalid-body", "/src/content/work/two-outcomes.mdx?frontmatter").then(
+      () => undefined,
+      (e: unknown) => e
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).name).toBe("FrontmatterError");
+    expect((error as Error).message).toContain("src/content/work/two-outcomes.mdx");
+    expect((error as Error).message).toContain("at most one <OutcomeBlock>");
   });
 });

@@ -84,6 +84,8 @@ function renderAt(route: string) {
   );
 }
 
+// Derived from the shared classes, so a class change can't make the "no metric" check vacuous.
+const METRIC_SELECTOR = `.${metricClasses.split(" ").join(".")}`;
 const h1 = (name: string) => screen.findByRole("heading", { level: 1, name });
 const article = () => screen.getByRole("article");
 const storyJsonLd = () => document.head.querySelector(`script[${DOCUMENT_META_ATTRIBUTE}]`);
@@ -157,7 +159,7 @@ describe("WorkStory page", () => {
     await screen.findByText("Fixture outcome.");
     const outcome = screen.getByRole("region", { name: "Outcome" });
     expect(within(outcome).queryByText("4,500")).toBeNull();
-    expect(outcome.querySelector(".text-4xl")).toBeNull();
+    expect(outcome.querySelector(METRIC_SELECTOR)).toBeNull();
   });
 
   it("scopes prose styling to the body wrapper", async () => {
