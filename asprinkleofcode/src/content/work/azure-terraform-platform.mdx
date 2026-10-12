@@ -1,0 +1,153 @@
+---
+type: work
+title: Turning a hand-built Azure environment into a Terraform platform
+path: engineering
+summary: A multi-service application platform ran on one temporary, hand-built Azure environment, with no QA, UAT or Production. I designed the Terraform architecture and led the conversion onto a reusable platform that every environment is now built from.
+role: Sole architect, later infrastructure technical lead
+capabilities: [engineering-judgment, ownership, ambiguity, business-to-engineering]
+date: 2026-10-11
+featured: 2
+highlight:
+  headline: Moved about 11 microservices off a hand-built Azure environment onto a reusable Terraform platform.
+  metric: "~3 months"
+  unit: from one hand-built Dev environment to Dev, QA and UAT on Terraform
+---
+
+import { StorySection, DecisionBlock, OutcomeBlock } from "../../mdx-components";
+
+<StorySection section="context">
+
+The platform is a multi-service application: about 11 microservices on Azure Container Apps, each with its own Cosmos DB and user-assigned managed identity, some with extra storage, all sharing one Key Vault. It ran in a single, temporary Dev environment that had been built by hand. There was no QA, UAT or Production equivalent, and no standard way to provision one.
+
+Nothing was version-controlled, so the infrastructure had drifted even inside that one environment: similar microservices were sized differently with no technical reason. Resources weren't tagged consistently either, so there was no reliable way to attribute cloud cost to an environment.
+
+The initiative's own requirements already called for Infrastructure-as-Code. The question was how to get there.
+
+</StorySection>
+
+<StorySection section="problem">
+
+Nobody on the team had converted large-scale, hand-built infrastructure to Terraform before, or used Terraform at all. I had done both, but on Google Cloud, so I was translating my own experience into Azure's patterns (Container Apps, Cosmos DB, managed identities, Key Vault, Azure RBAC, Azure DevOps) while designing the platform.
+
+There was also no multi-environment model to extend. QA, UAT and Production needed more than copies of Dev: they needed one architecture that reproduces consistently and still allows per-environment configuration. That had to be designed from scratch and proven by migrating real services, not by following a known pattern.
+
+</StorySection>
+
+<StorySection section="ownership">
+
+I led the initiative and owned the technical work end to end:
+
+- the Terraform architecture and state strategy
+- the repository boundaries for environment Terraform, reusable modules, pipeline templates and service-owned infrastructure
+- the shared environment Terraform and the reusable service modules
+- the Azure DevOps Terraform pipelines and deployment flow
+- migrating the existing services onto the new patterns
+- the identity, RBAC, provider, tagging and resource-ownership standards
+- the ADRs, repository READMEs and a microservice conversion wiki
+- the protection strategy for critical data after a destructive Cosmos DB incident
+
+As developers began using and extending the modules on their own, my role became infrastructure technical lead for the platform.
+
+</StorySection>
+
+<StorySection section="decision">
+
+<DecisionBlock
+  decision="Build the reusable platform first (shared architecture, modules, pipelines and conventions) before converting services at scale, and give every environment its own isolated Terraform backend."
+  rationale="Translating each hand-built resource straight into Terraform would have codified the inconsistencies already there. One environment, one backend (its own resource group, storage account and state container) keeps boundaries clear, keeps RBAC simple and lowers the risk of applying to the wrong state."
+  tradeoffs="More architectural work up front, in exchange for fewer repeated decisions and less drift later. Isolated backends mean more Azure resources than one shared backend; I judged the operational clarity worth more."
+/>
+
+The platform separates infrastructure by lifecycle, ownership and reuse:
+
+- **Environment infrastructure** holds what every service shares: resource groups, shared Key Vault resources, shared platform services, configuration, tagging, and the outputs services consume.
+- **Reusable modules** wrap common Azure patterns, so service Terraform states intent instead of hand-configuring each primitive.
+- **Service-owned infrastructure** lives in each microservice's repository and consumes the shared modules, outputs and pipeline templates, so teams keep their autonomy without re-deriving the standards.
+- **Identity is separate from workload.** Managed identities have their own module, and the module that owns a resource's lifecycle also owns the access grants scoped to that resource.
+- **Terraform owns the infrastructure; CI/CD owns the application image.** Terraform provisions each Container App with a known-good placeholder image and ignores later image changes, so frequent releases never wait on an infrastructure apply.
+
+### Migrating without a cutover
+
+I didn't cut over in one step. I designed a four-phase migration so the hand-built and Terraform-managed environments ran side by side:
+
+1. Establish the platform: backends, repository structure, shared infrastructure, modules, pipelines, documentation and ADRs.
+2. Build a new, permanent Dev environment with Terraform while the temporary one stayed available, and migrate the existing microservices onto it.
+3. Validate parity. Automated and manual tests ran against both environments in parallel for several sprints and found no meaningful behavioral differences before the temporary environment was retired.
+4. Expand the validated patterns beyond Dev to QA and UAT, with Production following later on the same foundation.
+
+### Protecting data from Terraform itself
+
+<DecisionBlock
+  decision="Treat destructive operations on stateful resources as a defense-in-depth problem: prevention, detection, authorization and recovery, each addressed separately."
+  rationale="During an infrastructure change, renaming a Cosmos DB account made Terraform replace it, because Azure can't rename an account in place, and replacing it deleted the existing account and its data. I led the investigation and found no single safeguard was enough. prevent_destroy only blocks a replacement while the resource stays in configuration, and removing the block bypasses it. Azure resource locks add a layer, especially when managed outside Terraform's own identity, but neither one recovers data."
+  tradeoffs="Four controls instead of one: prevent_destroy on critical resources, detection of destructive changes in Terraform plans, extra approval before a destructive operation runs, and backup and restore automation so data is recoverable if prevention fails. The platform stopped relying on safe definitions alone."
+/>
+
+</StorySection>
+
+<StorySection section="rationale">
+
+### Why one opinionated baseline module
+
+Every service needed the same core: Cosmos DB, API and handler Container Apps, Azure API Management integration, supporting Key Vault secrets and resource-scoped permissions. I bundled that into one baseline module rather than one module per Azure primitive, to make adoption simple and migration fast during a rapid transition. The team's quick uptake validated that at the time. It's also the decision I'd most strongly reconsider now (see Reflection).
+
+### Why permissions live with the resource
+
+Centralizing grants in the identity module would have meant referencing resources that don't exist yet, which creates circular Terraform dependencies. Letting each module grant access to what it creates keeps the dependency direction clean and the ownership of each permission legible.
+
+### Why explicit providers
+
+I required explicit Terraform provider references instead of relying on implicit resolution, so the subscription being targeted is visible in review and a deploy to an unintended subscription is less likely.
+
+### Why identity is its own module
+
+Identity is a separate security concern from the workload it serves, and it carries platform-wide policy such as container-registry access. Keeping managed identities in their own module keeps that policy in one place instead of inside every service's infrastructure.
+
+</StorySection>
+
+<StorySection section="tradeoffs">
+
+- **Platform first over service-by-service:** more upfront design, fewer repeated decisions and less drift.
+- **Isolated backends over a shared one:** more Azure resources, clearer boundaries and less risk of targeting the wrong state.
+- **Repositories split by concern:** clear ownership, at the cost of more repositories to maintain and document.
+- **One baseline module over one per primitive:** simple adoption and fast migration, at the cost of composability.
+- **Identity separate from workload:** services compose several modules instead of one all-in-one module.
+- **Permissions owned by each resource's module:** grants are spread across modules, but dependencies stay clean.
+- **CI/CD owns images:** Terraform state intentionally doesn't show the currently deployed image.
+- **Explicit providers:** more verbose call sites, in exchange for correctness you can see in review.
+
+</StorySection>
+
+<StorySection section="collaboration">
+
+I wrote ADRs, repository READMEs and a microservice conversion wiki so the infrastructure knowledge wouldn't stay with one person. I taught teammates how the architecture worked, reviewed their infrastructure changes, and guided the Azure decisions as the team expanded into more environments and Production.
+
+The clearest sign it worked: developers went on to migrate services and build new modules themselves, using the established patterns, without me implementing every change.
+
+</StorySection>
+
+<StorySection section="outcome">
+
+<OutcomeBlock
+  metric="~3 months"
+  unit="from one hand-built Dev environment to Dev, QA and UAT on Terraform"
+  outcome="About 11 existing microservices moved off hand-built infrastructure onto a reusable Terraform platform, without a risky cutover. Within about 2 months the architecture, shared infrastructure, modules and pipelines were in place; within about 3 months Dev, QA and UAT ran on it. Production followed later on the same foundation."
+/>
+
+Production rollout was straightforward because the lower environments had already validated the same patterns. The team's default practice moved from manual Azure configuration to Infrastructure-as-Code: version-controlled, repeatable, reviewable and documented. Standardized resource tagging improved security-scan accuracy and cloud cost attribution.
+
+The foundation held up. Later requirements (an Akamai integration, friendly-URL mappings and multi-zone Production) fit into the existing model without a redesign.
+
+</StorySection>
+
+<StorySection section="reflection">
+
+I'd defend these calls under the constraints I had. Having operated the platform since, I'd change these:
+
+- **The baseline module boundary.** It optimized for fast adoption, and that was right for a rapid transition. I'd now evaluate splitting it into smaller modules (Cosmos DB, Container Apps, API Management integration, supporting resources) behind a higher-level composition layer: a little less simplicity at the call site for long-term composability and clearer lifecycle boundaries.
+- **A separate Key Vault for externally managed secrets.** Some secrets must exist before certain infrastructure can be created, but their values come out of that same provisioning workflow, so some steps have to run after the main environment Terraform. A Key Vault dedicated to secrets whose lifecycle depends on external systems would let environment Terraform manage more resources fully and simplify the dependency graph. Resource grouping should follow lifecycle and dependency direction, not just conceptual ownership.
+- **More judgment in the platform.** The next step is encoding more of what the team learned into module contracts, automated validation, pipeline guardrails and examples, so common infrastructure work is safe without a specialist on every change. Not so every engineer becomes a Terraform expert, but so the platform carries more of the judgment.
+
+Infrastructure-as-Code makes changes reproducible, but reproducible isn't the same as safe. For stateful infrastructure, prevention, detection, authorization and recovery each have to be designed for.
+
+</StorySection>
