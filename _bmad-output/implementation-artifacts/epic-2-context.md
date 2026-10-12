@@ -14,6 +14,8 @@ A visitor can browse the Engineering path, scan story summaries, and read two de
 - Story 2.4: Author the Auth.RcmAppAccessWatcher Story
 - Story 2.5: Author the Azure Infrastructure-as-Code Platform Story
 - Story 2.6: Homepage Path Cards
+- Story 2.7: Story Render Guard & Single-Source Outcome Metric (retro remediation, A-1/A-2)
+- Story 2.8: Decision Blocks Carry Only the Decision (retro remediation, A-3)
 
 ## Requirements & Constraints
 
@@ -64,7 +66,12 @@ A visitor can browse the Engineering path, scan story summaries, and read two de
 - **MDX whitelist:**
   - `DecisionBlock`, `OutcomeBlock`, `CapabilitySignal` and `StorySection` are exported from `src/mdx-components.tsx`.
   - Each MDX file imports them explicitly. There is no `MDXProvider`.
-  - Components take props only and never read the registry.
+  - Components take props only and never read the registry. Exception (2026-10-12): `OutcomeBlock` reads the story's `highlight` metric and unit from a React context that `WorkStory` provides around `<Body />`.
+- **Block composition (decided 2026-10-11 in Story 2.2, confirmed 2026-10-12 by the Epic 2 retro):**
+  - A `DecisionBlock` carries only `decision`. Rationale and tradeoffs are entries in the Rationale and Tradeoffs sections, never also block props.
+  - The Outcome metric and unit live only in frontmatter `highlight`; a body never types `metric=`/`unit=`, and has at most one `OutcomeBlock`.
+  - The build enforces both rules, and a live-registry test renders every work story.
+- **Decisions made mid-epic:** a story spec that records "decided YYYY-MM-DD" also updates this file, so later specs inherit it.
 - **One shared detail page:** `/engineering/:slug` and `/leadership/:slug` both render the same `WorkStoryPage`. The page has exactly one `<h1>` (the story title), a correct heading hierarchy and an `<article>` landmark.
 - **MDX prose styling:** `App.css` is gone, so story bodies need their own prose styles from the `type-*` scale and role tokens:
   - block spacing;
@@ -92,7 +99,7 @@ A visitor can browse the Engineering path, scan story summaries, and read two de
 ## UX & Interaction Patterns
 
 - **Story Card:** title, one-liner/problem class, role and capability tags. A visitor can tell the problem class, why it mattered, Alisha's role and the capability shown without opening the story. Story Card and the path cards together fill the "Evidence Summary" role, so no separate component is built for it.
-- **Decision and Outcome Blocks:** the Decision Block foregrounds the decision, rationale and tradeoffs. The Outcome Block foregrounds what changed. The layout puts these blocks ahead of plain prose.
+- **Decision and Outcome Blocks:** the Decision Block foregrounds the decision; its rationale and tradeoffs are read in their own sections. The Outcome Block foregrounds what changed, with the story's highlight metric. The layout puts these blocks ahead of plain prose.
 - **Capability Signal** is a hypothesis to validate with a real visitor. Its labels come from the controlled vocabulary only.
 - **Index to story:** a ~180ms cross-fade that keeps the selected story's title and context visible.
 - **Path cards (UX-031):**
@@ -122,3 +129,5 @@ A visitor can browse the Engineering path, scan story summaries, and read two de
 - 2.4 and 2.5 each set `featured` and `highlight`, so both feed the Engineering path card. Their `featured` values must differ.
 - 2.6 depends on the `highlight` schema and on at least one featured Engineering story. It removes the `ExplorationPaths` and `EvidenceHighlights` components and their tests, and updates `mockups/key-homepage.html` in the same change.
 - Epic 3 reuses 2.1 and 2.2 unchanged (Leadership shares `WorkStoryPage`). Its path card turns live with no code change once Leadership content is published.
+- 2.7 comes before 2.8: its render test lands first and guards 2.8's content move. 2.8 needs Alisha's review of the reworked sections.
+- Epic 2 closes only when 2.7 and 2.8 are done and the retro verdict is re-recorded. Epic 3 starts after that.

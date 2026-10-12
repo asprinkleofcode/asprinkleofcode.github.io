@@ -35,6 +35,8 @@ This document provides the complete epic and story breakdown for the Alisha Spri
 
 **Update note (2026-10-07, Epic 1 retrospective A-7 / A-10):** the retro (`implementation-artifacts/epic-1-retro-2026-10-05.md`, F-5, R-7, R-10) found two `ARCHITECTURE-SPINE.md` helpers that no story owned. Story 2.2 now builds `useDocumentMeta` (AD-14), and Story 4.1 uses it. `cssVar` (AD-10) is built along with the first JavaScript code that reads a colour, so no story owns it in advance. Epic 1's "AD-1–AD-19" coverage claim now names both exceptions. Story 2.4, the first story with a real content file, gains the content-pipeline checks: a registry test against the real globs, `hero` shape and path validation (moved from Story 4.1), and a check that no two stories in a path share the same `featured` value. Story 2.2 also picks up the MDX body typography left open by the Epic 1 hardening (`deferred-work.md`). No epics or stories were added, removed, or renumbered.
 
+**Update note (2026-10-12, Epic 2 retrospective, verdict rejected):** the retro (`implementation-artifacts/epic-2-retro-2026-10-12.md`) found decision-block reasoning shown twice (F-1), Story 2.4 criteria not met as written (F-2, F-3, F-4), no render test over all stories (F-5) and the outcome metric typed twice (F-6). New Stories 2.7 and 2.8 carry the fixes. Story 2.4's criteria are reconciled to the copy as authored, Story 2.1 records the block-composition and `OutcomeBlock` context amendments, and Epic 3 is gated on the remediation (`planning-artifacts/sprint-change-proposal-2026-10-12.md`). Two stories were added. None were removed or renumbered.
+
 ## Requirements Inventory
 
 ### Functional Requirements
@@ -198,7 +200,7 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 | AD-20 care-guide asset | Epic 4 — Beyond the Code |
 | FR-18 | Excluded from MVP epic breakdown — conditional on A-13, purely additive later (AD-18) |
 
-**Dependencies:** Epic 1 blocks Epics 2–4 (shared shell, routing, tokens, content pipeline). Epics 2, 3, and 4 are independent of each other; Epic 2 before Epic 3 lets Leadership reuse Engineering's story components with zero rework.
+**Dependencies:** Epic 1 blocks Epics 2–4 (shared shell, routing, tokens, content pipeline). Epics 2, 3, and 4 are independent of each other; Epic 2 before Epic 3 lets Leadership reuse Engineering's story components with zero rework. **Gate (2026-10-12):** Epic 3 starts only after Epic 2's remediation stories (2.7, 2.8) are done, Story 2.4's criteria are reconciled, and the Epic 2 retrospective is resumed and its verdict re-recorded (`implementation-artifacts/epic-2-retro-2026-10-12.md`). Epic 3 reuses the render guard and the block rules.
 
 ## Epic List
 
@@ -561,7 +563,9 @@ So that every deep story and every path index renders reasoning and evidence con
 
 **Given** the Decision Block and Outcome Block roles (DESIGN §11)
 **When** a story body uses them
-**Then** Decision Block visually foregrounds the decision, rationale, and tradeoffs, and Outcome Block foregrounds what changed as a result (FR-16)
+**Then** Decision Block visually foregrounds the decision, and Outcome Block foregrounds what changed as a result, with the story's metric when it has one (FR-16). A decision's rationale and tradeoffs live in the story's Rationale and Tradeoffs sections, not in the block. *(Amended 2026-10-12, Epic 2 retro F-1: block composition decided in Story 2.2 on 2026-10-11 and confirmed by Sprinkle; see Story 2.8.)*
+
+**And** components take props only and never read the registry (AD-7), with one exception: `OutcomeBlock` reads the story's `highlight` metric and unit from a React context that `WorkStory` provides around the story body, so the number is typed once, in frontmatter. *(Amended 2026-10-12, Epic 2 retro F-6; see Story 2.7.)*
 
 **Given** UX-DR11 (Capability Signal is HYPOTHESIS)
 **When** it renders
@@ -665,9 +669,11 @@ So that I see concrete evidence of business-to-engineering translation, ownershi
 **When** the `.mdx` file is authored
 **Then** it covers Context (InmarOne/RCM authorization gap), Ambiguity (first integrator, no prior pattern), Ownership (solo, end-to-end), Decision (CDC via Debezium, event-driven pub/sub), Rationale/Tradeoffs (at minimum the CDC-vs-polling and event-driven-vs-synchronous decisions with their stated tradeoffs), Collaboration (cross-team with the InmarOne platform team), Outcome (2,000→4,500 user syncs/day, eliminated manual app-access provisioning; users are still created by hand in RCM, and RCM is the only system that can grant or remove access to RCM applications), and Reflection (at least the deployment-strategy and upstream-data-model hindsight points) (AD-3, FR-5–8)
 
-**Given** the Decision Block for the sync design
+**Given** the sync design
 **When** the story is authored
-**Then** it names the three triggers that force a sync (an RCM admin changes an active user's permissions, a user logs in to RCM, an RCM user is marked inactive), says that the same user is expected to be processed several times a day, and never describes the 4,500 figure as users. Where the story explains InmarOne, it uses the example that InmarOne shows a tile for an application RCM says the user has (Audit Management) and lists an application the user does not have (Contract Management) under Other Inmar Applications
+**Then** its Decision or Rationale section names the three triggers that force a sync (an RCM admin changes an active user's permissions, a user logs in to RCM, an RCM user is marked inactive), says that the same user is expected to be processed several times a day, and never describes the 4,500 figure as users. The Decision Block itself carries only the decision (Story 2.8). *(Reconciled 2026-10-12, Epic 2 retro F-1/A-3: this criterion first required the triggers inside the block.)*
+
+**And** the InmarOne tile example (a tile for an application RCM says the user has, such as Audit Management, and Contract Management listed under Other Inmar Applications) is optional; Alisha waived it as not needed for this story. *(Reconciled 2026-10-12, Epic 2 retro F-4: the waiver was previously recorded only in `deferred-work.md` and the 2.4B spec.)*
 
 **Given** Alisha's verbal confirmation that ES-1 is fully public-safe (2026-09-12)
 **When** the story is authored
@@ -699,7 +705,7 @@ So that I see concrete evidence of business-to-engineering translation, ownershi
 
 **Given** this story is the first to feed a path card
 **When** its frontmatter is written
-**Then** `highlight` carries a headline that names RCM as the single authority on which RCM applications a user can open in InmarOne, a `metric` of `4,500`, and a `unit` of `syncs a day, up from 2,000` (final wording settled at authoring; the unit says syncs, never users). `summary` is the one supporting line and reads without internal names
+**Then** `highlight` carries a one-line problem/outcome headline (as authored: the event-driven sync from RCM to InmarOne replaced manual app-access provisioning), a `metric` of `4,500`, and a `unit` that says syncs, never users (as authored: `syncs a day, up from 2,000 at launch`). `summary` is the one supporting line. It may name InmarOne, Inmar and RCM, which Alisha has confirmed as public-safe (2026-09-12). *(Reconciled 2026-10-12, Epic 2 retro F-2/F-3, decided by Sprinkle: the copy stays as authored. The original criterion asked the headline to name RCM as the single authority on app access and the summary to avoid internal names.)*
 
 **Given** the confidentiality rule for product names
 **When** the story and its frontmatter are written, and again at review
@@ -783,6 +789,66 @@ So that I can judge Alisha's technical credibility and choose where to go within
 
 **And** `mockups/key-homepage.html` is updated in the same change so it shows path cards instead of the two earlier sections (`EXPERIENCE.md` §6.1)
 
+### Story 2.7: Story Render Guard & Single-Source Outcome Metric
+
+**Origin:** Epic 2 retrospective (rejected, 2026-10-12), A-1 and A-2 (F-5, F-6).
+
+As a developer adding a work story,
+I want every committed story rendered by a test and its outcome metric typed in one place,
+So that "adding a story means adding one file" can't ship a story that throws on the live site, and the homepage card and the story can never disagree about a number.
+
+**Acceptance Criteria:**
+
+**Given** the live registry (the real globs, not the fixture registry)
+**When** the test suite runs
+**Then** one parametrised test loads and renders the body of every non-draft `work` entry and asserts its Context, Decision and Outcome `h2`s, and, when the entry has `highlight.metric`, that the metric and its `unit` appear in the rendered Outcome. A third story added later is covered with no test edit
+
+**And** this test lands first, as its own commit, green against the current content, before any metric or content change in Stories 2.7 and 2.8
+
+**Given** a work story whose frontmatter has `highlight.metric`
+**When** its detail page renders
+**Then** `WorkStory` provides `highlight` to the body through a small React context around `<Body />`, and `OutcomeBlock` renders the metric and unit from that context in the same place and styling as today, next to its caveat. `OutcomeBlock` no longer accepts `metric` or `unit` props. A story with no `highlight` shows no metric
+
+**Given** `storyBodyProblems` in `plugins/contentFrontmatter.ts`
+**When** a work story's body has `metric=` or `unit=` on `<OutcomeBlock>`, or more than one `<OutcomeBlock>`
+**Then** the build fails naming the file and the rule, and valid and invalid fixtures cover both rules
+
+**Given** both committed stories
+**When** this story is complete
+**Then** their `<OutcomeBlock>` metric and unit props are removed, and the rendered metric and unit are identical to the homepage path card's
+
+**And** a story that isn't featured but has a metric gets a `highlight` without `featured` (the schema already allows it)
+
+**And** the amendment to Story 2.1's "components take props only" rule, for `OutcomeBlock` reading `highlight` through context, is recorded in this story's spec. AD-7 still holds, because the context comes from the page, not the registry
+
+### Story 2.8: Decision Blocks Carry Only the Decision
+
+**Origin:** Epic 2 retrospective (rejected, 2026-10-12), A-3 (F-1, F-10). Depends on Story 2.7's render test.
+
+As a visitor reading a deep story,
+I want each decision's reasoning to appear once, in the Rationale and Tradeoffs sections,
+So that I'm not reading the same labels and reasoning twice.
+
+**Acceptance Criteria:**
+
+**Given** the block composition decided on 2026-10-12 (option a)
+**When** a work story uses `<DecisionBlock>`
+**Then** the block carries only `decision`, and the page shows "Decision" as the block's only label. Rationale and Tradeoffs appear only as section `h2`s
+
+**Given** the three Decision Blocks in the two committed stories
+**When** their `rationale` and `tradeoffs` text moves
+**Then** each piece becomes an entry in that story's Rationale or Tradeoffs section, in the same heading-then-details format as the existing entries (a `###` entry or a bullet). No reasoning is dropped or shortened. Where a moved point overlaps an existing entry, the two are merged only if every clause of both survives
+
+**And** the RCM story still names the three triggers that force a sync and says the same user is processed several times a day (Story 2.4 AC, as reconciled), and the Azure story still presents the Cosmos DB incident and its four controls as a decision/outcome highlight (Story 2.5 AC)
+
+**And** Alisha reviews the reworked sections against the current text before the story is marked done
+
+**Given** `storyBodyProblems`
+**When** a `<DecisionBlock>` has `rationale=` or `tradeoffs=` and the story has a matching Rationale or Tradeoffs section, or the body has a setext `h2` (a paragraph line underlined with `---`)
+**Then** the build fails naming the file and the rule, with valid and invalid fixtures for each
+
+**And** the Story 2.7 render test stays green throughout
+
 ---
 
 ## Epic 3: Leadership & Enablement Path — Developing Others
@@ -791,6 +857,7 @@ A visitor can browse the Leadership & Enablement path and see evidence of how Al
 
 **FRs covered:** FR-9, FR-10, FR-11
 **Content status:** Blocked — story selection is still open (PRD §14.3 item 2). The mechanism can be built now; content-authoring stories can't be completed until Alisha selects specific stories.
+**Starts after:** the Epic 2 remediation gate (see Dependencies). Its epic context inherits the AD-3 block-composition and single-source-metric rules.
 
 ### Story 3.1: Leadership & Enablement Path Index & Homepage Teaser
 

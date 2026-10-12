@@ -7,7 +7,7 @@ paradigm: layered feature-foldered SPA (content · registry · route-pages · co
 scope: 'Technical architecture for the portfolio evolution — content architecture, routing shape, theme-token pipeline, ambient layer, per-route SEO/structured-data, build/deploy, performance guardrails, and the TypeScript toolchain. Brownfield: the existing Vite + React 19 SPA at asprinkleofcode/, on GitHub Pages.'
 status: final
 created: '2026-09-10'
-updated: '2026-10-11'
+updated: '2026-10-12'
 binds:
   - PRD.md v0.8 (FR-1..FR-24, NFR-1..NFR-5, C-1..C-6)
   - DESIGN.md v0.10
@@ -68,7 +68,7 @@ Stable IDs, ascending, never reused or renumbered. `[ADOPTED]` = the input contr
 
 - **Binds:** `work`-type stories.
 - **Prevents:** stories padded with empty sections to fill a fixed template; or, at the other extreme, two stories structured so differently they can't be scanned the same way.
-- **Rule:** the evidence sections have one canonical order: Context · Problem/Ambiguity · Constraints · Ownership · Decision · Rationale · Tradeoffs · Collaboration · Outcome · Reflection. **Context, Decision, and Outcome are always present.** The other seven appear only where the story has real evidence for them (PRD §6, DESIGN §13, EXPERIENCE §11). No section is invented to complete the set.
+- **Rule:** the evidence sections have one canonical order: Context · Problem/Ambiguity · Constraints · Ownership · Decision · Rationale · Tradeoffs · Collaboration · Outcome · Reflection. **Context, Decision, and Outcome are always present.** The other seven appear only where the story has real evidence for them (PRD §6, DESIGN §13, EXPERIENCE §11). No section is invented to complete the set. **Block composition (decided 2026-10-12, Epic 2 retro F-1):** a `DecisionBlock` carries only the decision. A decision's rationale and tradeoffs are written once, as entries in the Rationale and Tradeoffs sections, never also as block props. A work story has at most one `OutcomeBlock`. The build (`storyBodyProblems`) enforces both rules.
 
 ### AD-4 — The repo is a display artifact, not just the deployed site
 
@@ -105,7 +105,7 @@ graph LR
   components --> libhooks
 ```
 
-  Pages may read the registry; components never do (props only). Components never import pages. `src/theme/*` imports nothing app-level. MDX bodies import only from `src/mdx-components.tsx` (see AD-8).
+  Pages may read the registry; components never do (props only). One sanctioned exception to "props only": `OutcomeBlock` reads the story's `highlight` from a React context that `WorkStory` (a page) provides around the story body, because an MDX body can't pass frontmatter to its blocks. This is not registry access; the page still owns the read. Components never import pages. `src/theme/*` imports nothing app-level. MDX bodies import only from `src/mdx-components.tsx` (see AD-8).
 
 ### AD-8 — MDX bodies use explicit imports from a fixed whitelist
 
@@ -194,7 +194,7 @@ graph LR
 | Concern | Convention |
 | --- | --- |
 | File / component naming | Component per folder: `src/components/<Name>/<Name>.tsx`, plus a co-located `<Name>.css` only when the component has styles utilities and the theme can't express (no empty or comment-only stylesheets). Route targets: `src/pages/<Target>/<Target>.tsx`. Content files: kebab-case slug `.mdx`. Helpers: `src/lib/<camelCase>.ts`. |
-| Frontmatter keys | `work`: `type`, `title`, `path` (`engineering`\|`leadership`), `slug?`, `summary` (one-liner), `role`, `capabilities: Capability[]`, `date?`, `hero?: { src, alt }`, `highlight?: { headline, metric?, unit? }` (required when `featured` is set), `featured?: number`, `draft?: boolean`. `personal`: `type`, `title`, `slug?`, `summary`, `date?`, `hero?: { src, alt }`, `links?: { label, href }[]`, `pdf?: string` (static asset path, AD-20), `highlight?: { headline, metric?, unit? }` (required when `featured` is set), `featured?: number`, `draft?: boolean`, `listed?: boolean` (default `true`). Unknown keys rejected by the schema. |
+| Frontmatter keys | `work`: `type`, `title`, `path` (`engineering`\|`leadership`), `slug?`, `summary` (one-liner), `role`, `capabilities: Capability[]`, `date?`, `hero?: { src, alt }`, `highlight?: { headline, metric?, unit? }` (required when `featured` is set; also the single source of the story's Outcome metric, so a non-featured story with a metric still sets `highlight`, and a body never types `metric=`/`unit=` on `<OutcomeBlock>`), `featured?: number`, `draft?: boolean`. `personal`: `type`, `title`, `slug?`, `summary`, `date?`, `hero?: { src, alt }`, `links?: { label, href }[]`, `pdf?: string` (static asset path, AD-20), `highlight?: { headline, metric?, unit? }` (required when `featured` is set), `featured?: number`, `draft?: boolean`, `listed?: boolean` (default `true`). Unknown keys rejected by the schema. |
 | Downloadable / viewable documents | Static assets only, under `public/downloads/<slug>.pdf`, referenced via `pdf` on a dedicated `listed: false` `personal` entry (AD-20, AD-2) — never merged onto the dimension's own entry, never a `personal.links` item. Plain `<a href>`, no `target`/`rel`/`download`; optional inline `<iframe>`/`<object>` preview with an accessible name (AD-15). Visible PDF marker in the link's accessible name (EXPERIENCE §13 Document Links). Build fails if a non-draft `pdf` path has no committed file. No server, no PDF-viewer dependency for MVP. |
 | Capability vocabulary | `capabilities` draws from one controlled union, aligned to PRD D-4 / the evidence model: `business-to-engineering`, `ownership`, `engineering-judgment`, `ambiguity`, `enablement`. Extending the list is a deliberate edit to `frontmatter.ts`, not an ad-hoc string. |
 | Index ordering | A path index lists `featured` stories first (ascending `featured`), then the rest by `date` descending, then by `title`. Ties *within* the featured set fall through to the same `date` descending, then `title` tie-break — ordering is total, so two surfaces never order the same stories differently. Same rule for homepage teasers. |
