@@ -48,7 +48,7 @@ const Body = () => (
       <h3>Fixture subheading</h3>
     </StorySection>
     <StorySection section="decision">
-      <DecisionBlock decision="Fixture decision." rationale="Fixture rationale." />
+      <DecisionBlock decision="Fixture decision." />
     </StorySection>
     <StorySection section="outcome">
       <OutcomeBlock outcome="Fixture outcome." />
