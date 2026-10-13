@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-13-2026 18:20
-last_updated: 10-12-2026 16:57
+last_updated: 10-12-2026 22:07
 project: asprinkleofcode.github.io
 project_key: NOKEY
 tracking_system: file-system
@@ -175,7 +175,7 @@ action_items:
       build rules against block rationale=/tradeoffs= with a matching section and
       against setext h2. → Story 2.8"
     owner: "Dev (Amelia) + Alisha"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
   - id: "epic-2-retro-item-15-a-4-reconcile-epics-md-story-2-4-to-as-b"
     epic: 2
@@ -202,7 +202,7 @@ action_items:
     epic: 2
     action: "A-7: Set a Vitest worker limit in config or document it in AGENTS.md."
     owner: "Dev (Amelia)"
-    status: open
+    status: done
     ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
   - id: "epic-2-retro-item-19-a-8-story-3-1-criterion-unique-accessibl"
     epic: 2

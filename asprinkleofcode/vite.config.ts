@@ -23,5 +23,8 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     css: true,
+    // Default worker count timed out starting workers on the dev machine in
+    // Stories 2.3, 2.5 and 2.6 (Epic 2 retro A-7); two is enough for this suite.
+    maxWorkers: 2,
   },
 });
