@@ -1,7 +1,7 @@
 ---
 title: Alisha Sprinkle Korba Portfolio — PRD Addendum
 companion_to: PRD.md
-updated: 2026-09-13
+updated: 2026-10-25
 ---
 
 # PRD Addendum
@@ -398,3 +398,70 @@ This gives the same "I'd defend the call under the constraints I had, and here's
 specifically what I'd change with more time or influence" bar as ES-1, from a different
 technical angle (platform/infrastructure architecture vs. event-driven data
 synchronization) — useful breadth if both are selected for the Engineering path.
+
+---
+
+## Beyond the Code — Source Material
+
+Supplied by Alisha for Epic 4 (`planning-artifacts/sprint-change-proposal-2026-10-25.md`
+§5). Public: everything here is committed (AD-4), so it is written to the same
+public-safety rules as the stories (`EXPERIENCE.md` §22). Stories are authored from this
+material only; where a section is empty, the agent asks rather than writing it.
+
+### BC-1: Powerlifting
+
+#### Story (in Alisha's words)
+
+<!-- How you started, the journey over time, setbacks, progress, what it means to you.
+     Rough is fine; the agent shapes it, it doesn't add to it. -->
+
+#### Facts the story may state
+
+<!-- Meets, lifts, numbers, dates — only ones you're happy to publish. -->
+
+#### Photos
+
+<!-- Files live in asprinkleofcode/src/assets/media/powerlifting/ (see media/README.md).
+     1 hero + 4–6. -->
+
+| File (in `media/powerlifting/`) | Role | Alt text | Caption (optional) | Credit (if required) |
+|---|---|---|---|---|
+
+#### Videos (links only, not files)
+
+<!-- Whether video is used at all is decided in Story 4.1. -->
+
+| URL (YouTube or Google Drive) | Title that tells this clip apart | Keep? |
+|---|---|---|
+
+#### Featured highlight (homepage card)
+
+- headline:
+- summary:
+
+### BC-2: Birdhouses
+
+#### Story (in Alisha's words)
+
+<!-- How you got into it, the gourd-to-birdhouse process, what you make, who for. -->
+
+#### Facts the story may state
+
+#### Photos
+
+<!-- Files live in asprinkleofcode/src/assets/media/birdhouses/. 1 hero + 5–7 process
+     (numbered 01-, 02-… in order) + 3–6 finished pieces. -->
+
+| File (in `media/birdhouses/`) | Role (hero / process NN / finished) | Alt text | Caption (optional) | Credit (if required) |
+|---|---|---|---|---|
+
+#### Care guide
+
+- file: `public/downloads/birdhouse-care-guide.pdf`
+- link label (shown to visitors; "(PDF)" is added if you leave it out):
+- one line on what's in it:
+
+#### Featured highlight (homepage card)
+
+- headline:
+- summary:

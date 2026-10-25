@@ -983,7 +983,7 @@ answered.
    standing constraint (the product/system name is proprietary and permanently withheld,
    not merely pending confirmation like the rest); still open for any additional selected story.
 5. Speaking topics and events, once public-safe material is ready (A-13).
-6. What photography or video is available for the making dimension and for story imagery (A-11).
+6. What photography or video is available for the making dimension and for story imagery (A-11) — **answered for Beyond the Code (2026-10-25):** Alisha has web-ready photos for both dimensions. Video use is decided in Story 4.1. Work-story imagery stays text-first.
 
 ---
 

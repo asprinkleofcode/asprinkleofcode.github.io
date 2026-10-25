@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-13-2026 18:20
-last_updated: 10-12-2026 22:07
+last_updated: 10-25-2026 12:00
 project: asprinkleofcode.github.io
 project_key: NOKEY
 tracking_system: file-system
@@ -46,7 +46,7 @@ development_status:
   1-8-visual-alignment-to-homepage-mockup: done
   epic-1-retrospective: done
 
-  epic-2: in-progress
+  epic-2: done
   2-1-work-story-presentation-components: done
   2-2-work-story-detail-page: done
   2-3-engineering-path-index-summary-scan-selection: done
@@ -57,18 +57,20 @@ development_status:
   2-8-decision-blocks-carry-only-the-decision: done
   epic-2-retrospective: done
 
-  epic-3: backlog
-  3-1-leadership-enablement-path-index-homepage-teaser: backlog
-  3-2-author-leadership-enablement-stories: backlog
-  epic-3-retrospective: optional
-
+  # Epic 4 runs before Epic 3 (sprint-change-proposal-2026-10-25); IDs unchanged.
   epic-4: backlog
   4-1-personal-story-component-detail-page: backlog
   4-2-beyond-the-code-path-index: backlog
   4-3-birdhouses-care-guide-static-pdf-asset: backlog
   4-4-author-powerlifting-birdhouses-dimension-stories: backlog
   4-5-homepage-personal-hint-teaser: backlog
+  4-6-retire-legacy-about-page: backlog
   epic-4-retrospective: optional
+
+  epic-3: backlog
+  3-1-leadership-enablement-path-index-homepage-teaser: backlog
+  3-2-author-leadership-enablement-stories: backlog
+  epic-3-retrospective: optional
 action_items:
   - id: "epic-1-retro-item-1-retire-app-css-cascade"
     epic: 1
@@ -148,7 +150,7 @@ action_items:
     epic: 1
     action: "A-11: Add og:image/twitter:image from a stable public/ headshot and repoint
       JSON-LD image; fix ExternalLink whole-label nowrap before first multi-word outbound
-      link."
+      link. → Story 4.4 (ExternalLink wrap) and Story 4.6 (og:image, JSON-LD image)."
     owner: "PM (John)"
     status: open
     ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-10-05.md"
@@ -206,15 +208,16 @@ action_items:
     ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
   - id: "epic-2-retro-item-19-a-8-story-3-1-criterion-unique-accessibl"
     epic: 2
-    action: "A-8: Story 3.1 criterion: unique accessible names for path-card links
-      once more than one path is live."
+    action: "A-8: Unique accessible names for path-card links once more than one path
+      is live. → Story 4.5 (second live card); verified again in Story 3.1."
     owner: "PM (John)"
     status: open
     ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"
   - id: "epic-2-retro-item-20-a-9-epic-4-planning-reject-highlight-met"
     epic: 2
     action: "A-9: Epic 4 planning: reject highlight.metric/unit on personal entries;
-      land Story 4.1 before 4.4/4.5 publish content."
+      land Story 4.1 before 4.4/4.5 publish content. → Story 4.1 (schema rule) and
+      Epic 4 sequencing note."
     owner: "PM (John)"
     status: open
     ref: "_bmad-output/implementation-artifacts/epic-2-retro-2026-10-12.md"

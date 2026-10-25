@@ -37,6 +37,8 @@ This document provides the complete epic and story breakdown for the Alisha Spri
 
 **Update note (2026-10-12, Epic 2 retrospective, verdict rejected):** the retro (`implementation-artifacts/epic-2-retro-2026-10-12.md`) found decision-block reasoning shown twice (F-1), Story 2.4 criteria not met as written (F-2, F-3, F-4), no render test over all stories (F-5) and the outcome metric typed twice (F-6). New Stories 2.7 and 2.8 carry the fixes. Story 2.4's criteria are reconciled to the copy as authored, Story 2.1 records the block-composition and `OutcomeBlock` context amendments, and Epic 3 is gated on the remediation (`planning-artifacts/sprint-change-proposal-2026-10-12.md`). Two stories were added. None were removed or renumbered.
 
+**Update note (2026-10-25, resequence):** Epic 4 (Beyond the Code) now runs before Epic 3 (Leadership & Enablement). Leadership stories aren't chosen yet (PRD §14.3 item 2), and Sprinkle has supplied the Beyond the Code narratives, photos and care-guide PDF. Epic and story IDs are unchanged, and so is the order visitors see (header, homepage path cards, routes). Story 4.6 is added (retire the legacy `/about` page). Stories 4.1, 4.3, 4.4 and 4.5 pick up retro items A-9, A-11 and A-8 and the supplied content, and Story 3.1 keeps a pointer to A-8 (`planning-artifacts/sprint-change-proposal-2026-10-25.md`). One story was added. None were removed or renumbered.
+
 ## Requirements Inventory
 
 ### Functional Requirements
@@ -200,7 +202,9 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 | AD-20 care-guide asset | Epic 4 — Beyond the Code |
 | FR-18 | Excluded from MVP epic breakdown — conditional on A-13, purely additive later (AD-18) |
 
-**Dependencies:** Epic 1 blocks Epics 2–4 (shared shell, routing, tokens, content pipeline). Epics 2, 3, and 4 are independent of each other; Epic 2 before Epic 3 lets Leadership reuse Engineering's story components with zero rework. **Gate (2026-10-12):** Epic 3 starts only after Epic 2's remediation stories (2.7, 2.8) are done, Story 2.4's criteria are reconciled, and the Epic 2 retrospective is resumed and its verdict re-recorded (`implementation-artifacts/epic-2-retro-2026-10-12.md`). Epic 3 reuses the render guard and the block rules.
+**Dependencies:** Epic 1 blocks Epics 2–4 (shared shell, routing, tokens, content pipeline). Epics 2, 3, and 4 are independent of each other; Epic 2 before Epic 3 lets Leadership reuse Engineering's story components with zero rework. **Gate (2026-10-12):** the next epic starts only after Epic 2's remediation stories (2.7, 2.8) are done, Story 2.4's criteria are reconciled, and the Epic 2 retrospective is resumed and its verdict re-recorded (`implementation-artifacts/epic-2-retro-2026-10-12.md`). The gate was met on 2026-10-12. Epic 3 reuses the render guard and the block rules.
+
+**Build order (2026-10-25):** Epic 4 runs next, and Epic 3 follows once Leadership & Enablement stories are chosen (PRD §14.3 item 2). This changes the build order only. The visitor-facing order stays Engineering → Leadership & Enablement → Beyond the Code in the header, the homepage path cards and the routes (FR-3, D-15, UX-DR27).
 
 ## Epic List
 
@@ -226,6 +230,7 @@ A visitor can browse the Leadership & Enablement path and see evidence of how Al
 
 **FRs covered:** FR-9, FR-10, FR-11
 **Content status:** Blocked — story selection is still open (PRD §14.3 item 2). The mechanism can be built now; content-authoring stories can't be completed until Alisha selects specific stories.
+**Sequenced after Epic 4 (2026-10-25):** starts when Leadership stories are chosen.
 
 ### Epic 4: Beyond the Code — Personal Dimensions
 
@@ -233,7 +238,8 @@ A visitor can discover Alisha's personal side — powerlifting and Birdhouses �
 
 **FRs covered:** FR-12, FR-13, FR-14, FR-19
 **Architecture covered:** AD-20 (care guide as in-portfolio PDF asset)
-**Content status:** Partial risk — Instagram handles supplied (A-14: @asprinkleofcode, @orangecatwoodcraft); the care-guide PDF file itself needs to be supplied. Links/downloads render only once real values exist — no placeholders (NFR-4).
+**Content status:** Supplied (2026-10-25). Alisha has the powerlifting and Birdhouses narratives, web-ready photos and the care-guide PDF; Instagram handles are supplied (A-14: @asprinkleofcode, @orangecatwoodcraft). Stories are authored from her material only (`addendum.md` BC-1, BC-2); nothing is invented beyond it. Links and downloads render only once the real files and values are committed, with no placeholders (NFR-4).
+**Sequenced next (2026-10-25):** runs before Epic 3. Story 4.1 lands before 4.4 and 4.5 publish content (Epic 2 retro A-9).
 
 **Excluded from this MVP breakdown:** FR-18 (Speaking) is conditional on public-safe material existing (A-13) and is framed by Architecture as "purely additive later" (AD-18) — not planned as a story here, since there is no content yet to build against.
 
@@ -857,6 +863,7 @@ A visitor can browse the Leadership & Enablement path and see evidence of how Al
 
 **FRs covered:** FR-9, FR-10, FR-11
 **Content status:** Blocked — story selection is still open (PRD §14.3 item 2). The mechanism can be built now; content-authoring stories can't be completed until Alisha selects specific stories.
+**Sequenced after Epic 4 (2026-10-25):** starts when Leadership stories are chosen.
 **Starts after:** the Epic 2 remediation gate (see Dependencies). Its epic context inherits the AD-3 block-composition and single-source-metric rules.
 
 ### Story 3.1: Leadership & Enablement Path Index & Homepage Teaser
@@ -882,6 +889,8 @@ So that I can scan and select leadership stories the same way I can Engineering 
 **Given** zero real Leadership content exists at the time this story ships
 **When** `/leadership` and the homepage card render
 **Then** `/leadership` shows the graceful "no stories yet" state from Story 1.7 and the homepage card stays Coming soon (Story 2.6) — this story delivers the mechanism, not the content
+
+**And** the unique path-card link names from Story 4.5 (Epic 2 retro A-8) hold once the Leadership card is live too. This is verified, not rebuilt
 
 **And** this story requires no changes to the registry, routing, or shared components — verification only, given AD-5/AD-1's design already generalizes to any `work` path value
 
@@ -925,7 +934,9 @@ A visitor can discover Alisha's personal side — powerlifting and Birdhouses �
 
 **FRs covered:** FR-12, FR-13, FR-14, FR-19
 **Architecture covered:** AD-20 (care guide as in-portfolio PDF asset)
-**Content status:** No narrative source material exists yet for either dimension (unlike Engineering's `addendum.md`) — do not invent content. Instagram handles supplied (A-14: @asprinkleofcode, @orangecatwoodcraft); the care-guide PDF file itself needs to be supplied. Links/downloads render only once real values exist — no placeholders (NFR-4).
+**Content status:** Supplied (2026-10-25). Alisha has the powerlifting and Birdhouses narratives, web-ready photos and the care-guide PDF; Instagram handles are supplied (A-14: @asprinkleofcode, @orangecatwoodcraft). Stories are authored from her material only (`addendum.md` BC-1, BC-2); nothing is invented beyond it. Links and downloads render only once the real files and values are committed, with no placeholders (NFR-4).
+**Sequenced next (2026-10-25):** runs before Epic 3. Story 4.1 lands before 4.4 and 4.5 publish content (Epic 2 retro A-9).
+**Content drop:** Alisha merges her source material to `main` before Story 4.3 starts (`planning-artifacts/sprint-change-proposal-2026-10-25.md` §5): narratives and photo/video tables in `addendum.md` BC-1 and BC-2, photos in `src/assets/media/powerlifting/` and `src/assets/media/birdhouses/`, the PDF at `public/downloads/birdhouse-care-guide.pdf`, and videos as links only.
 
 ### Story 4.1: Personal Story Component & Detail Page
 
@@ -974,6 +985,14 @@ So that the experience feels authentic rather than forced into the professional 
 **Given** the photo visual treatment is OPEN (UX-DR31)
 **When** the first real photos are placed
 **Then** their aspect ratio, radius, and edge, and the Birdhouses sequence-or-gallery presentation, are decided with Alisha and recorded in `DESIGN.md` / `EXPERIENCE.md` — not invented in code
+
+**Given** the Beyond the Code card carries no metric (UX-007, `EXPERIENCE.md` §6.4) (Epic 2 retro A-9, F-7)
+**When** a `personal` entry's frontmatter has `highlight.metric` or `highlight.unit`
+**Then** the build fails naming the file, and valid and invalid fixtures cover it. `highlight.headline` stays allowed
+
+**Given** the legacy powerlifting page embeds videos, and the UX contract covers photos only (UX-DR31)
+**When** Alisha decides whether a personal story uses video
+**Then** either it doesn't, or the decision (embed source, one sanctioned block in `src/mdx-components.tsx`, a `title` that tells each clip apart, lazy loading, a cap per page) is recorded in `EXPERIENCE.md` §22 before the block is built. No video block is invented in code
 
 **And** a component test renders `PersonalPage` against fixture frontmatter/content to verify it doesn't throw
 
@@ -1027,9 +1046,9 @@ So that I get real, usable information without being redirected to an external s
 **When** implemented
 **Then** an `<iframe>`/`<object>` embed may accompany the link, with an accessible name (AD-15) and fallback text, and it never replaces the plain link, because mobile browsers vary in how they handle embedded PDFs. The preview is not required for MVP.
 
-**Given** the actual PDF file has not yet been supplied by Alisha
+**Given** Alisha has supplied the care-guide PDF (2026-10-25)
 **When** this story ships
-**Then** the mechanism exists but is not wired to a real asset until the file is supplied: no placeholder PDF is committed and no care-guide link renders anywhere (NFR-4, UX-DR29 Missing Content, `EXPERIENCE.md` Birdhouse Flow)
+**Then** the file is committed as a new asset at `public/downloads/<slug>.pdf` (supplied by the content drop as `public/downloads/birdhouse-care-guide.pdf`, so the entry's slug is `birdhouse-care-guide`), the link label is the wording in `addendum.md` BC-2, the entry's `pdf` field names the file, and a test fails if a non-draft entry's `pdf` does not resolve to a file under `public/downloads/`. No placeholder PDF is ever committed, and if the file is not in the PR, no care-guide link renders anywhere (NFR-4, UX-DR29 Missing Content, `EXPERIENCE.md` Birdhouse Flow)
 
 **And** the Birdhouses dimension's own entry (Story 4.4) links to this care-guide entry from its own content context once both exist
 
@@ -1039,9 +1058,9 @@ As a visitor who wants to understand Alisha beyond her professional work,
 I want to read authentic powerlifting and Birdhouses stories,
 So that I come away seeing a whole person, not a résumé.
 
-**Status:** Content-blocked — no narrative source material exists yet for either dimension (unlike Engineering's `addendum.md`); do not invent content. Photography/video availability is also an open question (A-11, PRD §14.3 item 6); where photos go, how many, and how they are chosen are now decided (UX-DR31, `EXPERIENCE.md` v0.12 §22 Photography), and Alisha adds them under `src/assets/media/powerlifting/` and `src/assets/media/birdhouses/`.
+**Status:** Content supplied (2026-10-25). Alisha provides the powerlifting and Birdhouses narratives and the photos through the content drop (`addendum.md` BC-1 and BC-2, photos in `src/assets/media/<dimension>/`); the stories are authored from that material only, and nothing is invented to fill a gap. If a section the story needs is missing from BC-1 or BC-2, the agent asks Alisha rather than writing it. Where photos go, how many, and how they are chosen are decided (UX-DR31, `EXPERIENCE.md` v0.12 §22 Photography). Depends on Story 4.1 (A-9).
 
-**Acceptance Criteria (to satisfy once content is supplied):**
+**Acceptance Criteria:**
 
 **Given** FR-12
 **When** both dimensions are authored
@@ -1055,6 +1074,10 @@ So that I come away seeing a whole person, not a résumé.
 **When** a dimension has enough material to be a meaningful experience rather than a simple profile detail
 **Then** a path exists to explore its story/process/context — depth follows the material, not a quota
 
+**Given** the dimension routes are shared links once live (AD-5)
+**When** the two entries are committed
+**Then** their slugs are exactly `powerlifting` and `birdhouses` (files `src/content/personal/powerlifting.mdx` and `src/content/personal/birdhouses.mdx`, with no `slug` override), so the routes are `/beyond/powerlifting` and `/beyond/birdhouses`. *(Pinned 2026-10-25 by Sprinkle; "birdhouses" follows D-18.)*
+
 **Given** FR-19 and D-17
 **When** a dimension has a real Instagram presence and Alisha has supplied the handle (A-14)
 **Then** the story's frontmatter `links` includes that outbound destination, rendered via the same External Link pattern as Story 1.4 (target, rel, leaving-the-site affordance)
@@ -1062,6 +1085,10 @@ So that I come away seeing a whole person, not a résumé.
 **Given** A-14 handles are supplied (powerlifting = @asprinkleofcode, Birdhouses = @orangecatwoodcraft)
 **When** each dimension's story is authored
 **Then** its frontmatter `links` uses exactly that handle's URL — no other Instagram link is stubbed or invented (NFR-4)
+
+**Given** these are the site's first multi-word outbound links (Epic 1 retro A-11, R-9)
+**When** an Instagram link renders through `ExternalLink`
+**Then** its label wraps between words like body text, and only the last word and the "leaves the site" arrow are kept together, so the arrow never wraps onto a line by itself. A component test covers a multi-word label
 
 **Given** UX-DR31
 **When** a dimension's photos are committed
@@ -1093,4 +1120,34 @@ So that I notice it without it competing with the professional evidence.
 **When** the homepage renders
 **Then** the card stays Coming soon, as shipped by Story 2.6
 
+**Given** Beyond the Code becomes the second live path card (Epic 2 retro A-8, F-8)
+**When** more than one card is live
+**Then** each card's "Read the story →" link has an accessible name unique on the page that includes the path or the story (for example "Read the story: Engineering"), the visible label is unchanged, and a test asserts the names are unique with two or more live cards
+
 **And** clicking the live card navigates to that dimension's detail page directly
+
+### Story 4.6: Retire the Legacy `/about` Page
+
+**Origin:** resequence proposal (2026-10-25). Code comments and `deferred-work.md` say Epic 4 replaces `AboutMe`, but no Epic 4 story did. Depends on Stories 4.1 and 4.4, so the powerlifting content is live in its new home before the old page goes.
+
+As a visitor, and as the developer maintaining the site,
+I want the old `/about` page gone once its content lives in Beyond the Code,
+So that there's one place for each story and no off-system page lingers by URL.
+
+**Acceptance Criteria:**
+
+**Given** AD-5's fixed route set
+**When** this story is complete
+**Then** the `/about` route and the `AboutMe` page code (`AboutMe.tsx`, `Primary.jsx`, `BeyondTheCodePowerlifting.jsx` and their `.css`) are removed, and `/about` falls through to the not-found page (AD-16)
+
+**And** no photo or video file is modified or deleted (AGENTS.md). Media that only the legacy page used stays in place, and any removal is proposed separately
+
+**Given** the legacy exceptions kept "until Epic 4"
+**When** the page is removed
+**Then** the `/about` allowances in `semanticTokens.test.ts` and `globalCss.test.ts` and the "Epic 4 replaces it" comments (`App.tsx`, `Personal.tsx`, `PathIndex.tsx`) are removed or updated, and both gates pass with no legacy exception
+
+**Given** the Person JSON-LD `image` in `index.html` points at a Vite-hashed headshot (`deferred-work.md`, Epic 1 retro A-11)
+**When** this story is complete
+**Then** `index.html` uses a stable `public/` copy of the headshot (a new file, with the original untouched) for the JSON-LD `image`, `og:image` and `twitter:image`, and the built `dist` serves it
+
+**And** every `deferred-work.md` entry marked "Epic 4" is set to `resolved-by` this story or to the Story 4.4 change that resolved it (for example the powerlifting video titles, if the videos moved)
