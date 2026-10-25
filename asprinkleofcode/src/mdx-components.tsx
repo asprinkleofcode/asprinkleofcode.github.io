@@ -12,3 +12,4 @@ export { default as DecisionBlock } from "./components/DecisionBlock/DecisionBlo
 export { default as OutcomeBlock } from "./components/OutcomeBlock/OutcomeBlock";
 export { default as CapabilitySignal } from "./components/CapabilitySignal/CapabilitySignal";
 export { default as Photo } from "./components/Photo/Photo";
+export { default as VideoEmbed } from "./components/VideoEmbed/VideoEmbed";

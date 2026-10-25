@@ -138,7 +138,7 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   evidence: Nothing calls `watchChange` in tests, and the integration server sets `watch: null`. If the hook is removed or keyed differently from `load`'s display path, a renamed featured story fails with "already used by <deleted file>" until the dev server restarts. This affects dev only (Story 2.4A review, verification gap).
 
 - source_spec: none
-  status: open
+  status: resolved-by #49 (VideoEmbed facade block, shared src validator and build rules with fixtures)
   summary: Story 4.1 part B: the sanctioned `VideoEmbed` MDX block (click-to-load 16:9 facade with optional `media/` poster or role-token panel, play control named by `title`, YouTube-nocookie/Drive `<iframe>` created only on activation, no autoplay/loop/layout shift), its build rules (non-YouTube/Drive `src`, missing/empty `title`, more than 4 clips per page each fail naming the file, with valid/invalid fixtures), and a component test that no `<iframe>` exists before activation. Must land before Story 4.4.
   evidence: Alisha split Story 4.1 at the step-01 scope gate (2026-10-25): VideoEmbed is an independently shippable block with its own third-party/privacy rules, and only Story 4.4 depends on it. Part A ships PersonalPage, the photo block and the A-9 metric rule. Story 4.1 is `done` in sprint-status only when part B merges.
 

@@ -82,7 +82,12 @@ describe("content pipeline through Vite", () => {
     // An outcome-only Outcome Block passes the body rules and compiles.
     expect(html).toContain("Fixture outcome.");
     expect(html).not.toContain("type: work");
-    expect(await render(registry, "../content/personal/valid-personal.mdx")).toContain("PERSONALBODYMARKER");
+    const personalHtml = await render(registry, "../content/personal/valid-personal.mdx");
+    expect(personalHtml).toContain("PERSONALBODYMARKER");
+    // A valid VideoEmbed passes the build rules and compiles to its click-to-load facade: no iframe, no third-party URL.
+    expect(personalHtml).toContain('aria-label="Fixture clip: squat, 2025"');
+    expect(personalHtml).not.toContain("<iframe");
+    expect(personalHtml).not.toContain("youtube");
 
     expect(await render(registry, "../content/work/draft-work.mdx")).toBe("");
     const draftCode = (await server!.transformRequest("/src/content/work/draft-work.mdx", { ssr: true }))?.code ?? "";
@@ -123,6 +128,21 @@ describe("content pipeline through Vite", () => {
       "invalid-personal",
       `/src/content/personal/${name}.mdx?frontmatter`
     ).then(
+      () => undefined,
+      (e: unknown) => e
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).name).toBe("FrontmatterError");
+    expect((error as Error).message).toContain(`src/content/personal/${name}.mdx`);
+    expect((error as Error).message).toContain(problem);
+  });
+
+  it.each([
+    ["bad-src", "<VideoEmbed> 1 of 1: src \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" is not a sanctioned embed"],
+    ["no-title", '<VideoEmbed> 1 of 1 must have a literal title="…" attribute'],
+    ["five-clips", "a page may have at most 4 clips (found 5)"],
+  ])("fails a body whose VideoEmbed breaks the build rules (%s), naming the file", async (name, problem) => {
+    const error: unknown = await loadFixture("invalid-video", `/src/content/personal/${name}.mdx?frontmatter`).then(
       () => undefined,
       (e: unknown) => e
     );

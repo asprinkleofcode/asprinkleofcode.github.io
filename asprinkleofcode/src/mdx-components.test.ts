@@ -9,6 +9,7 @@ describe("MDX block whitelist (AD-8)", () => {
       "OutcomeBlock",
       "Photo",
       "StorySection",
+      "VideoEmbed",
     ]);
     for (const block of Object.values(blocks)) expect(typeof block).toBe("function");
   });
