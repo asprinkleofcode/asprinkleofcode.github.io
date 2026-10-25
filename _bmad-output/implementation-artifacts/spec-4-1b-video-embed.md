@@ -74,7 +74,7 @@ context:
 - [x] `asprinkleofcode/plugins/__fixtures__/invalid-video/**`, `valid/…/valid-personal.mdx`, integration test -- valid and invalid fixtures name the file
 - [x] `asprinkleofcode/src/components/VideoEmbed/VideoEmbed.tsx` (+ test) -- facade, activation, focus, guards
 - [x] `asprinkleofcode/src/mdx-components.tsx` + `.test.ts` -- whitelist `VideoEmbed`
-- [ ] `_bmad-output/implementation-artifacts/deferred-work.md` -- set the part B entry to `resolved-by #<PR>` at close-out
+- [x] `_bmad-output/implementation-artifacts/deferred-work.md` -- set the part B entry to `resolved-by #<PR>` at close-out
 
 **Acceptance Criteria:**
 - Given a rendered `VideoEmbed`, when nothing is activated, then the DOM has no `<iframe>` and no URL on a third-party host.
