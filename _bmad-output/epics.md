@@ -39,6 +39,8 @@ This document provides the complete epic and story breakdown for the Alisha Spri
 
 **Update note (2026-10-25, resequence):** Epic 4 (Beyond the Code) now runs before Epic 3 (Leadership & Enablement). Leadership stories aren't chosen yet (PRD §14.3 item 2), and Sprinkle has supplied the Beyond the Code narratives, photos and care-guide PDF. Epic and story IDs are unchanged, and so is the order visitors see (header, homepage path cards, routes). Story 4.6 is added (retire the legacy `/about` page). Stories 4.1, 4.3, 4.4 and 4.5 pick up retro items A-9, A-11 and A-8 and the supplied content, and Story 3.1 keeps a pointer to A-8 (`planning-artifacts/sprint-change-proposal-2026-10-25.md`). One story was added. None were removed or renumbered.
 
+**Update note (2026-10-25, video and care guide):** Sprinkle decided that the powerlifting story uses video and that the care guide is only the PDF. `EXPERIENCE.md` v0.15 adds §22 Video (UX-032) and links the care guide straight from the Birdhouses page (UX-033). `ARCHITECTURE-SPINE.md` AD-20 is revised so the care guide becomes a `pdf: { label, href }` field on the Birdhouses entry, with no separate entry, route or inline preview, and the third-party embeds convention names the `VideoEmbed` block. Story 4.1 builds `VideoEmbed`, Story 4.3 builds the document link against fixtures, and Story 4.4 wires the real PDF and clips. The content drop is now due before Story 4.4. No stories were added, removed or renumbered.
+
 ## Requirements Inventory
 
 ### Functional Requirements
@@ -110,7 +112,7 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 **AD-17 — Toolchain + compliance baseline (must be Story 1 of Epic 1, blocks all other work):** Add `typescript` (~5.9), `typescript-eslint` (^8.70), `eslint-plugin-jsx-a11y` (^6.10), `vitest` + `@testing-library/react`; add `tsconfig.json` (`strict: true`) + `tsconfig.node.json`; extend `eslint.config.js` to `**/*.{ts,tsx}`; migrate `App.jsx` / `main.jsx` to `.tsx`/`.ts` (AD-9); author the AD-10 semantic token layer (`colors.css` role tokens + new `theme.css` Tailwind `@theme` mapping + typed `aSprinkleOfCodeTheme.ts`) — without which AD-10 is unbuildable; perform AD-4 dead-scaffolding cleanup (remove the `useState` counter in `App.jsx`, the stale `NavbarBrand` `href`, the unused `react.svg`); update `AGENTS.md`'s "lint covers only `.js`/`.jsx`" note; add a light smoke test (each route renders without throwing, registry loads, no console errors). Only when `tsc --noEmit`, `eslint`, and `vitest run` all pass does `build` become `tsc --noEmit && eslint && vitest run && vite build`.
 
 - **AD-1 (content model):** Every content piece is one `.mdx` file, one pipeline (`@mdx-js/rollup`), two frontmatter schemas discriminated by directory: `work` (`src/content/work/`, Engineering + Leadership) and `personal` (`src/content/personal/`, Beyond the Code). No CMS or backend.
-- **AD-2 (frontmatter as source of truth):** Summary cards, path indexes, and homepage teasers are generated entirely from frontmatter — never separately authored prose. `capabilities` draws from a controlled vocabulary. `draft: true` removes a story at the registry/build level (body never enters `dist`). Missing/invalid required frontmatter fails the build. No empty-state shells for non-existent content. `listed: false` lets a `personal` entry (e.g. the care guide) exist without appearing in the `/beyond` index.
+- **AD-2 (frontmatter as source of truth):** Summary cards, path indexes, and homepage teasers are generated entirely from frontmatter — never separately authored prose. `capabilities` draws from a controlled vocabulary. `draft: true` removes a story at the registry/build level (body never enters `dist`). Missing/invalid required frontmatter fails the build. No empty-state shells for non-existent content. `listed: false` lets a `personal` entry exist without appearing in the `/beyond` index (no MVP entry uses it since the 2026-10-25 AD-20 revision; the care guide is a field on the Birdhouses entry).
 - **AD-3 (deep-story structure):** Canonical section order — Context · Problem/Ambiguity · Constraints · Ownership · Decision · Rationale · Tradeoffs · Collaboration · Outcome · Reflection. Context, Decision, and Outcome are always present; the other seven appear only where real evidence exists.
 - **AD-4 (repo as display artifact):** Every commit to `main` — code, content, and planning artifacts — is held to the public-safe, no-scaffolding standard. `_bmad-output/` is committed except `.memlog.md` and `.working/`. Branch-and-PR only; never commit to `main`.
 - **AD-5 (fixed routes, discovered content):** Route set is exactly `/`, `/engineering` + `/engineering/:slug`, `/leadership` + `/leadership/:slug`, `/beyond` + `/beyond/:slug`, and `*`. `HashRouter` only. Stories are discovered via `import.meta.glob`, never manually registered — adding a story means adding one `.mdx` file.
@@ -127,7 +129,7 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 - **AD-16 (never a blank page):** App-shell React error boundary wraps the routed area (below `<Header>`, above `<Footer>`), rendering a recovery fallback with navigation intact on render/chunk-load failure. `*` route renders a not-found page that keeps header/nav.
 - **AD-18 (self-sufficient entry surface):** The three exploration paths are fixed product structure and always render; story content inside them is registry-derived (AD-2's no-empty-shell rule applies to that). No route, nav entry, path card, or teaser slot may be conditional on content that doesn't exist yet (speaking/FR-18, a third Beyond-the-Code dimension, the care-guide destination) — such surfaces are purely additive later. The static `index.html` head + `Person` JSON-LD is the single canonical owner of entry-surface identity/capability wording; the Landing page must not state a different claim (smoke-tested).
 - **AD-19 (scroll/focus on navigation):** One shell-level handler owns scroll and focus behavior for every route change — no page implements its own. Forward navigation: scroll to top of `<main>`, move focus to the new page's `<h1>`. Back/pop navigation: restore previous scroll position. Settles after the lazy body resolves; instant (no smooth scroll) under reduced motion.
-- **AD-20 (in-portfolio documents are static assets, not outbound links) — NEW since the prior extraction:** The Birdhouses care guide (and any future in-portfolio document) is a `listed: false` `personal` entry (its own `.mdx`, own route, reachable but absent from `/beyond` and every teaser) — **not** a field merged onto the Birdhouses dimension's own entry. Its frontmatter carries an optional `pdf?: string` field naming a static asset under `public/downloads/<slug>.pdf`, served directly by GitHub Pages. Rendering is a plain same-origin `<a href>` — **no** `target="_blank"`, **no** `rel`, **no** `download` attribute (those belong to the outbound-link convention only); an optional inline `<iframe>`/`<object>` preview may accompany it with an accessible name (AD-15). No PDF-viewer library required for MVP. This directly implements PRD A-12 (resolved 2026-09-12: the care guide is a downloadable PDF hosted within the portfolio, not an external link).
+- **AD-20 (in-portfolio documents are static assets, not outbound links) — NEW since the prior extraction:** The Birdhouses care guide (and any future in-portfolio document) is a `listed: false` `personal` entry (its own `.mdx`, own route, reachable but absent from `/beyond` and every teaser) — **not** a field merged onto the Birdhouses dimension's own entry. Its frontmatter carries an optional `pdf?: string` field naming a static asset under `public/downloads/<slug>.pdf`, served directly by GitHub Pages. Rendering is a plain same-origin `<a href>` — **no** `target="_blank"`, **no** `rel`, **no** `download` attribute (those belong to the outbound-link convention only); an optional inline `<iframe>`/`<object>` preview may accompany it with an accessible name (AD-15). No PDF-viewer library required for MVP. This directly implements PRD A-12 (resolved 2026-09-12: the care guide is a downloadable PDF hosted within the portfolio, not an external link). **Revised 2026-10-25:** the care guide is only the PDF, so it is a `pdf: { label, href }` field on the Birdhouses entry itself, linked directly from that page, with no separate entry, route or inline preview (`ARCHITECTURE-SPINE.md` AD-20, `EXPERIENCE.md` UX-033).
 - **Stack additions requiring installation:** `@mdx-js/rollup` (^3.1, `enforce: 'pre'`), `typescript` (~5.9), `typescript-eslint` (^8.70), `eslint-plugin-jsx-a11y` (^6.10), `vitest` + `@testing-library/react` (^5.0 / ^16.3), `rollup-plugin-visualizer` (^7.1, dev-only, on-demand bundle analysis).
 - **Operations/deploy:** Single production environment, no staging/PR-preview. Existing `.github/workflows/main.yml` deploy runs unchanged. Pre-merge verification is local `npm run build && npm run preview` + branch review — no PR-triggered CI. Rollback = revert the commit on `main`. No CI performance/bundle-size gate for MVP; a manual Lighthouse pass (Accessibility in the 90s, homepage LCP < 2.5s on throttled mid-tier mobile) precedes each public release.
 - **README update:** Document `install / dev / build / preview` (AD-4).
@@ -161,7 +163,7 @@ NFR-5: Motion and ambient visual effects must have an accessible reduced-motion 
 - UX-DR14: Personal Story component — supports authentic personal exploration (powerlifting, Birdhouses) without forced engineering metaphor.
 - UX-DR15: Speaking Item component — represents public speaking activity; build only when public-safe content exists (conditional on FR-18/A-13; must not block or appear empty in the meantime).
 - UX-DR16: External Link component/pattern — every outbound link (LinkedIn, GitHub, powerlifting Instagram, birdhouse-making Instagram) opens `target="_blank"` + `rel="noopener noreferrer"` with a visible "leaves the site" affordance. Exception: the footer icon row, where the platform logo is the exit cue (UX-DR18).
-- UX-DR17: Care Guide Link (Document Link pattern) — `DESIGN.md` §11, `EXPERIENCE.md` §9.3 + §13 Document Links, UX-026; PRD A-12 / `ARCHITECTURE-SPINE.md` AD-20 / `SPEC.md` CAP-7. The Birdhouses care guide is a PDF hosted within the portfolio: a `listed: false` `personal` entry with a `pdf?` frontmatter field pointing at a static asset under `public/downloads/`, reached from the Birdhouses dimension's own content (never from `/beyond` or a teaser). It renders as a plain same-origin `<a href>` that opens in place, with no `target`, `rel`, or `download` attribute and no "leaves the site" affordance. The link says it is a PDF before the visitor activates it (e.g. a "(PDF)" suffix), and that marker is part of the accessible name, not just an icon; exact label wording is content. An optional inline `<iframe>`/`<object>` preview needs an accessible name and fallback text, and never replaces the plain link. Until the PDF exists, no care-guide link renders (UX-DR29 Missing Content).
+- UX-DR17: Care Guide Link (Document Link pattern) — `DESIGN.md` §11, `EXPERIENCE.md` §9.3 + §13 Document Links, UX-026; PRD A-12 / `ARCHITECTURE-SPINE.md` AD-20 / `SPEC.md` CAP-7. The Birdhouses care guide is a PDF hosted within the portfolio: a `listed: false` `personal` entry with a `pdf?` frontmatter field pointing at a static asset under `public/downloads/`, reached from the Birdhouses dimension's own content (never from `/beyond` or a teaser). It renders as a plain same-origin `<a href>` that opens in place, with no `target`, `rel`, or `download` attribute and no "leaves the site" affordance. The link says it is a PDF before the visitor activates it (e.g. a "(PDF)" suffix), and that marker is part of the accessible name, not just an icon; exact label wording is content. An optional inline `<iframe>`/`<object>` preview needs an accessible name and fallback text, and never replaces the plain link. Until the PDF exists, no care-guide link renders (UX-DR29 Missing Content). **Revised 2026-10-25 (UX-033):** the link is the Birdhouses entry's own `pdf: { label, href }` field, shown on the Birdhouses page beside the Instagram link; there is no `listed: false` care-guide entry and no inline preview.
 - UX-DR18: Footer component — closing orientation and external/social destination links (`EXPERIENCE.md` §13 Footer Links, UX-028): an icon-only row of LinkedIn, Instagram @asprinkleofcode, Instagram @orangecatwoodcraft, GitHub, in that order. The platform logo is the exit cue (no extra visible marker); each icon opens in a new tab with `rel="noopener noreferrer"` and has an accessible name naming platform, handle, and new tab. On hover/focus only, the @orangecatwoodcraft icon turns apricot (`glow.woodcraft`, `#F5A962`) and gets a slight `drop-shadow` glow of the same colour at 60% alpha (`DESIGN.md` §15); `focus.ring` stays the focus cue.
 - UX-DR19: AmbientLayer component — single mount point per AD-12; `aria-hidden`, `pointer-events: none`, static reduced-motion render path; app functions if it never mounts. Treatment (`DESIGN.md` v0.9 §16, UX-030): sparse tiny stars, tinted with role tokens, each twinkling slowly; static under reduced motion.
 
@@ -936,7 +938,7 @@ A visitor can discover Alisha's personal side — powerlifting and Birdhouses �
 **Architecture covered:** AD-20 (care guide as in-portfolio PDF asset)
 **Content status:** Supplied (2026-10-25). Alisha has the powerlifting and Birdhouses narratives, web-ready photos and the care-guide PDF; Instagram handles are supplied (A-14: @asprinkleofcode, @orangecatwoodcraft). Stories are authored from her material only (`addendum.md` BC-1, BC-2); nothing is invented beyond it. Links and downloads render only once the real files and values are committed, with no placeholders (NFR-4).
 **Sequenced next (2026-10-25):** runs before Epic 3. Story 4.1 lands before 4.4 and 4.5 publish content (Epic 2 retro A-9).
-**Content drop:** Alisha merges her source material to `main` before Story 4.3 starts (`planning-artifacts/sprint-change-proposal-2026-10-25.md` §5): narratives and photo/video tables in `addendum.md` BC-1 and BC-2, photos in `src/assets/media/powerlifting/` and `src/assets/media/birdhouses/`, the PDF at `public/downloads/birdhouse-care-guide.pdf`, and videos as links only.
+**Content drop:** Alisha merges her source material to `main` before Story 4.4 starts (`planning-artifacts/sprint-change-proposal-2026-10-25.md` §5): narratives and photo/video tables in `addendum.md` BC-1 and BC-2, photos in `src/assets/media/powerlifting/` and `src/assets/media/birdhouses/`, the PDF at `public/downloads/birdhouse-care-guide.pdf`, and videos as links only.
 
 ### Story 4.1: Personal Story Component & Detail Page
 
@@ -964,7 +966,7 @@ So that the experience feels authentic rather than forced into the professional 
 
 **Given** `listed: false` (AD-2)
 **When** a personal entry has that flag
-**Then** it is reachable at its route but omitted from `/beyond`'s index and every teaser — this is how the care guide (Story 4.3) will exist without becoming a third dimension (D-18)
+**Then** it is reachable at its route but omitted from `/beyond`'s index and every teaser, so a future supporting page could exist without becoming a third dimension (D-18). No MVP entry uses it: the care guide is a field on the Birdhouses entry (AD-20, revised 2026-10-25)
 
 **Given** UX-DR25/NFR-2
 **When** a personal story is read at a supported mobile width
@@ -990,9 +992,11 @@ So that the experience feels authentic rather than forced into the professional 
 **When** a `personal` entry's frontmatter has `highlight.metric` or `highlight.unit`
 **Then** the build fails naming the file, and valid and invalid fixtures cover it. `highlight.headline` stays allowed
 
-**Given** the legacy powerlifting page embeds videos, and the UX contract covers photos only (UX-DR31)
-**When** Alisha decides whether a personal story uses video
-**Then** either it doesn't, or the decision (embed source, one sanctioned block in `src/mdx-components.tsx`, a `title` that tells each clip apart, lazy loading, a cap per page) is recorded in `EXPERIENCE.md` §22 before the block is built. No video block is invented in code
+**Given** the powerlifting story uses video (decided 2026-10-25, `EXPERIENCE.md` §22 Video, UX-032; `ARCHITECTURE-SPINE.md` Conventions → Third-party embeds)
+**When** a personal story's MDX embeds a clip
+**Then** it uses one sanctioned `VideoEmbed` block from `src/mdx-components.tsx` (AD-8) that takes `src`, a required `title` and an optional `poster` (a `media/`-relative still). It renders a click-to-load facade: a fixed 16:9 box with the poster, or a role-token panel when there is none, and a play control whose accessible name is the title. The YouTube or Drive `<iframe>` (YouTube from `youtube-nocookie.com`) is created only when the play control is activated, with the same `title`. There is no autoplay or loop, no third-party request before activation, and no layout shift
+
+**And** the build fails, naming the file, when a `VideoEmbed` `src` is not a YouTube or Google Drive embed URL, its `title` is missing or empty, or a page has more than 4 clips. Valid and invalid fixtures cover each rule, and a component test checks that no `<iframe>` exists until the play control is activated
 
 **And** a component test renders `PersonalPage` against fixture frontmatter/content to verify it doesn't throw
 
@@ -1020,19 +1024,21 @@ So that I can discover the person, not just the professional.
 
 ### Story 4.3: Birdhouses Care Guide — Static PDF Asset
 
+**Revised 2026-10-25 (AD-20, UX-033):** the care guide is only the PDF, so it has no page of its own. This story builds the document link on `PersonalPage`; Story 4.4 sets it on the Birdhouses entry.
+
 As a visitor interested in the Birdhouses dimension,
-I want to open or download the care guide directly from the portfolio,
-So that I get real, usable information without being redirected to an external site.
+I want to open or download the care guide directly from the Birdhouses page,
+So that I get real, usable information in one step, without being redirected to an external site.
 
 **Acceptance Criteria:**
 
-**Given** AD-20
+**Given** AD-20 as revised
 **When** this story is complete
-**Then** the care guide is a `listed: false` personal entry (its own `.mdx`, own route, absent from `/beyond` and every teaser) — not a field merged onto the Birdhouses dimension's own entry
+**Then** the `personal` schema's `pdf` field is `{ label, href }` (replacing the bare string): `label` is a non-empty string, `href` keeps the existing `/downloads/<kebab-name>.pdf` pattern and build-time file check, and unknown keys are rejected. The existing fixtures and tests are updated to the new shape. There is no care-guide entry, route or `.mdx` file
 
-**Given** AD-20's `pdf?` field
-**When** that entry's frontmatter sets `pdf`
-**Then** it names a static asset under `public/downloads/<slug>.pdf`
+**Given** a `personal` entry with `pdf`
+**When** `PersonalPage` renders it
+**Then** the document link appears beside the entry's `links` (the page's ways onward, `EXPERIENCE.md` Birdhouse Flow), with `pdf.label` as its text
 
 **Given** the rendering rule
 **When** the link renders
@@ -1042,15 +1048,13 @@ So that I get real, usable information without being redirected to an external s
 **When** the care-guide link renders
 **Then** its visible text or an adjacent visible marker says it is a PDF before activation (e.g. a "(PDF)" suffix), and that marker is part of the link's accessible name, not an icon alone; exact label wording is supplied as content, not invented
 
-**Given** AD-20 permits an optional richer preview
-**When** implemented
-**Then** an `<iframe>`/`<object>` embed may accompany the link, with an accessible name (AD-15) and fallback text, and it never replaces the plain link, because mobile browsers vary in how they handle embedded PDFs. The preview is not required for MVP.
+**And** there is no inline `<iframe>`/`<object>` preview of the PDF (UX-033)
 
-**Given** Alisha has supplied the care-guide PDF (2026-10-25)
-**When** this story ships
-**Then** the file is committed as a new asset at `public/downloads/<slug>.pdf` (supplied by the content drop as `public/downloads/birdhouse-care-guide.pdf`, so the entry's slug is `birdhouse-care-guide`), the link label is the wording in `addendum.md` BC-2, the entry's `pdf` field names the file, and a test fails if a non-draft entry's `pdf` does not resolve to a file under `public/downloads/`. No placeholder PDF is ever committed, and if the file is not in the PR, no care-guide link renders anywhere (NFR-4, UX-DR29 Missing Content, `EXPERIENCE.md` Birdhouse Flow)
+**Given** an entry without `pdf`
+**When** `PersonalPage` renders it
+**Then** no document link renders and no space is held for one (NFR-4, UX-DR29 Missing Content). Component tests cover an entry with and without `pdf`, against fixtures, so this story needs no real content
 
-**And** the Birdhouses dimension's own entry (Story 4.4) links to this care-guide entry from its own content context once both exist
+**And** the real PDF (`public/downloads/birdhouse-care-guide.pdf`, from the content drop) is wired up by Story 4.4 on the Birdhouses entry. No placeholder PDF is ever committed
 
 ### Story 4.4: Author Powerlifting & Birdhouses Dimension Stories
 
@@ -1058,7 +1062,7 @@ As a visitor who wants to understand Alisha beyond her professional work,
 I want to read authentic powerlifting and Birdhouses stories,
 So that I come away seeing a whole person, not a résumé.
 
-**Status:** Content supplied (2026-10-25). Alisha provides the powerlifting and Birdhouses narratives and the photos through the content drop (`addendum.md` BC-1 and BC-2, photos in `src/assets/media/<dimension>/`); the stories are authored from that material only, and nothing is invented to fill a gap. If a section the story needs is missing from BC-1 or BC-2, the agent asks Alisha rather than writing it. Where photos go, how many, and how they are chosen are decided (UX-DR31, `EXPERIENCE.md` v0.12 §22 Photography). Depends on Story 4.1 (A-9).
+**Status:** Content supplied (2026-10-25). Alisha provides the powerlifting and Birdhouses narratives and the photos through the content drop (`addendum.md` BC-1 and BC-2, photos in `src/assets/media/<dimension>/`); the stories are authored from that material only, and nothing is invented to fill a gap. If a section the story needs is missing from BC-1 or BC-2, the agent asks Alisha rather than writing it. Where photos go, how many, and how they are chosen are decided (UX-DR31, `EXPERIENCE.md` v0.12 §22 Photography), and so is video (UX-032, §22 Video). Depends on Story 4.1 (A-9, `VideoEmbed`) and Story 4.3 (the `pdf` link).
 
 **Acceptance Criteria:**
 
@@ -1077,6 +1081,14 @@ So that I come away seeing a whole person, not a résumé.
 **Given** the dimension routes are shared links once live (AD-5)
 **When** the two entries are committed
 **Then** their slugs are exactly `powerlifting` and `birdhouses` (files `src/content/personal/powerlifting.mdx` and `src/content/personal/birdhouses.mdx`, with no `slug` override), so the routes are `/beyond/powerlifting` and `/beyond/birdhouses`. *(Pinned 2026-10-25 by Sprinkle; "birdhouses" follows D-18.)*
+
+**Given** the care guide is only the PDF (AD-20 as revised, UX-033) and the content drop has committed `public/downloads/birdhouse-care-guide.pdf`
+**When** the Birdhouses entry is authored
+**Then** its frontmatter sets `pdf: { label, href: "/downloads/birdhouse-care-guide.pdf" }` with the label from `addendum.md` BC-2, so the page's ways onward are the @orangecatwoodcraft Instagram link and the care guide (PDF), which opens in one step. If the PDF isn't on `main`, the field is left out and no care-guide link renders
+
+**Given** the powerlifting story uses video (UX-032)
+**When** the Powerlifting entry is authored
+**Then** each clip marked "Keep" in `addendum.md` BC-1 appears through `VideoEmbed` (Story 4.1) with the title from that table, at most 4, and that resolves the `deferred-work.md` entry about telling the legacy video titles apart
 
 **Given** FR-19 and D-17
 **When** a dimension has a real Instagram presence and Alisha has supplied the handle (A-14)
@@ -1110,7 +1122,7 @@ So that I notice it without it competing with the professional evidence.
 
 **Given** the card is frontmatter-derived
 **When** it renders
-**Then** it draws only from featured personal entries, never separately authored homepage copy (AD-2), and an entry with `listed: false` (the care guide) never appears
+**Then** it draws only from featured personal entries, never separately authored homepage copy (AD-2), and an entry with `listed: false` never appears
 
 **Given** both Beyond the Code dimensions (powerlifting, Birdhouses) are `featured`
 **When** the card renders
