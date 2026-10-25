@@ -3,8 +3,8 @@
 **Name:** Alisha Sprinkle Korba Portfolio  
 **Description:** Experience contract defining the information architecture, journeys, interaction patterns, and accessibility behavior for the portfolio.  
 **Status:** Final  
-**Version:** 0.14  
-**Updated:** 2026-10-11  
+**Version:** 0.15  
+**Updated:** 2026-10-25  
 **Peer document:** `DESIGN.md` v0.10 — owns visual identity; all color, type, radius, and elevation tokens referenced here are defined there.  
 **Upstream:** `PRD.md` v0.8 — path labels (D-15), destinations (D-16/D-17), the Birdhouses naming (D-18), speaking status (A-13), the care guide (A-12), the audience re-ordering (D-21/D-22), the entry-context requirement (FR-24 / D-23), and the positioning statement (D-25) are consumed below.
 
@@ -522,11 +522,11 @@ Destinations — **DECIDED**:
   Birdhouses context (§13 External Links). It also appears in the footer (§13 Footer
   Links).
 - **Care guide** (PRD A-12, `ARCHITECTURE-SPINE.md` AD-20) — a downloadable PDF
-  **hosted within the portfolio**, not an external link, reached from the Birdhouses
-  dimension's own content. It is a supporting page, not a third Beyond the Code
-  dimension (D-18): it never appears in the `/beyond` index or a teaser. Link behavior is
-  §13 Document Links. The PDF itself is pending from Alisha; until it exists, no care-guide
-  link is rendered (§14 Missing Content).
+  **hosted within the portfolio**, not an external link, linked directly from the
+  Birdhouses page beside the Instagram link. The guide is only the PDF, so it has no page
+  of its own and never appears in the `/beyond` index or a teaser (D-18; revised
+  2026-10-25, UX-033). Link behavior is §13 Document Links. Until the PDF is committed, no
+  care-guide link is rendered (§14 Missing Content).
 
 The exact content composition remains OPEN.
 
@@ -724,10 +724,9 @@ A-12) is reached by a same-origin link that opens the PDF in the browser
   tells the visitor it is a PDF before they activate it (for example, a "(PDF)" suffix),
   so it is distinct from both in-site navigation and outbound links. The marker is part of
   the accessible name, not only an icon. Exact label wording is content (§24).
-- **Optional inline preview** — the care-guide page may also embed the same PDF. The
-  embed has an accessible name and fallback text, and it never replaces the plain
-  link: mobile browsers vary (some force a download, some show only the first page), so
-  the link stays the reliable path.
+- **No inline preview** — the link opens the PDF directly from the page that offers it,
+  and there is no embedded copy (UX-033). Mobile browsers vary (some force a download),
+  which a plain link tolerates.
 
 ---
 
@@ -976,8 +975,9 @@ Continue to the birdhouse-making Instagram, or open the care guide (PDF)
 
 Destinations (PRD D-17 / A-12): the birdhouse-making Instagram (outbound, §13 External
 Links), and the care guide, a downloadable PDF hosted within the portfolio (§13 Document
-Links, §9.3). The Instagram handle is **@orangecatwoodcraft** (PRD A-14, UX-028). The
-care-guide PDF is still pending from Alisha; it appears only once it exists, and no
+Links, §9.3). The Instagram handle is **@orangecatwoodcraft** (PRD A-14, UX-028). Both
+are links on the Birdhouses page itself; the care guide opens the PDF in one step, with
+no intermediate page (UX-033). It appears only once the PDF is committed, and no
 placeholder link is rendered until then (§14 Missing Content).
 
 ---
@@ -1128,6 +1128,33 @@ belongs to `DESIGN.md` and is still open; only the headshot's treatment is decid
 (UX-027). Whether the Birdhouses process photos appear as a step-by-step sequence or as a
 gallery is also open (§9.3). Both are decided with the first real photos, in Story 4.1.
 
+### Video
+
+**DECIDED (2026-10-25, UX-032)** — powerlifting uses video; Birdhouses does not.
+
+- **Embedded, never committed.** Clips are hosted on YouTube (embedded from
+  `youtube-nocookie.com`) or Google Drive (its `/preview` embed). No video file goes in
+  the repo (`ARCHITECTURE-SPINE.md` Conventions → Third-party embeds).
+- **Click to load.** Each clip renders as a facade: a poster and a play control. The real
+  `<iframe>` loads only when the visitor activates the play control, so no third-party
+  request is made before then. The poster is an optional still under
+  `media/powerlifting/`; without one, the facade is a role-token panel with the clip's
+  title and the play control. No third-party thumbnail is fetched.
+- **One sanctioned block.** `VideoEmbed` in `src/mdx-components.tsx` (AD-8) takes `src`
+  (YouTube or Drive only, checked at build), a required `title`, and an optional `poster`.
+- **Titles tell clips apart.** The `title` names what the clip shows (lift, meet, year),
+  and it is both the play control's accessible name and the `<iframe>` title. Never
+  "Powerlifting video 1".
+- **Nothing moves on its own.** No autoplay or loop. A clip plays only after a click, which
+  also satisfies reduced motion (NFR-5).
+- **Layout.** A 16:9 box at the reading width, sized before it loads, so it never shifts
+  the layout. The play control is at least 24 × 24 CSS px with a visible focus ring.
+- **How many.** Up to 4 clips on the Powerlifting page, beside its photos. None anywhere
+  else (never on the homepage or `/beyond`).
+- **Public safety.** The photo rules above apply: nothing from work, and other people only
+  where they're part of a public competition or have agreed. A clip with meaningful
+  speech has captions on its host.
+
 ---
 
 ## 23. Decision Log
@@ -1165,6 +1192,8 @@ gallery is also open (§9.3). Both are decided with the first real photos, in St
 | UX-031 | Homepage path cards replace label-only Exploration and the separate Evidence & Highlights section (§6.3): metric and unit, action headline, one line, "Read the story →" stretched over the card; rotating highlights by button only, never auto-advancing; non-clickable "Coming soon" card for a path with no story. Supersedes UX-025's section order, label-only Exploration, and the dedicated Leadership teaser until Epic 3 content exists | DECIDED |
 | UX-030 | Homepage look matched to [`mockups/key-homepage.html`](mockups/key-homepage.html); spines stay authoritative and the mockup is synced to them. Navy page, twinkling stars, white name and rose title, larger global identity and title sizes, white header brand, recessed footer (DESIGN.md v0.9 §6–§16; here §6.1, §6.2, §14) | DECIDED |
 | UX-029 | Photography: web-ready exports live in `asprinkleofcode/src/assets/media/<folder>/`; per-page counts (about 15–22 for launch); work stories have no photo by default, with an optional, rare hero; capture guidance, public-safety rules, alt text, and loading (§22 Photography) | DECIDED — photos pending; visual treatment OPEN |
+| UX-032 | Video: powerlifting only, up to 4 clips, embedded from YouTube (`youtube-nocookie.com`) or Google Drive behind a click-to-load facade, one `VideoEmbed` block, a title that tells each clip apart, no autoplay, never committed (§22 Video) | DECIDED |
+| UX-033 | The Birdhouses care guide is only a PDF: linked directly from the Birdhouses page beside the Instagram link, with no care-guide page and no inline preview (§9.3, §13 Document Links, Birdhouse Flow). Supersedes the supporting-page part of UX-026 | DECIDED |
 
 ---
 

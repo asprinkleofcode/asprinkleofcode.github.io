@@ -316,7 +316,7 @@ written to the same public-safety rules as the stories (`EXPERIENCE.md` §22).
 
 ## 5. Content Drop: Where to Put Your Material
 
-The development agent works in a **fresh git worktree**, which holds only committed files. Anything left uncommitted in your main checkout, or in a gitignored folder, is invisible to it (the same issue as `config.user.toml`). So the material goes in through **one small PR that you merge to `main` before Story 4.3 starts**. Stories 4.1 and 4.2 need nothing from you except the video decision, so they can run while you prepare it.
+The development agent works in a **fresh git worktree**, which holds only committed files. Anything left uncommitted in your main checkout, or in a gitignored folder, is invisible to it (the same issue as `config.user.toml`). So the material goes in through **one small PR that you merge to `main` before Story 4.4 starts**. Stories 4.1–4.3 need nothing from you, so they can run while you prepare it.
 
 | Material | Put it here | Format and rules |
 |---|---|---|
@@ -324,18 +324,34 @@ The development agent works in a **fresh git worktree**, which holds only commit
 | Birdhouses narrative | `_bmad-output/addendum.md` → **BC-2** | Same as above. |
 | Powerlifting photos | `asprinkleofcode/src/assets/media/powerlifting/` | Follow `src/assets/media/README.md`: WebP, ~1600 px long edge (≤2000 px for the hero), under ~250 KB, location data removed, nothing from work, no one in frame without consent, lowercase hyphenated names. 1 hero + 4–6. List each one in BC-1's photo table with its alt text. |
 | Birdhouses photos | `asprinkleofcode/src/assets/media/birdhouses/` | Same rules. 1 hero + 5–7 process (numbered `01-`, `02-`… in order, same angle and background) + 3–6 finished pieces. List each in BC-2's table. |
-| Videos | **Links only**, in BC-1's video table. Don't commit video files. | YouTube or Google Drive share links, each with a title that tells it apart. The four Drive clips and one YouTube video on the old `/about` page can be listed here if you want to keep them. Whether video is used at all is decided in Story 4.1. |
-| Care-guide PDF | `asprinkleofcode/public/downloads/birdhouse-care-guide.pdf` | The final file. Before committing, clear its document properties (author, and anything else you don't want public). Put the link label in BC-2. |
+| Videos | **Links only**, in BC-1's video table. Don't commit video files. | YouTube or Google Drive share links, each with a title that tells it apart. The four Drive clips and one YouTube video on the old `/about` page can be listed here if you want to keep them. Up to 4 clips. An optional poster still per clip goes in `media/powerlifting/` under the photo rules (`EXPERIENCE.md` §22 Video). |
+| Care-guide PDF | `asprinkleofcode/public/downloads/birdhouse-care-guide.pdf` | The final file. Before committing, clear its document properties (author, and anything else you don't want public). Put the link label in BC-2. It is linked straight from the Birdhouses page. |
 | Existing `pl-1.jpg` / `pl-2.jpg` | Leave them where they are | If you want one in the new story, add a web-ready copy to `media/powerlifting/`. The original is never moved or edited (AGENTS.md). |
 
 **Steps:**
 
 1. Create a branch, for example `content/beyond-the-code-source`.
 2. Add the files and fill in BC-1 and BC-2.
-3. Open a PR and merge it. It deploys nothing visible: unreferenced photos aren't bundled, and the PDF isn't linked until Story 4.3. It does become publicly downloadable by URL as soon as it merges, so commit only the final version.
-4. Tell the agent the content drop is merged when you start Story 4.3.
+3. Open a PR and merge it. It deploys nothing visible: unreferenced photos aren't bundled, and the PDF isn't linked until Story 4.4. It does become publicly downloadable by URL as soon as it merges, so commit only the final version.
+4. Tell the agent the content drop is merged when you start Story 4.4.
 
 If something isn't ready (for example only half the Birdhouses process photos), merge what you have. The stories ship with what exists and leave out the rest, with no placeholders (§14 Missing Content).
+
+### Amendment after approval (2026-10-25): video and care guide
+
+Sprinkle decided two open points after approval. Both are applied in this change.
+
+- **Powerlifting uses video.**
+  - `EXPERIENCE.md` v0.15 adds §22 Video (UX-032): up to 4 clips, embedded from YouTube (`youtube-nocookie.com`) or Google Drive, never committed.
+  - Each clip sits behind a click-to-load facade with an optional poster still, has a title that tells it apart, and never autoplays.
+  - The `ARCHITECTURE-SPINE.md` third-party embeds convention now names the `VideoEmbed` block.
+  - Story 4.1 builds `VideoEmbed` with build-time checks. Story 4.4 places the clips marked "Keep" in BC-1.
+- **The care guide is only the PDF, so it has no page of its own.**
+  - AD-20 is revised so `pdf: { label, href }` becomes a field on the Birdhouses entry, linked directly from that page beside the Instagram link. There is no `listed: false` care-guide entry, no route and no inline preview.
+  - `EXPERIENCE.md` §9.3, §13 Document Links and the Birdhouse Flow follow it (UX-033).
+  - Story 4.3 changes the schema and builds the link against fixtures, and Story 4.4 wires the real PDF.
+  - `listed: false` stays in the schema for a future supporting page.
+- **The content drop is due before Story 4.4** instead of 4.3, because Stories 4.1–4.3 now need no real content.
 
 ## 6. Implementation Handoff
 
@@ -344,7 +360,7 @@ If something isn't ready (for example only half the Birdhouses process photos), 
 | Who | Responsibility |
 |---|---|
 | Developer (Amelia, via `bmad-build`) | Apply sections 4.1–4.4 to the planning artifacts in this change, including the empty BC-1/BC-2 template in `addendum.md`. Read source material only from `addendum.md` BC-1/BC-2, `src/assets/media/<dimension>/` and `public/downloads/`. Then build Epic 4 in order: **4.1 → 4.2 → 4.3 → 4.4 → 4.5 → 4.6**. Create `implementation-artifacts/epic-4-context.md` when the epic starts. It carries the A-9 rule and the AD-3 and A-5 conventions that apply to personal content (decisions dated in a spec also update the epic context). |
-| Sprinkle | Merge the content drop (section 5) before Story 4.3 starts. Decide on video in Story 4.1, and on photo treatment and the Birdhouses gallery with the first real photos. Review every personal story before it's marked done. Keep collecting Leadership & Enablement story candidates for Epic 3. |
+| Sprinkle | Merge the content drop (section 5) before Story 4.4 starts. Decide on photo treatment and the Birdhouses gallery with the first real photos. Review every personal story before it's marked done. Keep collecting Leadership & Enablement story candidates for Epic 3. |
 | PM (John) | Close retro items A-8 and A-9 when Stories 4.5 and 4.1 merge. Revisit Epic 3 once Leadership candidates exist. |
 
 **Success criteria:**
