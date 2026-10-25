@@ -88,7 +88,7 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   evidence: `src/App.css` is deleted. Its element rules live only in `src/pages/AboutMe/AboutMe.css` under `:where(.about-me)`, and the four `revert-layer` blocks are gone. `src/test/globalCss.test.ts` fails on a second Tailwind root or any rule not scoped to a class outside the index.css shell globals and legacy `/about`. A `vite preview` check measured Recognition, the path indexes, NotFound and `/about` (unchanged from the pre-change build).
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-epic-1-hardening.md`
-  status: open (Story 4.1 only; work-story bodies resolved-by #35 via `storyProseClasses`)
+  status: resolved-by #48 (personal bodies use `storyProseClasses`, like work stories via #35)
   summary: Give MDX story bodies their own prose typography (paragraph and heading spacing, `type-*` levels, role colours) when Epic 2 builds the work-story detail page (Story 2.2), and Story 4.1 for personal pages.
   evidence: With App.css gone, nothing styles bare `p`/`h2` inside `<Body />` in `WorkStory.tsx`/`Personal.tsx`, so Tailwind preflight leaves paragraphs with no margin and headings at inherited size. Before, App.css gave them spacing, but at 0.75rem in primitive `--color-primary-100`, which was the defect A-1 removed. No story body exists yet, so nothing renders this today.
 
