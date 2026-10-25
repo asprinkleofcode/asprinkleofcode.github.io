@@ -14,6 +14,7 @@ import {
   type Entry,
 } from "./registry";
 import { metricClasses, metricUnitClasses } from "./metricClasses";
+import { resolveMedia } from "./media";
 import { StoryHighlightContext } from "./storyHighlight";
 
 const loader: BodyLoader = () => Promise.resolve({ default: () => null } as unknown as MDXModule);
@@ -239,4 +240,33 @@ describe("live work story bodies", () => {
     expect(withClass(metricClasses)).toEqual(highlight?.metric ? [highlight.metric] : []);
     expect(withClass(metricUnitClasses)).toEqual(highlight?.metric && highlight.unit ? [highlight.unit] : []);
   });
+});
+
+// Every committed non-draft personal entry, listed or not, from the real globs.
+// Empty until Story 4.4 commits the first personal stories; a new one is
+// covered by adding its file. Rendering catches a body whose Photo names an
+// unknown media path, which throws.
+const personalEntries = entries.filter((e) => e.frontmatter.type === "personal");
+
+describe("live personal story bodies", () => {
+  it("files every personal entry under the beyond path", () => {
+    expect(personalEntries.every((e) => e.path === "beyond")).toBe(true);
+  });
+
+  for (const entry of personalEntries) {
+    it(`renders ${entry.key}`, async () => {
+      const body = await loadBody(entry);
+      const html = renderToStaticMarkup(createElement(body.default));
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      // The story title is the page's only h1.
+      expect(doc.querySelector("h1")).toBeNull();
+      for (const img of doc.querySelectorAll("img")) {
+        expect(img.getAttribute("alt")).toBeTruthy();
+        expect(Number(img.getAttribute("width"))).toBeGreaterThan(0);
+        expect(Number(img.getAttribute("height"))).toBeGreaterThan(0);
+      }
+      const { hero } = entry.frontmatter as PersonalFrontmatter;
+      if (hero) expect(resolveMedia(hero.src).width).toBeGreaterThan(0);
+    });
+  }
 });

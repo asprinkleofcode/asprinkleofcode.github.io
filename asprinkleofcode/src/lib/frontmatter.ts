@@ -31,7 +31,10 @@ export interface ContentLink {
   href: string;
 }
 
-/** The path-card highlight (AD-2, UX-031). A `unit` never appears without a `metric`. */
+/**
+ * The path-card highlight (AD-2, UX-031). A `unit` never appears without a `metric`,
+ * and a personal entry has neither (retro A-9).
+ */
 export interface Highlight {
   headline: string;
   metric?: string;
@@ -178,6 +181,22 @@ const highlight: KeyRule = (v, k) => {
   return problems.length === 0 ? null : problems.join("; ");
 };
 
+const notOnPersonal: KeyRule = (_v, k) => `"${k}" is not allowed on personal entries`;
+
+/**
+ * A personal entry's highlight carries only a headline: the Beyond the Code card
+ * never shows a metric (retro A-9). `metric`/`unit` get a named problem rather
+ * than "unknown key", so the fix is obvious.
+ */
+const personalHighlight: KeyRule = (v, k) => {
+  const problems = blockProblems(v, k, "{ headline }", {
+    headline: { rule: nonEmptyString, required: true },
+    metric: { rule: notOnPersonal, required: false },
+    unit: { rule: notOnPersonal, required: false },
+  });
+  return problems.length === 0 ? null : problems.join("; ");
+};
+
 const mediaSrc: KeyRule = (v, k) =>
   typeof v === "string" && MEDIA_SRC.test(v)
     ? null
@@ -248,7 +267,7 @@ const SCHEMAS: Record<ContentType, Schema> = {
       links,
       pdf,
       featured,
-      highlight,
+      highlight: personalHighlight,
       draft: boolean,
       listed: boolean,
     },

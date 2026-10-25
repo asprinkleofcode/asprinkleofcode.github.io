@@ -4,6 +4,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import flowbiteReact from "flowbite-react/plugin/vite";
 import contentFrontmatter from "./plugins/contentFrontmatter";
+import photoMeta from "./plugins/photoMeta";
 
 // The flowbite-react plugin regenerates `.flowbite-react/` and keeps a watcher
 // open, which stops `vitest run` from exiting; tests don't need it.
@@ -14,6 +15,8 @@ export default defineConfig({
   plugins: [
     // Validates and strips frontmatter before MDX compiles the body.
     contentFrontmatter(),
+    // `?photo` imports of src/assets/media/ files carry their width and height.
+    photoMeta(),
     { enforce: "pre", ...mdx() },
     react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
     tailwindcss(),
