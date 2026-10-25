@@ -429,10 +429,11 @@ material only; where a section is empty, the agent asks rather than writing it.
 
 #### Videos (links only, not files)
 
-<!-- Whether video is used at all is decided in Story 4.1. -->
+<!-- Powerlifting uses video (EXPERIENCE.md §22 Video): up to 4 clips, embedded from YouTube or
+     Google Drive, never committed. Poster is an optional still you add to media/powerlifting/. -->
 
-| URL (YouTube or Google Drive) | Title that tells this clip apart | Keep? |
-|---|---|---|
+| URL (YouTube or Google Drive) | Title that tells this clip apart (lift, meet, year) | Poster still (optional, in `media/powerlifting/`) | Keep? |
+|---|---|---|---|
 
 #### Featured highlight (homepage card)
 
@@ -458,8 +459,7 @@ material only; where a section is empty, the agent asks rather than writing it.
 #### Care guide
 
 - file: `public/downloads/birdhouse-care-guide.pdf`
-- link label (shown to visitors; "(PDF)" is added if you leave it out):
-- one line on what's in it:
+- link label (shown on the Birdhouses page beside the Instagram link; "(PDF)" is added if you leave it out):
 
 #### Featured highlight (homepage card)
 
