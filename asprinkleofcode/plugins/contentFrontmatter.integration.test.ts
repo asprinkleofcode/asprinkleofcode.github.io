@@ -115,6 +115,23 @@ describe("content pipeline through Vite", () => {
     expect(message).toContain('"capabilities" lists "ownership" more than once');
   });
 
+  it.each([
+    ["personal-metric", '"highlight.metric" is not allowed on personal entries'],
+    ["personal-unit", '"highlight.unit" is not allowed on personal entries'],
+  ])("fails a personal entry whose highlight carries a metric or unit (%s), naming the file", async (name, problem) => {
+    const error: unknown = await loadFixture(
+      "invalid-personal",
+      `/src/content/personal/${name}.mdx?frontmatter`
+    ).then(
+      () => undefined,
+      (e: unknown) => e
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).name).toBe("FrontmatterError");
+    expect((error as Error).message).toContain(`src/content/personal/${name}.mdx`);
+    expect((error as Error).message).toContain(problem);
+  });
+
   it("fails when two entries in one path share a featured value, naming both files", async () => {
     const error: unknown = await loadFixture("invalid-featured").then(
       () => undefined,

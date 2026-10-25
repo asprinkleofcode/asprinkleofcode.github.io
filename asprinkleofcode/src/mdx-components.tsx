@@ -11,3 +11,4 @@ export { default as StorySection } from "./components/StorySection/StorySection"
 export { default as DecisionBlock } from "./components/DecisionBlock/DecisionBlock";
 export { default as OutcomeBlock } from "./components/OutcomeBlock/OutcomeBlock";
 export { default as CapabilitySignal } from "./components/CapabilitySignal/CapabilitySignal";
+export { default as Photo } from "./components/Photo/Photo";

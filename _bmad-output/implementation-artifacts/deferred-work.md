@@ -136,3 +136,18 @@ Each entry has a `status`: `open`, or `resolved-by <ref>` once a change fixes it
   status: open
   summary: Add a hook-level test for the content plugin's `watchChange` delete cleanup. Load featured file A, delete it, then load B with the same path and `featured` value, and expect no clash.
   evidence: Nothing calls `watchChange` in tests, and the integration server sets `watch: null`. If the hook is removed or keyed differently from `load`'s display path, a renamed featured story fails with "already used by <deleted file>" until the dev server restarts. This affects dev only (Story 2.4A review, verification gap).
+
+- source_spec: none
+  status: open
+  summary: Story 4.1 part B: the sanctioned `VideoEmbed` MDX block (click-to-load 16:9 facade with optional `media/` poster or role-token panel, play control named by `title`, YouTube-nocookie/Drive `<iframe>` created only on activation, no autoplay/loop/layout shift), its build rules (non-YouTube/Drive `src`, missing/empty `title`, more than 4 clips per page each fail naming the file, with valid/invalid fixtures), and a component test that no `<iframe>` exists before activation. Must land before Story 4.4.
+  evidence: Alisha split Story 4.1 at the step-01 scope gate (2026-10-25): VideoEmbed is an independently shippable block with its own third-party/privacy rules, and only Story 4.4 depends on it. Part A ships PersonalPage, the photo block and the A-9 metric rule. Story 4.1 is `done` in sprint-status only when part B merges.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-4-1a-personal-story-page.md`
+  status: open
+  summary: Exercise `src/lib/media.ts`'s own `?photo` glob against a real photo (e.g. `resolveMedia(hero.src)` returning a root-relative `src` and positive `width`/`height`) once Story 4.4 commits the first photos and personal entries, and make the `registry.test.ts` live personal loop assert it is non-empty.
+  evidence: Unverified (medium if true): today only a hand-copied fixture glob in `plugins/__fixtures__/photo-meta/` runs the plugin; dropping `query`/`import` from media.ts's glob would pass every test while photos render without size or src. Testing it now would need a placeholder photo in `src/assets/media/`, which NFR-4 forbids (Story 4.1A review, verification gap).
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-4-1a-personal-story-page.md`
+  status: open
+  summary: Have the build fail when a committed content photo under `src/assets/media/` still carries EXIF/XMP GPS location data (`plugins/photoMeta.ts` already reads every photo).
+  evidence: Unverified (medium if true): the public-safety rule (EXPERIENCE §22) is only a manual checklist in `src/assets/media/README.md`, and the repo is public. Settle it by checking whether a Squoosh WebP export and a phone JPEG-to-WebP conversion keep GPS tags (Story 4.1A review, Blind Hunter).

@@ -174,7 +174,23 @@ describe("parseFrontmatter", () => {
     ["pdf", "/downloads/Care Guide.pdf"],
     ["pdf", "/files/care-guide.pdf"],
     ["listed", "no"],
+    ["highlight", { headline: "" }],
+    ["highlight", { headline: "H.", kicker: "x" }],
   ])("rejects personal %s = %j", (key, value) => {
     expect(problemsOf(() => parseFrontmatter("personal", { ...personal, [key]: value }, FILE))).toHaveLength(1);
+  });
+
+  it.each([
+    [{ headline: "H.", metric: "405" }, '"highlight.metric" is not allowed on personal entries'],
+    [{ headline: "H.", unit: "lb total" }, '"highlight.unit" is not allowed on personal entries'],
+    [
+      { headline: "H.", metric: "405", unit: "lb total" },
+      '"highlight.metric" is not allowed on personal entries; "highlight.unit" is not allowed on personal entries',
+    ],
+  ])("rejects a personal highlight with a metric or unit (retro A-9): %j", (value, problem) => {
+    const file = "src/content/personal/bar.mdx";
+    const data = { ...personal, featured: 1, highlight: value };
+    expect(problemsOf(() => parseFrontmatter("personal", data, file))).toEqual([problem]);
+    expect(() => parseFrontmatter("personal", data, file)).toThrow(file);
   });
 });
