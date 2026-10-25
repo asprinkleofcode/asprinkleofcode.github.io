@@ -118,4 +118,48 @@ describe("StoryCard", () => {
     renderCard();
     expectNoFlowbiteDefaults(card());
   });
+
+  describe("without role or capabilities (personal card)", () => {
+    const renderPersonal = () =>
+      render(
+        <ThemeProvider theme={aSprinkleOfCodeTheme} applyTheme={aSprinkleOfCodeApplyTheme}>
+          <MemoryRouter>
+            <StoryCard title="Fixture dimension" summary="Fixture dimension summary." href="/beyond/fixture" />
+            <LocationProbe />
+          </MemoryRouter>
+        </ThemeProvider>
+      );
+
+    it("shows only the title link and the summary, with no role, list or image", () => {
+      renderPersonal();
+      const link = within(screen.getByRole("heading", { level: 2, name: "Fixture dimension" })).getByRole("link");
+      expect(link.getAttribute("href")).toBe("/beyond/fixture");
+      expect(follows(link, screen.getByText("Fixture dimension summary."))).toBe(true);
+      expect(screen.queryByText(/^Role:/)).toBeNull();
+      expect(screen.queryByRole("list")).toBeNull();
+      expect(screen.queryByRole("img")).toBeNull();
+    });
+
+    it("keeps one link, one tab stop, the stretched hit area and the card frame", () => {
+      const { container } = renderPersonal();
+      expect(within(card()).getAllByRole("link").map((a) => a.textContent)).toEqual(["Fixture dimension"]);
+      expect(card().querySelectorAll("a[href], button, input, select, textarea, [tabindex]")).toHaveLength(1);
+      expect(classes(screen.getByRole("link"))).toEqual(expect.arrayContaining(["after:absolute", "after:inset-0"]));
+      expect(classes(card())).toEqual(
+        expect.arrayContaining([
+          "relative",
+          "border-border-default",
+          "hover:border-border-essential",
+          "has-[a:focus-visible]:ring-2",
+        ])
+      );
+      expectNoFlowbiteDefaults(container);
+    });
+
+    it("navigates to the dimension when the link is clicked", () => {
+      renderPersonal();
+      fireEvent.click(screen.getByRole("link", { name: "Fixture dimension" }));
+      expect(pathname).toBe("/beyond/fixture");
+    });
+  });
 });
