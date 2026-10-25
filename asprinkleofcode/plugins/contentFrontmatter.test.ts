@@ -7,6 +7,7 @@ import contentFrontmatter, {
   featuredSlot,
   pathsWithoutFeatured,
   processContentFile,
+  videoEmbedProblems,
   type FeaturedSlot,
 } from "./contentFrontmatter";
 
@@ -323,6 +324,88 @@ describe("work story body structure (AD-3)", () => {
     expect(processContentFile(file("work/foo.mdx"), draft, options).frontmatter).toBeNull();
     const personal = "---\ntype: personal\ntitle: P\nsummary: S.\n---\n\n# Heading\n";
     expect(processContentFile(file("personal/p.mdx"), personal, options).frontmatter).toMatchObject({ title: "P" });
+  });
+});
+
+describe("VideoEmbed build rules (AD-8, EXPERIENCE §22 Video)", () => {
+  const PERSONAL = "---\ntype: personal\ntitle: P\nsummary: S.\n---\n\n";
+  const YT = "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ";
+  const DRIVE = "https://drive.google.com/file/d/1AbCdEf/preview";
+  const clip = (attributes: string) => `<VideoEmbed ${attributes} />\n\n`;
+
+  describe("videoEmbedProblems", () => {
+    it("accepts no clips, and literal valid clips in either quote style, across lines, with a poster", () => {
+      expect(videoEmbedProblems("Just text.\n")).toEqual([]);
+      expect(
+        videoEmbedProblems(
+          clip(`src="${YT}?start=30" title="Squat, 2025 meet"`) +
+            clip(`title='Deadlift' src='${DRIVE}'`) +
+            `<VideoEmbed\n  src="${YT}"\n  title="Bench > 2024"\n  poster="powerlifting/x.webp"\n/>\n`
+        )
+      ).toEqual([]);
+    });
+
+    it("accepts exactly 4 clips", () => {
+      expect(videoEmbedProblems(clip(`src="${YT}" title="A"`).repeat(4))).toEqual([]);
+    });
+
+    it.each([
+      ["a watch URL", `src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" title="A"`, "is not a sanctioned embed"],
+      ["autoplay", `src="${YT}?autoplay=1" title="A"`, "must not set autoplay="],
+      ["loop", `src="${YT}?loop=1" title="A"`, "must not set loop="],
+      ["another host", `src="https://vimeo.com/1" title="A"`, "is not a sanctioned embed"],
+      ["an expression src", `src={url} title="A"`, 'must have a literal src="…" attribute'],
+      ["a missing src", `title="A"`, 'must have a literal src="…" attribute'],
+      ["a missing title", `src="${YT}"`, 'must have a literal title="…" attribute'],
+      ["an expression title", `src="${YT}" title={name}`, 'must have a literal title="…" attribute'],
+      ["a bare title", `src="${YT}" title`, 'must have a literal title="…" attribute'],
+      ["an empty title", `src="${YT}" title=""`, "must have a non-empty title"],
+      ["a blank title", `src="${YT}" title="   "`, "must have a non-empty title"],
+    ])("rejects %s", (_, attributes, problem) => {
+      const problems = videoEmbedProblems(clip(attributes));
+      expect(problems).toHaveLength(1);
+      expect(problems[0]).toMatch(/^<VideoEmbed> 1 of 1/);
+      expect(problems[0]).toContain(problem);
+    });
+
+    it("numbers each bad clip", () => {
+      expect(videoEmbedProblems(clip(`src="${YT}" title="A"`) + clip(`src="${YT}"`))).toEqual([
+        '<VideoEmbed> 2 of 2 must have a literal title="…" attribute that names what the clip shows',
+      ]);
+    });
+
+    it("rejects more than 4 clips", () => {
+      expect(videoEmbedProblems(clip(`src="${YT}" title="A"`).repeat(5))).toEqual([
+        "a page may have at most 4 clips (found 5); keep the <VideoEmbed> blocks that matter most",
+      ]);
+    });
+
+    it("ignores clips in a code fence, inline code or a comment, and other tags", () => {
+      const bad = `<VideoEmbed src="https://vimeo.com/1" />`;
+      expect(
+        videoEmbedProblems(`\`\`\`mdx\n${bad}\n\`\`\`\n\n\`${bad}\`\n\n{/* ${bad} */}\n\n<VideoEmbedList src="x" />\n`)
+      ).toEqual([]);
+    });
+  });
+
+  it("fails a personal entry with a bad clip, naming the file", () => {
+    expect(problemsOf("personal/p.mdx", PERSONAL + clip(`src="https://vimeo.com/1" title="A"`))).toEqual([
+      expect.stringContaining("is not a sanctioned embed"),
+    ]);
+  });
+
+  it("fails a work story with a bad clip, naming the file", () => {
+    expect(problemsOf("work/foo.mdx", WORK + clip(`src="${YT}"`))).toEqual([
+      expect.stringContaining('must have a literal title="…" attribute'),
+    ]);
+  });
+
+  it("accepts a valid clip in a personal body, and skips drafts", () => {
+    expect(
+      processContentFile(file("personal/p.mdx"), PERSONAL + clip(`src="${YT}" title="A"`), options).frontmatter
+    ).toMatchObject({ title: "P" });
+    const draft = PERSONAL.replace("type: personal", "type: personal\ndraft: true") + clip(`src="x"`).repeat(5);
+    expect(processContentFile(file("personal/p.mdx"), draft, options).frontmatter).toBeNull();
   });
 });
 

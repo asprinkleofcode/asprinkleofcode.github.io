@@ -10,6 +10,7 @@ import {
   parseFrontmatter,
   type Frontmatter,
 } from "../src/lib/frontmatter";
+import { MAX_VIDEOS_PER_PAGE, videoSrcProblem } from "../src/lib/video";
 import { REQUIRED_STORY_SECTIONS, STORY_SECTION_ORDER, type StorySectionName } from "../src/lib/storySections";
 
 /**
@@ -27,6 +28,9 @@ import { REQUIRED_STORY_SECTIONS, STORY_SECTION_ORDER, type StorySectionName } f
  *   `<DecisionBlock>` sets `rationale=`/`tradeoffs=` (those are entries in
  *   the Rationale/Tradeoffs sections; Epic 2 retro F-1) (`storyBodyProblems`),
  *   or the build fails naming the file.
+ * - Every non-draft body, work or personal, follows the `<VideoEmbed>` rules
+ *   (`videoEmbedProblems`): a literal, sanctioned `src`, a literal non-empty
+ *   `title`, and at most 4 clips; a failure names the file.
  * - A non-draft entry's `hero.src` must exist under `src/assets/media/`, and
  *   no two non-draft entries in one path may share a `featured` value
  *   (`featuredClash`); either failure names the file(s).
@@ -126,51 +130,126 @@ const SETEXT_H1 = /^ {0,3}\S[^\n]*\n {0,3}=+[ \t]*$/m;
 const SETEXT_H2 = /^ {0,3}(?![*+-][ \t]|\d+[.)][ \t]|#{1,6}(?:[ \t]|$)|<)\S[^\n]*\n {0,3}-+[ \t]*$/m;
 const STORY_SECTION_TAG = /<StorySection\b([^>]*)>/g;
 const LITERAL_SECTION = /^\s*section=(?:"([^"]*)"|'([^']*)')\s*\/?\s*$/;
-const ATTRIBUTE_NAME = /(?:^|\s)([A-Za-z_$][\w$:-]*)/g;
 /** Attributes `OutcomeBlock` reads from frontmatter `highlight`, never from the body. */
 const HIGHLIGHT_ATTRIBUTES = ["metric", "unit"];
 /** Reasoning that lives in the Rationale/Tradeoffs sections, never on a `DecisionBlock` (AD-3). */
 const REASONING_ATTRIBUTES = ["rationale", "tradeoffs"];
 
+/** One attribute on a block tag: its literal string value, or `null` for a `{…}` expression or a bare (boolean) attribute. */
+export interface BlockAttribute {
+  name: string;
+  value: string | null;
+}
+
+const ATTRIBUTE_AT = /[A-Za-z_$][\w$:-]*/y;
+const EQUALS_AT = /\s*=\s*/y;
+
+/** The index just past the `{…}` expression opening at `start` (brace depth only; quotes inside are not tracked). */
+function skipExpression(source: string, start: number): number {
+  let depth = 0;
+  for (let i = start; i < source.length; i++) {
+    if (source[i] === "{") depth++;
+    else if (source[i] === "}" && --depth === 0) return i + 1;
+  }
+  return source.length;
+}
+
+/** The index just past the quoted run opening at `start`. */
+function skipQuoted(source: string, start: number): number {
+  const close = source.indexOf(source[start], start + 1);
+  return close === -1 ? source.length : close + 1;
+}
+
 /**
- * The attribute names on each `<name …>` tag in `source` (that tag exactly:
+ * The attributes on each `<name …>` tag in `source` (that tag exactly:
  * `<DecisionBlockList>` is not a `<DecisionBlock>`). A plain
  * `[^>]*` stops at the first `>` inside a value such as `outcome={<>…</>}`,
- * so this walks the tag: quoted values are skipped, `{…}` expressions are
+ * so this walks the tag: quoted values are read whole, `{…}` expressions are
  * skipped by brace depth (quotes inside them are not tracked, since JSX text
  * like "doesn't" is far likelier there than a string holding a brace), and
  * the tag ends at the first `>` outside both.
  */
-function blockAttributes(source: string, name: string): string[][] {
-  const tags: string[][] = [];
+export function blockTags(source: string, name: string): BlockAttribute[][] {
+  const tags: BlockAttribute[][] = [];
   for (const open of source.matchAll(new RegExp(`<${name}(?=[\\s/>]|$)`, "g"))) {
-    let topLevel = "";
-    let quote: string | null = null;
-    let depth = 0;
-    for (let i = open.index + open[0].length; i < source.length; i++) {
+    const attributes: BlockAttribute[] = [];
+    let i = open.index + open[0].length;
+    while (i < source.length && source[i] !== ">") {
       const char = source[i];
-      if (quote !== null) {
-        if (char === quote) quote = null;
-        topLevel += " ";
-      } else if (depth > 0) {
-        if (char === "{") depth++;
-        else if (char === "}") depth--;
-        topLevel += " ";
-      } else if (char === '"' || char === "'") {
-        quote = char;
-        topLevel += " ";
-      } else if (char === "{") {
-        depth = 1;
-        topLevel += " ";
-      } else if (char === ">") {
-        break;
-      } else {
-        topLevel += char;
+      if (char === "{") {
+        i = skipExpression(source, i);
+        continue;
       }
+      if (char === '"' || char === "'") {
+        i = skipQuoted(source, i);
+        continue;
+      }
+      ATTRIBUTE_AT.lastIndex = i;
+      const attribute = ATTRIBUTE_AT.exec(source);
+      if (attribute === null) {
+        i++;
+        continue;
+      }
+      i += attribute[0].length;
+      let value: string | null = null;
+      EQUALS_AT.lastIndex = i;
+      if (EQUALS_AT.test(source)) {
+        i = EQUALS_AT.lastIndex;
+        if (source[i] === '"' || source[i] === "'") {
+          const close = source.indexOf(source[i], i + 1);
+          value = source.slice(i + 1, close === -1 ? source.length : close);
+          i = close === -1 ? source.length : close + 1;
+        } else if (source[i] === "{") {
+          i = skipExpression(source, i);
+        }
+      }
+      attributes.push({ name: attribute[0], value });
     }
-    tags.push([...topLevel.matchAll(ATTRIBUTE_NAME)].map((match) => match[1]));
+    tags.push(attributes);
   }
   return tags;
+}
+
+/** The attribute names on each `<name …>` tag in `source` (see `blockTags`). */
+function blockAttributes(source: string, name: string): string[][] {
+  return blockTags(source, name).map((attributes) => attributes.map((attribute) => attribute.name));
+}
+
+/** `body` without code fences, MDX comments and inline code, none of which renders a block. */
+function stripNonBlocks(body: string): string {
+  return body.replace(CODE_FENCE, "").replace(MDX_COMMENT, "").replace(INLINE_CODE, "");
+}
+
+/**
+ * The `<VideoEmbed>` rules for every non-draft body, work or personal (AD-8,
+ * EXPERIENCE §22 Video): each clip has a literal `src` that passes
+ * `videoSrcProblem` and a literal, non-empty `title`, and a page has at most
+ * `MAX_VIDEOS_PER_PAGE` clips. Code fences, inline code and MDX comments are
+ * ignored.
+ */
+export function videoEmbedProblems(body: string): string[] {
+  const clips = blockTags(stripNonBlocks(body), "VideoEmbed");
+  const problems: string[] = [];
+  clips.forEach((attributes, index) => {
+    const label = `<VideoEmbed> ${index + 1} of ${clips.length}`;
+    const src = attributes.find((attribute) => attribute.name === "src");
+    const title = attributes.find((attribute) => attribute.name === "title");
+    if (src?.value == null) {
+      problems.push(`${label} must have a literal src="…" attribute`);
+    } else {
+      const problem = videoSrcProblem(src.value);
+      if (problem !== null) problems.push(`${label}: ${problem}`);
+    }
+    if (title?.value == null) {
+      problems.push(`${label} must have a literal title="…" attribute that names what the clip shows`);
+    } else if (title.value.trim() === "") {
+      problems.push(`${label} must have a non-empty title that names what the clip shows`);
+    }
+  });
+  if (clips.length > MAX_VIDEOS_PER_PAGE) {
+    problems.push(`a page may have at most ${MAX_VIDEOS_PER_PAGE} clips (found ${clips.length}); keep the <VideoEmbed> blocks that matter most`);
+  }
+  return problems;
 }
 
 /**
@@ -185,7 +264,7 @@ function blockAttributes(source: string, name: string): string[][] {
  * comments are ignored.
  */
 export function storyBodyProblems(body: string): string[] {
-  const source = body.replace(CODE_FENCE, "").replace(MDX_COMMENT, "").replace(INLINE_CODE, "");
+  const source = stripNonBlocks(body);
   const problems: string[] = [];
   const seen: StorySectionName[] = [];
 
@@ -295,6 +374,9 @@ export function processContentFile(file: string, source: string, options: Proces
   }
   if (problems.length === 0 && !draft && frontmatter.type === "work") {
     problems.push(...storyBodyProblems(body));
+  }
+  if (problems.length === 0 && !draft) {
+    problems.push(...videoEmbedProblems(body));
   }
   if (problems.length > 0) throw new FrontmatterError(display, problems);
 
