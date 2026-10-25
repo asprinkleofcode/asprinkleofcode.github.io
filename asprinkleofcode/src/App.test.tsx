@@ -384,6 +384,22 @@ describe("App smoke test", () => {
       expect(screen.queryByText("No stories published yet.")).toBeNull();
     });
 
+    it("opens a personal story from its /beyond card", async () => {
+      registry.pathEntries = { beyond: [personal] };
+      renderAt("/beyond");
+      await h1("Beyond the Code");
+      const card = within(screen.getByRole("main")).getByTestId("flowbite-card");
+      expect(within(card).getByRole("heading", { level: 2, name: "Garden" })).toBeDefined();
+      expect(within(card).getByText("Garden summary.")).toBeDefined();
+      expect(within(card).queryByText(/^Role:/)).toBeNull();
+      expect(within(card).queryByRole("list", { name: "Capabilities shown" })).toBeNull();
+
+      fireEvent.click(within(card).getByRole("link", { name: "Garden" }));
+      expect(await h1("Garden")).toBeDefined();
+      expect(await screen.findByText("Garden body text.")).toBeDefined();
+      expect(consoleError).not.toHaveBeenCalled();
+    });
+
     it("shows three Coming soon path cards below Recognition with zero content", async () => {
       renderAt("/");
       const heading = await h1(IDENTITY.name);

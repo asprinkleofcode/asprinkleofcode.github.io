@@ -34,6 +34,7 @@ const personal = (slug: string, title: string): Entry => ({
     type: "personal",
     title,
     summary: `${title} summary.`,
+    hero: { src: `${slug}/hero.webp`, alt: `${title} hero photo` },
     listed: true,
   },
 });
@@ -131,27 +132,53 @@ describe("PathIndex", () => {
     expectNoFlowbiteDefaults(container);
   });
 
-  it("keeps the title link and summary item for personal entries, with no role or capabilities", () => {
-    renderIndex([personal("hobby", "Hobby Story"), personal("other", "Other Story")], "Beyond the Code");
-    expect(screen.queryByTestId("flowbite-card")).toBeNull();
-    expect(screen.queryByRole("list", { name: "Capabilities shown" })).toBeNull();
-    expect(screen.queryByText(/^Role:/)).toBeNull();
-    expect(screen.queryByRole("heading", { level: 2 })).toBeNull();
+  describe("personal entries", () => {
+    const beyond = () =>
+      renderIndex([personal("hobby", "Hobby Story"), personal("other", "Other Story")], "Beyond the Code");
 
-    const list = screen.getByRole("list");
-    expect(classes(list)).not.toContain("gap-4");
-    const items = within(list).getAllByRole("listitem");
-    expect(items).toHaveLength(2);
-    expect(classes(items[0])).toEqual(expect.arrayContaining(["border-t", "border-border-default", "last:border-b"]));
+    it("renders one text-only Story Card per entry, in the given order, with no role, signals or image", () => {
+      beyond();
+      expect(screen.getAllByRole("heading", { level: 1 }).map((h) => h.textContent)).toEqual(["Beyond the Code"]);
+      expect(screen.getAllByTestId("flowbite-card")).toHaveLength(2);
+      expect(screen.queryByRole("list", { name: "Capabilities shown" })).toBeNull();
+      expect(screen.queryByText(/^Role:/)).toBeNull();
+      expect(screen.queryByText(/evidence/i)).toBeNull();
+      expect(screen.queryByRole("img")).toBeNull();
 
-    const links = items.map((item) => within(item).getByRole("link"));
-    expect(links.map((a) => a.getAttribute("href"))).toEqual(["/beyond/hobby", "/beyond/other"]);
-    const link = classes(links[0]);
-    expect(link).toEqual(
-      expect.arrayContaining(["type-story", "text-brand-primary", "hover:underline", "focus-visible:underline", "focus-visible:ring-2"])
-    );
-    const summary = within(items[0]).getByText("Hobby Story summary.");
-    expect(classes(summary)).toEqual(expect.arrayContaining(["type-body", "text-text-secondary"]));
-    expect(links[0].compareDocumentPosition(summary) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      const items = topItems();
+      expect(items).toHaveLength(2);
+      expect(items.map((li) => within(li).getByRole("heading", { level: 2 }).textContent)).toEqual([
+        "Hobby Story",
+        "Other Story",
+      ]);
+      const links = items.map((item) => within(item).getByRole("link"));
+      expect(links.map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
+        ["Hobby Story", "/beyond/hobby"],
+        ["Other Story", "/beyond/other"],
+      ]);
+      const summary = within(items[0]).getByText("Hobby Story summary.");
+      expect(classes(summary)).toEqual(expect.arrayContaining(["type-body", "text-text-secondary"]));
+      expect(links[0].compareDocumentPosition(summary) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it("stacks cards with a gap, without divider rules, and gives each card one tab stop", () => {
+      beyond();
+      expect(classes(topList())).toEqual(expect.arrayContaining(["flex", "flex-col", "gap-4"]));
+      for (const li of topItems()) {
+        expect(li.className).not.toMatch(/border/);
+        expect(li.querySelectorAll("a[href], button, input, select, textarea, [tabindex]")).toHaveLength(1);
+      }
+    });
+
+    it("navigates to the dimension when a card's link is clicked", () => {
+      beyond();
+      fireEvent.click(screen.getByRole("link", { name: "Other Story" }));
+      expect(pathname).toBe("/beyond/other");
+    });
+
+    it("renders no flowbite dark-mode or palette classes under the app theme", () => {
+      const { container } = beyond();
+      expectNoFlowbiteDefaults(container);
+    });
   });
 });

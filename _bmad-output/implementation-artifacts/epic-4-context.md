@@ -55,7 +55,7 @@ A visitor can discover Alisha's personal side through two authentic, standalone 
   - One helper resolves the path through `import.meta.glob`. An unresolved `src` fails the build (frontmatter) or the test run (body).
   - In the body, one sanctioned MDX photo block (AD-8) takes `src` and a required `alt`, renders explicit `width`/`height`, and lazy-loads unless it is the hero. No layout shift.
   - **Decided (Alisha, 2026-10-25, Story 4.1A):** `width`/`height` are read from the file at build time. `plugins/photoMeta.ts` serves `?photo` imports of `src/assets/media/` files as `{ src, width, height }` (via `image-size`); `src/lib/media.ts` `resolveMedia` is the one resolver. Authors write only `src` and `alt`.
-  - Maximum per page: Powerlifting 1 hero + 4–6; Birdhouses 1 hero + 5–7 process + 3–6 finished; `/beyond` up to 2 (one per card, only if the card shows an image).
+  - Maximum per page: Powerlifting 1 hero + 4–6; Birdhouses 1 hero + 5–7 process + 3–6 finished; `/beyond` up to 2 (one per card, only if the card shows an image; cards are text-only until Story 4.4 decides whether they show one — decided 2026-10-25, Story 4.2).
   - Photo treatment (aspect ratio, radius, edge) and whether the Birdhouses process photos show as a sequence or a gallery are **OPEN**. They are decided with Alisha once real photos exist and recorded in `DESIGN.md`/`EXPERIENCE.md`, never invented in code.
 - **`VideoEmbed` (Story 4.1; powerlifting only):** one sanctioned block with `src`, a required `title` and an optional `poster` (a path inside `media/`).
   - Shows a click-to-load facade: a fixed 16:9 box with the poster, or a role-token panel when there is none, plus a play control whose accessible name is the `title`.
@@ -80,7 +80,7 @@ A visitor can discover Alisha's personal side through two authentic, standalone 
 
 - **Birdhouse flow:** discover the personal side → Birdhouses → see the transformation and process → continue to @orangecatwoodcraft (outbound) or open the care guide (PDF) in one step. Both links sit on the Birdhouses page.
 - **Powerlifting flow:** the journey and context (training, setbacks, progress), not just numbers → continue to @asprinkleofcode. Up to 4 clips sit beside the photos; video appears nowhere else.
-- **`/beyond` index:** a summary card for every non-draft entry where `listed` is true, built from the registry. Selecting a card uses the same ~180ms cross-fade as work stories, instant under reduced motion. With no entries, it keeps the "no stories published yet" state.
+- **`/beyond` index:** a summary card for every non-draft entry where `listed` is true, built from the registry. **Decided (Alisha, 2026-10-25, Story 4.2):** the card is the shared Story Card without role or capabilities, and it is text-only. Whether it shows the entry's `hero` is decided in Story 4.4, together with the photo treatment. Selecting a card uses the same ~180ms cross-fade as work stories, instant under reduced motion. With no entries, it keeps the "no stories published yet" state.
 - **Homepage Beyond the Code card (Story 4.5):** it goes live when a non-draft personal entry is `featured` and has `highlight`.
   - Shows `highlight.headline` and `summary`, with no metric and no "evidence" styling or wording.
   - Both dimensions are featured, so they step under the Story 2.6 rules. `listed: false` entries never appear.
